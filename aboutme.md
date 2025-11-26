@@ -23,10 +23,9 @@ subtitle:
 
 - ETC
 
-### And I am Currently on :
+### And Currently I'm on :
 
 
 ### My story
 
-- 엄격하신 아버지와 자상하신 어머니 아래 자라..
-그냥 아무거나 써보고싶었음<br/><br/><br/>
+- 엄격하신 아버지와 자상하신 어머니 아래 자라... 사실 그냥 아무거나 써보고싶었음<br/><br/><br/>
