@@ -17,9 +17,9 @@ subtitle:
 
 - Activities
     - 2024 KONICOF Nuclear Global R&D Mentoring (Nuclear ML/AI, KAIST)
-    - CJ OliveNetworks 'Youth Digital Problem Solving Educational Volunteer
+    - 2024 CJ OliveNetworks 'Youth Digital Problem Solving Educational Volunteer
     - 2025 SK SUNI AI Dream Camp
-    - 광교고등학교 “대학교 학과 소개 및 학생부 종합 전형 대비" 멘토링 봉사활동<br/><br/>
+    - 광교고등학교 “대학교 학과 소개 및 면접 준비" 멘토링 봉사활동<br/><br/>
 
 
 - Awards
@@ -33,7 +33,7 @@ subtitle:
 
 ### And Currently I'm on :
 
-- 2025.2 - 2026.11 팔달노인복지관 사회복무요원 복무<br/><br/><br/>
+- 2025.2 - 2026.11 팔달노인복지관 사회복무요원<br/><br/><br/>
 
 ### My story
 
