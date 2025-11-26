@@ -9,7 +9,7 @@ author: Geunyeong Cho
 published : true
 ---
 
-원문 : (https://nathan.rs/posts/roberta-diffusion)[https://nathan.rs/posts/roberta-diffusion]
+원문 : [https://nathan.rs/posts/roberta-diffusion](https://nathan.rs/posts/roberta-diffusion)
 
 ### 1. BERT=1스텝 확산 모델으로 보는 접근방식 제안
 
@@ -42,9 +42,9 @@ BERT의 복원 기반 목적 + GPT의 확률적 생성 목적 => 연속 스케�
 
 ### 추가 관련자료
 
-(https://arxiv.org/abs/2107.03006)[https://arxiv.org/abs/2107.03006]<br/>
-(https://arxiv.org/abs/1904.09324)[https://arxiv.org/abs/1904.09324]<br/>
-(https://arxiv.org/pdf/1902.04094)[https://arxiv.org/abs/1904.09324]<br/>
+[https://arxiv.org/abs/2107.03006](https://arxiv.org/abs/2107.03006)<br/>
+[https://arxiv.org/abs/1904.09324](https://arxiv.org/abs/1904.09324)<br/>
+[https://arxiv.org/pdf/1902.04094](https://arxiv.org/abs/1904.09324)<br/>
 
 <!-- 들어가며 예시
 {: .box-success}
