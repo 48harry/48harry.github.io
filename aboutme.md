@@ -31,11 +31,10 @@ subtitle:
     - 아주대학교 산업공학과 43대 학생회 ‘산뜻’
     - AJOU POPS Orchestra Principal Double Bass<br/><br/><br/>
 
-### And I am Currently on :
+### And Currently I'm on :
 
 - 2025.2 - 2026.11 팔달노인복지관 사회복무요원 복무<br/><br/><br/>
 
 ### My story
 
-- 엄격하신 아버지와 자상하신 어머니 아래 자라..
-그냥 아무거나 써보고싶었음<br/><br/><br/>
+- 엄격하신 아버지와 자상하신 어머니 아래 자라... 사실 그냥 아무거나 써보고싶었음<br/><br/><br/>
