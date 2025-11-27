@@ -1,19 +1,15 @@
 ---
 layout: post
-title: First post
-subtitle: I hate markdown
+title: Title
+subtitle: subtitle
 # gh-repo: daattali/beautiful-jekyll
 # gh-badge: [star, fork, follow]
 tags: []
 comments: false
 mathjax: true
 author: Geunyeong Cho
-published : true
+published : false
 ---
-
-## 안녕하세요 저 처음 글써봐요
-잘 부탁드립니다
-_마크다운_으로 쓰는거 쉽지 않을듯요
 
 <!-- 들어가며 예시
 {: .box-success}
