@@ -2,8 +2,6 @@
 layout: post
 title: F3: The Open-Source Data File Format for the Future
 subtitle:
-# gh-repo: daattali/beautiful-jekyll
-# gh-badge: [star, fork, follow]
 tags: []
 comments: false
 mathjax: true
