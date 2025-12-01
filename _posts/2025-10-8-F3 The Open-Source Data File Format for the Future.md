@@ -46,7 +46,7 @@ A. WebAssembly (Wasm) 기반 디코더 임베딩 (상호 운용성 및 확장성
 
 4. 확장성 촉진: 새로운 인코딩 방법은 F3 코어 라이브러리와 별개로 설치 및 업그레이드할 수 있는 "플러그인"으로 취급되며, 개발자들은 라이브러리 전체를 업그레이드할 필요 없이 Wasm 코드를 파일에 포함시켜 새로운 인코딩을 배포할 수 있습니다.
 
-![F3 format](C:\48harry.github.io\assets\img\F3_format.png)
+![F3 format](/assets/img/F3_format.png)
 
 이중 핵심은 metadata부의 Wasm 그리고 데이터를 쪼개고 쪼개고 쪼갠단위인 I/O유닛의 특성값인 EncUnits
 어쨌든 구조적인 관점에서는 데이터 내용물과 함께 시스템(API)이 경량화되어 내장되어 있다는게 핵심 아이디어. 
@@ -59,7 +59,7 @@ B. 효율성을 위한 파일 레이아웃 재설계
 
 기존 Parquet은 Row Group이 I/O 단위와 묶여 있어, 전체 Row Group이 메모리에 버퍼링될 때까지 쓰기를 지연해야 했고, 이는 OOM(Out of Memory) 오류와 비효율적인 I/O 크기를 초래했습니다. F3에서는 IOUnit(기본값 8MB)이 채워질 때마다 디스크에 플러시할 수 있어 쓰기 메모리 사용량이 일정하며, 클라우드 객체 스토리지(예: S3)에 최적화된 일관된 청크 크기를 제공합니다
 
-![Dynamic Flushing](C:\48harry.github.io\assets\img\Dynamic_Flushing.png)
+![Dynamic Flushing](/assets/img/Dynamic_Flushing.png)
 
 
 2. 동적 플러싱이 가능하다는것이, 그것도 특히 메타데이터로 포함된 API가 자체적으로 인덱싱을 하는데 드는 입출력 호출이 그렇게 가능하다면, 분명히 획기적인 변경임
@@ -84,7 +84,7 @@ API는 기본적으로 apache arrow 방식을 기저로하나 현재 단계로�
 1. 메타데이터 오버헤드: 와이드 테이블에서 F3는 다른 FlatBuffer 기반 형식보다 메타데이터 처리 시간이 빠르며, Parquet보다 훨씬 빠릅니다 (10배 이상).
 column이 늘어날수록 소요시간이 획기적으로 단축되는것을 확인할 수 있음
 
-![Metadata Overhead Comparison](C:\48harry.github.io\assets\img\Metadata_Overhead_Comparison.png)
+![Metadata Overhead Comparison](/assets/img/Metadata_Overhead_Comparison.png)
 
 2. 압축 및 처리량: F3는 기존 형식과 비교하여 유사하거나 우수한 파일 읽기 처리량(File-reading Throughput)을 달성하며, 약간의 압축률 저하만 보입니다. 이는 벡터화된 디코딩을 활용하기 때문입니다.
 
