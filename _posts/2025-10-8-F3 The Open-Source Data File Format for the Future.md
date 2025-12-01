@@ -6,7 +6,7 @@ tags: [article]
 comments: false
 mathjax: true
 author: Geunyeong Cho
-published : false
+published : true
 ---
 
 최근 흥미로운 논문이 게재되어서 Gemini한테 물어본 내용을 바탕으로 정리해봄
