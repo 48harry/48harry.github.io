@@ -4,7 +4,7 @@ title: A bit late Newyear Resolution
 subtitle: 21 Lessons From 14 Years at Google
 # gh-repo: daattali/beautiful-jekyll
 # gh-badge: [star, fork, follow]
-tags: []
+tags: [article]
 comments: false
 mathjax: true
 author: Geunyeong Cho
