@@ -54,7 +54,10 @@ published : true
 통제할 수 없는 것에 에너지를 쓰지 말고, 통제 가능한 기술·관계·기여에 집중하라.
 
 ## 결론 <br/>
-“좋은 엔지니어링은 기술 문제가 아니라 사람·시간·맥락의 문제다.”<br/><br/>
+<details markdown="1">
+<summary>Click here!</summary>
+“좋은 엔지니어링은 기술 문제가 아니라 사람·시간·맥락의 문제다.”
+</details>
 
 <!-- 들어가며 예시
 {: .box-success}
@@ -116,8 +119,3 @@ foo(3)
 {: .box-error}
 **Error:** This is an error box. -->
 
-<!-- 요약 예시
-<details markdown="1">
-<summary>Click here!</summary>
-요약문
-</details> -->
