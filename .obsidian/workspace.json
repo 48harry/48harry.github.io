@@ -11,10 +11,14 @@
             "id": "98a04b412d933af4",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Graph view"
+              "type": "markdown",
+              "state": {
+                "file": "_posts/2026-07-19-Bros I finally made obsidian-git syncronization.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-07-19-Bros I finally made obsidian-git syncronization"
             }
           }
         ]
@@ -68,6 +72,22 @@
               "state": {},
               "icon": "lucide-bookmark",
               "title": "Bookmarks"
+            }
+          }
+        ]
+      },
+      {
+        "id": "0b1864f4fcbee7e0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "086248d09cff7f18",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Graph view"
             }
           }
         ]
@@ -177,15 +197,15 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "98a04b412d933af4",
+  "active": "086248d09cff7f18",
   "lastOpenFiles": [
     "_posts/2026-07-19-Bros I finally made obsidian-git syncronization.md",
+    "_posts/2026-1-9-A bit late Newyear Resolution.md",
     "CHANGELOG.md",
     "_templates/yyyy-mm-dd-example.md",
     "_templates",
     "New folder",
     "_posts/yyyy-mm-dd-example.md",
-    "_posts/2026-1-9-A bit late Newyear Resolution.md",
     "_posts/yyyy-mm-dd-example - 21 Lessons From 14 Years at Google.md",
     "_posts/yyyy-mm-dd-example - 복사본.md",
     "_posts/2025-11-18-AGI fantasy is a blocker to actual engineering.md",
