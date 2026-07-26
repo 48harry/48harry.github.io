@@ -6,13 +6,15 @@ subtitle:
 
 ### My name is Geunyeong Cho. I have the following qualities:
 
+- [Detailed Resume](https://app.notion.com/p/Geunyeong-Cho-30fe1c4e64ee4130a9e8c7081873789d)
+
 - Education
-    - AJOU University Department of Industrial Engineering & Applied Artificial Intelligence B.S. (Early Graduation Candidate, GPA: 3.74/4.5)
+    - AJOU University Department of Industrial Engineering & Applied Artificial Intelligence B.S. (GPA: 3.74/4.5)
     - 아주대학교 산업공학/인공지능융합 전공<br/><br/>
 
 - Language Skill
     - Korean : Native Language
-    - English : Fluent / TOEIC (915/990) / OPIC (렛츠고 AL)
+    - English : Fluent / TOEIC (915/990)
     - Japangese : Intermediate<br/><br/>
 
 - Tech Skill
@@ -23,6 +25,8 @@ subtitle:
     - Github
     - Creative Media<br/><br/>
 
+
+
 - Certifications
     - SQLD (SQL Developer), Korea Data Agency (2026)
     - Bigdata Analysis Engineer (빅데이터 분석기사), Korea Data Agency (2026)
@@ -31,7 +35,8 @@ subtitle:
 - Activities
     - 2024 KONICOF Nuclear Global R&D Mentoring (Nuclear ML/AI, KAIST)
     - 2024 CJ OliveNetworks 'Youth Digital Problem Solving Educational Volunteer
-    - 2025 SK SUNI AI Dream Camp (Focus: QC, Recommendation) <br/><br/>
+    - 2025 SK SUNI AI Dream Camp (Focus: QC, Recommendation) 
+    - 2026 LG Aimers<br/><br/>
 
 - Awards
     - AJOU University NUOVO Hackerthon accepted<br/><br/>
@@ -46,4 +51,4 @@ subtitle:
 
 ### My story
 
-- 엄격하신 아버지와 자상하신 어머니 아래 자라... 사실 그냥 아무거나 써보고싶었음<br/><br/><br/>
+- .<br/><br/><br/>
