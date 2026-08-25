@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Bros I finally made obsidian-git syncronization
+title: Bros I finally made obsidian-git-n8n syncronization
 subtitle: yeah
 tags: []
 comments: false
@@ -8,8 +8,7 @@ mathjax: true
 author: Geunyeong Cho
 published: false
 ---
-
-## 기분이 좋아요
+next step : AWS에 띄우기
 
 <!-- 들어가며 예시
 {: .box-success}
