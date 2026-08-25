@@ -10,10 +10,7 @@ mathjax: true
 author: Geunyeong Cho
 published : true
 ---
-
 [원문](https://addyosmani.com/blog/21-lessons/)
-
-
 ## “잘 짜는 사람”이 아니라 오래 살아남고 영향력을 키우는 엔지니어는 어떻게 사고하는가
 
 ### 1. 기술보다 중요한 것들<br/>
