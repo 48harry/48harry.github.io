@@ -8,7 +8,7 @@ mathjax: true
 author: Geunyeong Cho
 published: false
 ---
-next step : AWS에 띄우기
+	next step : AWS에 띄우기
 
 <!-- 들어가며 예시
 {: .box-success}

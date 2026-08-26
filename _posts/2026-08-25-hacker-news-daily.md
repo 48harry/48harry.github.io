@@ -1,11 +1,14 @@
 ---
 layout: post
-title: "공간 컴퓨팅, 데이터 파싱 최적화, 그리고 웹3: 시니어 엔지니어가 주목하는 핵심 트렌드"
+title: 공간 컴퓨팅, 데이터 파싱 최적화, 그리고 웹3
 date: 2026-08-25 16:43:40 +0900
-categories: [Tech, News]
-tags: [Hacker News, Tech Trend]
+categories:
+  - Tech
+  - News
+tags:
+  - Hacker News
+  - Tech Trend
 ---
-
 기술의 물결은 쉬지 않고 새로운 지평을 열어가고 있습니다. 오늘은 Apple의 혁신적인 공간 컴퓨팅 플랫폼부터, 미묘하지만 강력한 데이터 파싱 성능 개선, 그리고 탈중앙화된 소셜 네트워크의 부상까지, AI와 데이터 엔지니어링의 미래를 가늠할 수 있는 세 가지 흥미로운 소식을 함께 살펴보겠습니다.
 
 ### Building great apps for visionOS
