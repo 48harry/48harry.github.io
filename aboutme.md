@@ -14,7 +14,7 @@ subtitle:
 
 - Language Skill
     - Korean : Native Language
-    - English : Fluent / TOEIC (915/990)
+    - English : Fluent / TOEIC (915/990) / OPIC()
     - Japangese : Intermediate<br/><br/>
 
 - Tech Skill
@@ -35,11 +35,8 @@ subtitle:
 - Activities
     - 2024 KONICOF Nuclear Global R&D Mentoring (Nuclear ML/AI, KAIST)
     - 2024 CJ OliveNetworks 'Youth Digital Problem Solving Educational Volunteer
-    - 2025 SK SUNI AI Dream Camp (Focus: QC, Recommendation) 
-    - 2026 LG Aimers<br/><br/>
+    - 2026 BDAI<br/><br/>
 
-- Awards
-    - AJOU University NUOVO Hackerthon accepted<br/><br/>
 
 - ETC
     - 아주대학교 산업공학과 42대 학생회 ‘We로’ / 43대 학생회 ‘산뜻’
