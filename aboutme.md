@@ -14,7 +14,7 @@ subtitle:
 
 - Language Skill
     - Korean : Native Language
-    - English : Fluent / TOEIC (915/990)
+    - English : Fluent / TOEIC (915/990) / OPIC()
     - Japangese : Intermediate<br/><br/>
 
 - Tech Skill
@@ -33,8 +33,8 @@ subtitle:
     - Engineer Information Processing (정보처리기사), HRD Korea (2026)<br/><br/>  
 
 - Activities
+    - 2026 BDAI<br/><br/>
 
-- Awards
 
 - ETC
 

@@ -20,11 +20,16 @@ author: Geunyeong Cho
 ###############################################
 
 navbar-links:
+  Posts:
+    - Tech Articles : "articles"
+    - Daily Newsletter : "newsletters"
   About Me: "aboutme"
-  # Resources:
-  #   - GitHub: "https://github.com/48harry"
-  #   - Youtube: "https://www.youtube.com/@Geunyeong_Cho"
-  Author's home: "https://blog.naver.com/48harry"
+  Resources:
+    - GitHub: "https://github.com/48harry"
+    - Youtube: "https://www.youtube.com/@Geunyeong_Cho"
+    - Naver Blog: "https://blog.naver.com/48harry"
+
+  
 
 ################
 # --- Logo --- #
