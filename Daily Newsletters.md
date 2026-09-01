@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Daily Newsletters
-subtitle: n8n & Gemini로 매일 자동 아카이빙되는 테크 뉴스
+subtitle: 매일 아카이빙되는 테크 뉴스
 permalink: /newsletters/
 ---
 

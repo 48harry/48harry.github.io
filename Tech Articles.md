@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Tech Articles
-subtitle: 직접 탐구하고 작성한 기술 및 프로젝트 기록
+subtitle: 기술 및 프로젝트 기록
 permalink: /articles/
 ---
 
