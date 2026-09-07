@@ -2,7 +2,8 @@
 layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 1주차 Review (13기)
 subtitle: BDAI 회고
-tags: []
+tags:
+  - article
 comments: false
 mathjax: true
 author: Geunyeong Cho
