@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/Untitled.md",
+                "file": "_posts/BDAI 데이터 분석 실전반 추천 시스템 구현 1주차 Review (13기).md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Untitled"
+              "title": "BDAI 데이터 분석 실전반 추천 시스템 구현 1주차 Review (13기)"
             }
           }
         ]
@@ -201,20 +201,21 @@
   },
   "active": "98a04b412d933af4",
   "lastOpenFiles": [
+    "_posts/2025-11-16-Things that arent doing the thing.md",
+    "_posts/2025-11-7-바이브코딩의 새로운 정착지 등장.md",
+    "_posts/BDAI 데이터 분석 실전반 추천 시스템 구현 1주차 Review (13기).md",
     "Tech Articles.md",
     "Daily Newsletters.md",
-    "_posts/Untitled.md",
-    "_posts/2025-10-17-소프트웨어적 패러다임을 AI에 그대로 적용했을때 문제점.md",
     "_posts/2026-09-07-hacker-news-daily.md",
-    "_posts/2026-08-28-hacker-news-daily.md",
     "_posts/2026-09-03-hacker-news-daily.md",
+    "_templates/yyyy-mm-dd-example.md",
+    "_posts/2025-10-17-소프트웨어적 패러다임을 AI에 그대로 적용했을때 문제점.md",
+    "_posts/2026-08-28-hacker-news-daily.md",
     "_posts/2026-09-02-hacker-news-daily.md",
     "_posts/2026-08-31-hacker-news-daily.md",
     "_posts/2026-08-07-hacker-news-daily.md",
-    "_posts/2025-11-16-Things that arent doing the thing.md",
     "_posts/2025-10-8-F3 The Open-Source Data File Format for the Future.md",
     "aboutme.md",
-    "_templates/yyyy-mm-dd-example.md",
     "_posts/2026-08-26-hacker-news-daily.md",
     "_posts/2026-08-25-hacker-news-daily.md",
     "_posts/2026-07-19-Bros I finally made obsidian-git syncronization.md",
@@ -225,7 +226,6 @@
     "_posts/2026-1-9-A bit late Newyear Resolution.md",
     "_posts/2025-10-31-HTTPS by default.md",
     "_posts/2026-08-06-hacker-news-daily.md",
-    "_posts/2025-11-7-바이브코딩의 새로운 정착지 등장.md",
     "screenshot.png",
     "README.md",
     "_templates",
