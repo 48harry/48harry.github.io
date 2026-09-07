@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2026-08-31-hacker-news-daily.md",
+                "file": "_posts/2026-08-28-hacker-news-daily.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-08-31-hacker-news-daily"
+              "title": "2026-08-28-hacker-news-daily"
             }
           },
           {
@@ -229,6 +229,7 @@
   },
   "active": "98a04b412d933af4",
   "lastOpenFiles": [
+    "_posts/2026-08-31-hacker-news-daily.md",
     "_posts/2026-08-28-hacker-news-daily.md",
     "Daily Newsletters.md",
     "Tech Articles.md",
@@ -237,7 +238,6 @@
     "_posts/2025-10-8-F3 The Open-Source Data File Format for the Future.md",
     "aboutme.md",
     "_templates/yyyy-mm-dd-example.md",
-    "_posts/2026-08-31-hacker-news-daily.md",
     "_posts/2026-08-26-hacker-news-daily.md",
     "_posts/2026-08-25-hacker-news-daily.md",
     "_posts/2026-07-19-Bros I finally made obsidian-git syncronization.md",
