@@ -2,13 +2,12 @@
 layout: post
 title: Title
 subtitle: subtitle
-# gh-repo: daattali/beautiful-jekyll
-# gh-badge: [star, fork, follow]
 tags: []
 comments: false
 mathjax: true
 author: Geunyeong Cho
-published : false
+published: false
+date:
 ---
 
 <!-- 들어가며 예시
