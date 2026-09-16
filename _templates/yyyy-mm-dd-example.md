@@ -9,6 +9,7 @@ author: Geunyeong Cho
 published: false
 date:
 ---
+<br/>
 
 <!-- 들어가며 예시
 {: .box-success}
