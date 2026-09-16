@@ -63,13 +63,13 @@ date: 2026-09-14 14:23:38 +0900
 
 BDAI 관련된 발표자료, 여러가지 활동내용들이 올라와있다
 
-![](assets/img/Pasted%20image%2020260914224818.png)
+![](/assets/img/Pasted%20image%2020260914224818.png)
 
-![](assets/img/Pasted%20image%2020260914224733.png)
+![](/assets/img/Pasted%20image%2020260914224733.png)
 
 채용시즌엔 이렇게 매주 채용공고도 보기 편하게 올려주는듯
 
-![](assets/img/Pasted%20image%2020260914231501.png)
+![](/assets/img/Pasted%20image%2020260914231501.png)
 
 서이추 한번 걸었더니 그냥 이웃신청은 안되네요
 
