@@ -25,12 +25,11 @@ subtitle:
     - Github
     - Creative Media<br/><br/>
 
-
-
 - Certifications
     - SQLD (SQL Developer), Korea Data Agency (2026)
     - Bigdata Analysis Engineer (빅데이터 분석기사), Korea Data Agency (2026)
-    - Engineer Information Processing (정보처리기사), HRD Korea (2026)<br/><br/>  
+    - Engineer Information Processing (정보처리기사), HRD Korea (2026)
+    - Google AI Professional Certicate (2026) <br/><br/>  
 
 - Activities
     - 2024 KONICOF Nuclear Global R&D Mentoring (Nuclear ML/AI, KAIST)
