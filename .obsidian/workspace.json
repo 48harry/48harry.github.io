@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2026-09-17-hacker-news-daily.md",
+                "file": "_posts/2026-09-16-hacker-news-daily.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-09-17-hacker-news-daily"
+              "title": "2026-09-16-hacker-news-daily"
             }
           }
         ]
@@ -201,12 +201,14 @@
   },
   "active": "2611621e44bb1e35",
   "lastOpenFiles": [
+    "_posts/2026-08-02-hacker-news-daily.md",
+    "_posts/2026-01-09-A bit late Newyear Resolution.md",
+    "_posts/2026-09-17-hacker-news-daily.md",
     "aboutme.md",
     "BDAI.md",
     "Daily Newsletters.md",
     "_posts/2026-09-14-bdai-review.md.md",
     "_posts/2026-09-16-bdai-review.md.md",
-    "_posts/2026-09-17-hacker-news-daily.md",
     "_posts/2025-10-28-AI can code, but it can't build software.md",
     "_posts/2025-10-21-짜잔 사실 BERT는 diffusion model이었음(와전).md",
     "_posts/2025-10-31-HTTPS by default.md",
@@ -229,8 +231,6 @@
     "_posts/2026-09-07-bdai-review.md.md",
     "_posts/2026-09-08-hacker-news-daily.md",
     "_posts/2026-09-07-hacker-news-daily.md",
-    "_posts/2025-11-16-Things that arent doing the thing.md",
-    "_posts/2026-1-9-A bit late Newyear Resolution.md",
     "screenshot.png",
     "_templates",
     "New folder"
