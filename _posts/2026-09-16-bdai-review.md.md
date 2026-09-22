@@ -111,8 +111,17 @@ date: 2026-09-16 14:23:38 +0900
 2. Ranking Stage:
     - LightGBM Ranker, DeepFM, CatBoost 등의 모델이 후보군을 재정렬할 때 과거 클릭 수 같은 "상호작용 피처"뿐만 아니라 카테고리, 가격대, 유저 연령대 같은 "정적 메타 피처"를 비중 있게 반영하여 Cold 아이템도 정량적 스코어를 받아 상위에 오를 수 있도록 방어한다.
 
-# 2. 블챌
+# 2. BDAI LMS의 유용한 기능
 
+[BDAI LMS](https://bdai.co.kr/dashboard/)
+
+1. AI 캠퍼스맵
+![[Pasted image 20260922131332.png]]
+
+
+
+2. 현직자 커피챗
+![[Pasted image 20260922131231.png]]
 
 #BDAI
 #데이터분석
