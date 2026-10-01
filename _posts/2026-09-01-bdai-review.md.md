@@ -8,7 +8,7 @@ comments: false
 mathjax: true
 author: Geunyeong Cho
 published: true
-date: 2026-09-06 23:56:31 +0900
+date: 2026-09-01 23:56:31 +0900
 ---
 ## 1. 수업에서 배운 내용 및 느낀 점
 
