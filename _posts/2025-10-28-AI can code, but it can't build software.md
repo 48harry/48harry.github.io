@@ -3,7 +3,7 @@ layout: post
 title: AI can code, but it can't build software
 subtitle: 
 tags: [article]
-comments: false
+comments: true
 mathjax: false
 author: Geunyeong Cho
 published : true

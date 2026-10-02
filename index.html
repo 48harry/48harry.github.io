@@ -1,6 +1,65 @@
 ---
-layout: home
+layout: page
 title: Generic Space
 share-description: Geunyeong Cho의 기술 아티클, 데일리 테크 뉴스레터, BDAI 학회 기록
 hero: true
 ---
+
+<section class="home-section">
+  <div class="section-head">
+    <div>
+      <p class="section-eyebrow">Daily Newsletter</p>
+      <h2 class="section-title">오늘의 테크 뉴스</h2>
+    </div>
+    <a class="section-more" href="{{ '/newsletters/' | relative_url }}">전체 {{ site.categories.News.size }}편 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+  </div>
+  <div class="posts-list">
+    {% for post in site.categories.News limit: 1 %}
+      {% include post-card.html post=post featured=true %}
+    {% endfor %}
+  </div>
+</section>
+
+<section class="home-section">
+  <div class="section-head">
+    <div>
+      <p class="section-eyebrow">Tech Articles</p>
+      <h2 class="section-title">기술 아티클</h2>
+    </div>
+    <a class="section-more" href="{{ '/articles/' | relative_url }}">모두 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+  </div>
+  <div class="posts-list posts-grid">
+    {% assign shown = 0 %}
+    {% for post in site.posts %}
+      {% if shown >= 4 %}{% break %}{% endif %}
+      {% unless post.categories contains "News" or post.tags contains "bdai" %}
+        {% include post-card.html post=post %}
+        {% assign shown = shown | plus: 1 %}
+      {% endunless %}
+    {% endfor %}
+  </div>
+</section>
+
+{% assign bdai_posts = site.tags.bdai | sort: "date" %}
+{% if bdai_posts.size > 0 %}
+<section class="home-section">
+  <div class="section-head">
+    <div>
+      <p class="section-eyebrow">BDAI Series</p>
+      <h2 class="section-title">추천 시스템 회고</h2>
+    </div>
+    <a class="section-more" href="{{ '/bdai/' | relative_url }}">시리즈 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+  </div>
+  <ol class="series-track">
+    {% for post in bdai_posts %}
+      <li>
+        <a class="series-step{% if forloop.last %} is-latest{% endif %}" href="{{ post.url | relative_url }}">
+          <span class="series-step-num">{{ forloop.index }}</span>
+          <span class="series-step-label">{{ forloop.index }}주차</span>
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m.%d" }}</time>
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}

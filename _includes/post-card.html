@@ -1,0 +1,20 @@
+{%- assign p = include.post -%}
+{%- assign card_chars = p.content | strip_html | strip_newlines | size -%}
+{%- assign card_mins = card_chars | divided_by: 500 | plus: 1 -%}
+<article class="post-preview{% if include.featured %} is-featured{% endif %}">
+  {% if p.tags.size > 0 %}
+    <a class="card-tag" href="{{ '/tags/' | relative_url }}#{{ p.tags | first | slugify }}">{{ p.tags | first }}</a>
+  {% endif %}
+  <a class="card-link" href="{{ p.url | relative_url }}">
+    <h2 class="post-title">{{ p.title | strip_html }}</h2>
+    {% if p.subtitle and p.subtitle != "" %}
+      <h3 class="post-subtitle">{{ p.subtitle | strip_html }}</h3>
+    {% endif %}
+  </a>
+  <p class="post-entry">{{ p.excerpt | strip_html | strip_newlines | truncate: 160 }}</p>
+  <div class="card-meta">
+    <span><i class="far fa-calendar" aria-hidden="true"></i> <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%Y.%m.%d" }}</time></span>
+    <span><i class="far fa-clock" aria-hidden="true"></i> {{ card_mins }}분 읽기</span>
+    <span class="card-more" aria-hidden="true">읽기 <i class="fas fa-arrow-right"></i></span>
+  </div>
+</article>

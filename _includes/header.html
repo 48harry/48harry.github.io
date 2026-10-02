@@ -27,7 +27,7 @@
       <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
         <div class="{{ include.type }}-heading">
           {% if include.type == "post" and page.tags.size > 0 %}
-            <a class="post-eyebrow" href="{{ '/tags' | relative_url }}#{{ page.tags | first }}">{{ page.tags | first }}</a>
+            <a class="post-eyebrow" href="{{ '/tags/' | relative_url }}#{{ page.tags | first | slugify }}">{{ page.tags | first }}</a>
           {% endif %}
           <h1>{% if page.title %}{{ page.title | strip_html }}{% else %}<br/>{% endif %}</h1>
           {% if page.subtitle %}

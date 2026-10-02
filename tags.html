@@ -1,0 +1,42 @@
+---
+layout: page
+title: Tags
+subtitle: 주제별로 글 모아보기
+permalink: /tags/
+---
+
+{%- comment -%} Sort tags by post count: build "0012#name" keys, sort, then reverse {%- endcomment -%}
+{%- capture tag_keys -%}
+  {%- for tag in site.tags -%}
+    {{ tag[1].size | plus: 10000 }}#{{ tag[0] }}{% unless forloop.last %}|{% endunless %}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign tag_keys = tag_keys | split: "|" | sort | reverse -%}
+
+<nav class="tag-cloud" aria-label="All tags">
+  {%- for key in tag_keys -%}
+    {%- assign parts = key | split: "#" -%}
+    {%- assign count = parts[0] | minus: 10000 -%}
+    <a class="tag-pill" href="#{{ parts[1] | slugify }}">{{ parts[1] }} <span class="tag-count">{{ count }}</span></a>
+  {%- endfor -%}
+</nav>
+
+<div class="tag-groups">
+  {%- for key in tag_keys -%}
+    {%- assign parts = key | split: "#" -%}
+    {%- assign tag_name = parts[1] -%}
+    <section class="tag-group" id="{{ tag_name | slugify }}">
+      <h2 class="tag-group-title"><i class="fas fa-hashtag" aria-hidden="true"></i> {{ tag_name }} <span class="tag-count">{{ site.tags[tag_name].size }}</span></h2>
+      <ul class="tag-post-list">
+        {%- for post in site.tags[tag_name] -%}
+          <li>
+            <a href="{{ post.url | relative_url }}">
+              <span class="tag-post-title">{{ post.title | strip_html }}</span>
+              <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </section>
+  {%- endfor -%}
+</div>

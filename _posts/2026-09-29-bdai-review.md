@@ -4,11 +4,13 @@ title: BDAI 데이터 분석 실전반 추천 시스템 구현 5주차 Review (1
 subtitle: BDAI
 tags:
   - bdai
-comments: false
+comments: true
 mathjax: false
 author: Geunyeong Cho
 published: false
 date: 2026-09-29 23:23:38 +0900
+redirect_from:
+  - /2026-09-29-bdai-review.md/
 ---
 # BDAI학회 (빅데이터 분석 학회, 대학생 학회) 5주차 강의 후기
 

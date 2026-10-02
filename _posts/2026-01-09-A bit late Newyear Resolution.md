@@ -5,7 +5,7 @@ subtitle: 21 Lessons From 14 Years at Google
 # gh-repo: daattali/beautiful-jekyll
 # gh-badge: [star, fork, follow]
 tags: [article]
-comments: false
+comments: true
 mathjax: false
 author: Geunyeong Cho
 published : true
