@@ -109,6 +109,9 @@ share-links-active:
 # Remove this if you don't want a link in the footer
 url-pretty: "https://48harry.github.io/"
 
+# Base URL used for absolute links (sitemap, RSS)
+url: "https://48harry.github.io"
+
 # Add the website title to the title of every page
 title-on-all-pages: true
 
