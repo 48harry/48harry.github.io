@@ -23,6 +23,7 @@ navbar-links:
   Posts:
     - Tech Articles : "articles"
     - Daily Newsletter : "newsletters"
+    - BDAI : "bdai"
   About Me: "aboutme"
   Resources:
     - GitHub: "https://github.com/48harry"
@@ -91,7 +92,7 @@ social-network-links:
 
 # If you want your website to generate an RSS feed, provide a description
 # The URL for the feed will be https://<your_website>/feed.xml
-rss-description: THISISMABLOGGIDDAWAI
+rss-description: Geunyeong Cho의 기술 아티클, 데일리 테크 뉴스레터, BDAI 학회 기록
 
 ###########################
 # --- General options --- #

@@ -3,9 +3,9 @@ layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 1주차 Review (13기)
 subtitle: BDAI 회고
 tags:
-  - article
+  - bdai
 comments: false
-mathjax: true
+mathjax: false
 author: Geunyeong Cho
 published: true
 date: 2026-09-01 23:56:31 +0900
@@ -42,69 +42,3 @@ metric : recall (그 사람이 실제로 산 n개의 종목중에 내가 예측�
 1주차라 기초적인것부터 시작해서 그런걸지 모르겠지만 기대했던것보다 너무 elemantary한것만 강의내용에 있던데, 앞으로 남은 9시간동안 어떻게 추천시스템 구현을 소개해주실지가 약간 걱정되긴 한다만.. 일단 주어진 강의에는 열심히 참여하도록 하겠다.
  
 #BDAI #데이터분석 #데이터분석학회 #대학생학회 #취업 #취업준비 #대외활동 #대학생활 #수업후기
-
-<!-- 들어가며 예시
-{: .box-success}
-Box. -->
-
-<!-- 링크첨부 예시
-[This is a link to a different site](https://deanattali.com/) and [this is a link to a section inside this page](#local-urls). -->
-
-<!-- 테이블형식 예시:
-
-| Number | Next number | Previous number |
-| :------ |:--- | :--- |
-| Five | Six | Four |
-| Ten | Eleven | Nine |
-| Seven | Eight | Six |
-| Two | Three | One | -->
-
-<!-- MathJax 예시
-When \\(a \ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$ -->
-
-<!-- 사진첨부 예시
-![부연설명](로컬주소)
-가운데설정 하면
-![부연설명](로컬주소){: .mx-auto.d-block :} -->
-
-<!-- 코드첨부 예시
-~~~
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-~~~ -->
-
-<!-- 코드첨부 (언어 반영 하이라이트) 예시
-```javascript
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-``` -->
-
-<!-- 코드첨부 (번호 첨부) 예시
-{% highlight javascript linenos %}
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-{% endhighlight %} -->
-
-<!-- ### 알림 예시
-{: .box-note}
-**Note:** This is a notification box. -->
-
-<!-- ### 주의 예시
-{: .box-warning}
-**Warning:** This is a warning box. -->
-
-<!-- ### 에러 예시
-{: .box-error}
-**Error:** This is an error box. -->
-
-<!-- 요약 예시
-<details markdown="1">
-<summary>Click here!</summary>
-요약문
-</details> -->

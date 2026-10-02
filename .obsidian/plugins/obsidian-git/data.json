@@ -1,6 +1,6 @@
 {
-  "commitMessage": "Sync Complete : {{date}} {{time}}",
-  "autoCommitMessage": "Sync Complete : {{date}} {{time}}",
+  "commitMessage": "Sync Complete : {{date}}",
+  "autoCommitMessage": "Sync Complete : {{date}}",
   "commitMessageScript": "",
   "commitDateFormat": "YYYY-MM-DD HH:mm:ss",
   "autoSaveInterval": 10,
@@ -16,7 +16,7 @@
   "listChangedFilesInMessageBody": false,
   "showStatusBar": true,
   "updateSubmodules": false,
-  "syncMethod": "merge",
+  "syncMethod": "rebase",
   "mergeStrategy": "none",
   "customMessageOnAutoBackup": false,
   "autoBackupAfterFileChange": true,
