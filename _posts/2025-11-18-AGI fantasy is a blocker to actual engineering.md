@@ -6,7 +6,7 @@ subtitle:
 # gh-badge: [star, fork, follow]
 tags: [article]
 comments: false
-mathjax: true
+mathjax: false
 author: Geunyeong Cho
 published : true
 ---
@@ -57,69 +57,3 @@ AGI 낭만론에 매몰된 투자는 기술 생태계를 왜곡할 수 있다
 
 + tmi ) 조금 다른 얘기이긴 한데, 2020-21년 즈음에 AGI 관련 서적을 읽고 독서록을 쓰며 혼자서 '50년, 100년 뒤에도 망하지 않을 학과' 2개를 마음속으로 골랐었는데 그게 수학과랑 철학과 였다
 개인적으로 5년 뒤즈음부터 철학과가 뜨는 메타가 오지 않을까싶다<br/><br/>
-
-<!-- 들어가며 예시
-{: .box-success}
-Box. -->
-
-<!-- 링크첨부 예시
-[This is a link to a different site](https://deanattali.com/) and [this is a link to a section inside this page](#local-urls). -->
-
-<!-- 테이블형식 예시:
-
-| Number | Next number | Previous number |
-| :------ |:--- | :--- |
-| Five | Six | Four |
-| Ten | Eleven | Nine |
-| Seven | Eight | Six |
-| Two | Three | One | -->
-
-<!-- MathJax 예시
-When \\(a \ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$ -->
-
-<!-- 사진첨부 예시
-![부연설명](로컬주소)
-가운데설정 하면
-![부연설명](로컬주소){: .mx-auto.d-block :} -->
-
-<!-- 코드첨부 예시
-~~~
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-~~~ -->
-
-<!-- 코드첨부 (언어 반영 하이라이트) 예시
-```javascript
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-``` -->
-
-<!-- 코드첨부 (번호 첨부) 예시
-{% highlight javascript linenos %}
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-{% endhighlight %} -->
-
-<!-- ### 알림 예시
-{: .box-note}
-**Note:** This is a notification box. -->
-
-<!-- ### 주의 예시
-{: .box-warning}
-**Warning:** This is a warning box. -->
-
-<!-- ### 에러 예시
-{: .box-error}
-**Error:** This is an error box. -->
-
-<!-- 요약 예시
-<details markdown="1">
-<summary>Click here!</summary>
-요약문
-</details> -->

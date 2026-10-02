@@ -5,7 +5,7 @@ subtitle: BDAI
 tags:
   - bdai
 comments: false
-mathjax: true
+mathjax: false
 author: Geunyeong Cho
 published: true
 date: 2026-09-15 14:23:38 +0900
@@ -119,7 +119,7 @@ BDAI 홈페이지에서는 생각보다 유용한 기능들을 찾을 수 있는
 
 ##### 1. AI 캠퍼스맵
 
-![](Pasted%20image%2020260922131332.png)
+![](Pasted%20image%2020260922131332.webp)
 
 사용자 리뷰를 기반으로 대학 캠퍼스별로 근처 맛집랭킹을 매긴 지도
 
@@ -127,7 +127,7 @@ BDAI 홈페이지에서는 생각보다 유용한 기능들을 찾을 수 있는
 아무래도 표본수가 적어서 그런지 숨은맛집같은걸 찾긴 어려워보이는데 맥날이 1등인게 틀린건 아닌것같다.
 
 ##### 2. 현직자 커피챗
-![](assets/img/Pasted%20image%2020260922131231.png)
+![](assets/img/Pasted%20image%2020260922131231.webp)
 
 멘토가 커피챗 시간대를 올리면 참여하고싶은 학회원들이 신청해서 간단하게 얘기 나누는식
 아직 내가 도메인을 완벽하게 정한건 아니지만 나중에 관심있는 분야의 멘토랑 커피챗한번 해보고싶다.
@@ -142,69 +142,3 @@ BDAI 홈페이지에서는 생각보다 유용한 기능들을 찾을 수 있는
 #대외활동
 #대학생활
 #수업후기
-
-<!-- 들어가며 예시
-{: .box-success}
-Box. -->
-
-<!-- 링크첨부 예시
-[This is a link to a different site](https://deanattali.com/) and [this is a link to a section inside this page](#local-urls). -->
-
-<!-- 테이블형식 예시:
-
-| Number | Next number | Previous number |
-| :------ |:--- | :--- |
-| Five | Six | Four |
-| Ten | Eleven | Nine |
-| Seven | Eight | Six |
-| Two | Three | One | -->
-
-<!-- MathJax 예시
-When \\(a \ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$ -->
-
-<!-- 사진첨부 예시
-![부연설명](로컬주소)
-가운데설정 하면
-![부연설명](로컬주소){: .mx-auto.d-block :} -->
-
-<!-- 코드첨부 예시
-~~~
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-~~~ -->
-
-<!-- 코드첨부 (언어 반영 하이라이트) 예시
-```javascript
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-``` -->
-
-<!-- 코드첨부 (번호 첨부) 예시
-{% highlight javascript linenos %}
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-{% endhighlight %} -->
-
-<!-- ### 알림 예시
-{: .box-note}
-**Note:** This is a notification box. -->
-
-<!-- ### 주의 예시
-{: .box-warning}
-**Warning:** This is a warning box. -->
-
-<!-- ### 에러 예시
-{: .box-error}
-**Error:** This is an error box. -->
-
-<!-- 요약 예시
-<details markdown="1">
-<summary>Click here!</summary>
-요약문
-</details> -->

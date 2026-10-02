@@ -1,11 +1,11 @@
-# Gemfile 내용 (수정 후)
 source "https://rubygems.org"
 
-# 로컬에서 Jekyll 실행을 위한 필수 젬
-gem "jekyll"
-gem "bundler"
-gem "bigdecimal"
-gem "tzinfo"
-gem "tzinfo-data"
-gem "jekyll-paginate"
-gem "jekyll-sitemap"
+# Same gem set GitHub Pages uses, so local builds match production
+gem "github-pages", group: :jekyll_plugins
+
+# Windows support
+platforms :windows, :jruby do
+  gem "tzinfo-data"
+  gem "wdm", ">= 0.1.0"
+end
+gem "webrick"

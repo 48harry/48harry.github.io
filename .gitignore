@@ -1,12 +1,14 @@
 # project
 _site
 .sass-cache
+.jekyll-cache
 .vagrant
 
 # general
 .DS_Store
 Thumbs.db
 ehthumbs.db
+desktop.ini
 
 Gemfile.lock
 
