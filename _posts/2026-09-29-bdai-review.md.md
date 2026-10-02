@@ -7,7 +7,7 @@ tags:
 comments: false
 mathjax: true
 author: Geunyeong Cho
-published: true
+published: false
 date: 2026-09-27923:23:38 +0900
 ---
 # BDAI학회 (빅데이터 분석 학회, 대학생 학회) 5주차 강의 후기

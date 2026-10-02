@@ -7,15 +7,24 @@ tags:
 comments: false
 mathjax: true
 author: Geunyeong Cho
-published: true
+published: false
 date: 2026-09-22 23:23:38 +0900
 ---
 # BDAI학회 (빅데이터 분석 학회, 대학생 학회) 4주차 강의 후기
 
 # 1. 이번 주 배운것
 
-# 2. 블챌
 
+
+# 2. BDAI 인스타그램 계정 팔로우 ㄱㄱ
+
+![[Pasted image 20261001221245.png]]
+
+https://www.instagram.com/official.bdai/
+
+못가려서 미안한데 친구들이 팔로우를 꽤많이하고있다
+
+그만큼 메이저한 킹갓 BDAI ㅇㅇ...
 
 #BDAI
 #데이터분석
