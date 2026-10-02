@@ -3,7 +3,7 @@ layout: post
 title: Title
 subtitle: subtitle
 tags: []
-comments: false
+comments: true
 mathjax: false
 author: Geunyeong Cho
 published: false

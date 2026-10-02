@@ -39,6 +39,8 @@ layout: base
         </div>
       {% endif %}
 
+      {% include series.html %}
+
       <div class="blog-post">
         {{ content }}
       </div>
@@ -47,7 +49,7 @@ layout: base
         <div class="blog-tags">
           <span><i class="fas fa-tag" aria-hidden="true"></i></span>
           {% for tag in page.tags %}
-            <a href="{{ '/tags' | relative_url }}#{{- tag -}}">{{- tag -}}</a>
+            <a href="{{ '/tags/' | relative_url }}#{{- tag | slugify -}}">{{- tag -}}</a>
           {% endfor %}
         </div>
       {% endif %}

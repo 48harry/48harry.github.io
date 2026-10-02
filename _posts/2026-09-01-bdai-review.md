@@ -4,11 +4,13 @@ title: BDAI 데이터 분석 실전반 추천 시스템 구현 1주차 Review (1
 subtitle: BDAI 회고
 tags:
   - bdai
-comments: false
+comments: true
 mathjax: false
 author: Geunyeong Cho
 published: true
 date: 2026-09-01 23:56:31 +0900
+redirect_from:
+  - /2026-09-01-bdai-review.md/
 ---
 ## 1. 수업에서 배운 내용 및 느낀 점
 

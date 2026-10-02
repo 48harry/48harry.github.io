@@ -28,7 +28,15 @@
       root.setAttribute("data-theme", next);
       try { localStorage.setItem("theme", next); } catch (e) {}
       syncNavbarClass();
+      syncGiscusTheme();
     });
+  }
+
+  function syncGiscusTheme() {
+    const frame = document.querySelector("iframe.giscus-frame");
+    if (!frame) return;
+    const theme = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+    frame.contentWindow.postMessage({ giscus: { setConfig: { theme: theme } } }, "https://giscus.app");
   }
 
   /* --- Scroll reveal ------------------------------------------------------ */
@@ -37,7 +45,7 @@
     const targets = document.querySelectorAll(
       ".posts-list .post-preview, .blog-post > h2, .blog-post > h3, .blog-post > p > img, " +
       ".blog-post > .highlighter-rouge, .blog-post > table, .blog-post > blockquote, " +
-      ".pagination, #social-share-section, .post-nav, .about-card"
+      ".pagination, #social-share-section, .post-nav, .about-card, .series-step, .tag-group, .series-box"
     );
     if (!targets.length) return;
     if (reduceMotion || !("IntersectionObserver" in window)) return;
@@ -236,6 +244,77 @@
     update();
   }
 
+  /* --- Table of contents (posts with 3+ headings) ------------------------ */
+
+  function initToc() {
+    const post = document.querySelector(".blog-post");
+    if (!post) return;
+    const heads = Array.prototype.slice.call(post.querySelectorAll("h1, h2, h3"));
+    if (heads.length < 3) return;
+
+    function buildList() {
+      const ol = document.createElement("ol");
+      heads.forEach(function (h, i) {
+        if (!h.id) h.id = "section-" + (i + 1);
+        const li = document.createElement("li");
+        li.className = h.tagName === "H3" ? "toc-h3" : "toc-h2";
+        const a = document.createElement("a");
+        a.href = "#" + h.id;
+        a.textContent = h.textContent.trim();
+        li.appendChild(a);
+        ol.appendChild(li);
+      });
+      return ol;
+    }
+
+    // Side panel for wide screens, collapsible box above the post otherwise
+    const side = document.createElement("nav");
+    side.className = "toc toc-side";
+    side.setAttribute("aria-label", "목차");
+    side.innerHTML = '<p class="toc-title">On this page</p>';
+    side.appendChild(buildList());
+    document.body.appendChild(side);
+
+    const inline = document.createElement("details");
+    inline.className = "toc toc-inline";
+    inline.innerHTML = "<summary>목차</summary>";
+    inline.appendChild(buildList());
+    post.parentNode.insertBefore(inline, post);
+
+    const links = document.querySelectorAll(".toc a");
+    function setActive(id) {
+      links.forEach(function (a) { a.classList.toggle("is-active", a.getAttribute("href") === "#" + id); });
+    }
+
+    // Scrollspy: the last heading above ~30% of the viewport is current
+    let frame = null;
+    function update() {
+      frame = null;
+      const line = window.innerHeight * 0.3;
+      let current = heads[0];
+      for (let i = 0; i < heads.length; i++) {
+        if (heads[i].getBoundingClientRect().top <= line) current = heads[i]; else break;
+      }
+      setActive(current.id);
+      // Only show the side panel once the reader is inside the post
+      const r = post.getBoundingClientRect();
+      side.classList.toggle("is-shown", r.top < line && r.bottom > 0);
+    }
+    window.addEventListener("scroll", function () { if (!frame) frame = requestAnimationFrame(update); }, { passive: true });
+    update();
+
+    document.querySelectorAll(".toc a").forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        const target = document.getElementById(a.getAttribute("href").slice(1));
+        if (!target) return;
+        e.preventDefault();
+        const top = target.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: top, behavior: reduceMotion ? "auto" : "smooth" });
+        history.replaceState(null, "", a.getAttribute("href"));
+      });
+    });
+  }
+
   /* --- Page leave fade ---------------------------------------------------- */
 
   function initPageTransitions() {
@@ -271,6 +350,7 @@
     initPageTransitions();
     initSearchPalette();
     initReadProgress();
+    initToc();
   }
 
   if (document.readyState === "loading") {

@@ -3,7 +3,7 @@ layout: post
 title: F3, The Open-Source Data File Format for the Future
 subtitle:
 tags: [article]
-comments: false
+comments: true
 mathjax: false
 author: Geunyeong Cho
 published : true
