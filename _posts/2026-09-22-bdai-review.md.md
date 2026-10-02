@@ -36,7 +36,7 @@ Tradeoff : k가 커질수록 학습데이터에 대한 recall은 올라가지만
 
 # 2. BDAI 인스타그램 계정 팔로우 ㄱㄱ
 
-![[Pasted image 20261001221245.png]]
+![](/assets/img/Pasted%20image%2020261001221245.png)
 
 https://www.instagram.com/official.bdai/
 
