@@ -1,0 +1,35 @@
+<div class="hero" id="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <span class="hero-blob hero-blob-1"></span>
+    <span class="hero-blob hero-blob-2"></span>
+    <span class="hero-blob hero-blob-3"></span>
+    <span class="hero-blob hero-blob-4"></span>
+    <span class="hero-grid"></span>
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">{{ site.author }}'s blog</p>
+    <h1 class="hero-title" aria-label="{{ site.title }}">
+      {%- assign hero_chars = site.title | split: "" -%}
+      {%- for ch in hero_chars -%}
+        {%- if ch == " " -%}
+          <span class="hero-char hero-space" aria-hidden="true" style="--i: {{ forloop.index0 }}">&nbsp;</span>
+        {%- else -%}
+          <span class="hero-char" aria-hidden="true" style="--i: {{ forloop.index0 }}">{{ ch }}</span>
+        {%- endif -%}
+      {%- endfor -%}
+    </h1>
+    <p class="hero-sub">
+      <span class="hero-typed" data-words="기술 아티클|데일리 테크 뉴스레터|BDAI 학회 기록">기술 아티클</span><span class="hero-caret" aria-hidden="true"></span>
+    </p>
+    <nav class="hero-links" aria-label="Sections">
+      <a class="hero-pill magnetic" href="{{ '/articles/' | relative_url }}"><i class="fas fa-code" aria-hidden="true"></i> Tech Articles</a>
+      <a class="hero-pill magnetic" href="{{ '/newsletters/' | relative_url }}"><i class="fas fa-newspaper" aria-hidden="true"></i> Daily Newsletter</a>
+      <a class="hero-pill magnetic" href="{{ '/bdai/' | relative_url }}"><i class="fas fa-brain" aria-hidden="true"></i> BDAI</a>
+    </nav>
+  </div>
+
+  <a class="hero-scroll" href="#main-content" aria-label="Scroll to posts">
+    <i class="fas fa-chevron-down" aria-hidden="true"></i>
+  </a>
+</div>
