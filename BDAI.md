@@ -4,6 +4,7 @@ title: BDAI
 subtitle: BDAI 학회 관련 내용
 permalink: /bdai/
 ---
+<div class="posts-list">
 {% for post in site.tags.bdai %}
   <article class="post-preview">
     <a href="{{ post.url | relative_url }}">
@@ -21,3 +22,4 @@ permalink: /bdai/
     </div>
   </article>
 {% endfor %}
+</div>

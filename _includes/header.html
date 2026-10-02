@@ -17,8 +17,10 @@
 {% endif %}
 
 <header class="header-section {% if page.cover-img %}has-img{% endif %}">
-<div class="intro-header {% if page.cover-img %} big-img {% endif %}">
-  {% if page.cover-img or page.title %}
+<div class="intro-header {% if page.cover-img %} big-img {% endif %}{% if page.hero %} hero-header{% endif %}">
+  {% if page.hero %}
+  {% include hero.html %}
+  {% elsif page.cover-img or page.title %}
   <div class="container-md">
     <div class="row">
       <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
