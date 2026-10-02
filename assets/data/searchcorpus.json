@@ -15,9 +15,9 @@ layout: null
 { 
 "title"    : "{% if page.title != "" %}{{ page.title | strip_html | escape }}{% else %}{{ page.excerpt | strip_html | escape | strip }}{% endif %}", 
 "desc"     : "{% if page.title != "" %}{{ page.title | strip_html | escape }}{% else %}{{ page.excerpt | strip_html | escape | strip }}{% endif %}", 
-"category" : "{% if page.tags %}{{ page.tags | join: ', ' }}{% else %}page{% endif %}", 
+"category" : "{% if page.tags %}{{ page.tags | join: ', ' }}{% endif %}", 
 "url"      : "{{ site.baseurl }}{{ page.url }}", 
-"date"     : "{{ page.date | date: '%B %e, %Y' | default: "January 1, 1970" }}" 
+"date"     : "{% if page.date %}{{ page.date | date: '%B %e, %Y' }}{% else %}Page{% endif %}" 
 }{% unless forloop.last %},{% endunless %} 
 {% endif %}{% endfor %} 
 ]

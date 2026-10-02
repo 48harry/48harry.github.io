@@ -20,11 +20,15 @@
 <div class="intro-header {% if page.cover-img %} big-img {% endif %}{% if page.hero %} hero-header{% endif %}">
   {% if page.hero %}
   {% include hero.html %}
+  {% elsif page.hide-title %}
   {% elsif page.cover-img or page.title %}
   <div class="container-md">
     <div class="row">
       <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
         <div class="{{ include.type }}-heading">
+          {% if include.type == "post" and page.tags.size > 0 %}
+            <a class="post-eyebrow" href="{{ '/tags' | relative_url }}#{{ page.tags | first }}">{{ page.tags | first }}</a>
+          {% endif %}
           <h1>{% if page.title %}{{ page.title | strip_html }}{% else %}<br/>{% endif %}</h1>
           {% if page.subtitle %}
             {% if include.type == "page" %}
@@ -35,20 +39,19 @@
             {% endif %}
           {% endif %}
           
-          {% if include.type == "post" %} 
-            {% if page.author %}
-              By <strong>{{ page.author | strip_html }}</strong><br>
-            {% endif%}
-            <span class="post-meta">Posted on {{ page.date | date: date_format }}</span>
-            {% if page.last-updated %}
-              <span class="post-meta">
-                <span class="d-none d-md-inline middot">&middot;</span>
-                Last updated {{ page.last-updated | date: date_format }}
-              </span>
-            {% endif %}
-            {% if page.readtime %}
-              {% include readtime.html %}
-            {% endif %}
+          {% if include.type == "post" %}
+            {%- assign read_chars = page.content | strip_html | strip_newlines | size -%}
+            {%- assign read_mins = read_chars | divided_by: 500 | plus: 1 -%}
+            <div class="post-meta-row">
+              {% if page.author %}
+                <span class="meta-item"><i class="far fa-user" aria-hidden="true"></i> {{ page.author | strip_html }}</span>
+              {% endif %}
+              <span class="meta-item"><i class="far fa-calendar" aria-hidden="true"></i> <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time></span>
+              {% if page.last-updated %}
+                <span class="meta-item"><i class="fas fa-rotate" aria-hidden="true"></i> {{ page.last-updated | date: "%Y.%m.%d" }} 수정</span>
+              {% endif %}
+              <span class="meta-item"><i class="far fa-clock" aria-hidden="true"></i> {{ read_mins }}분 읽기</span>
+            </div>
           {% endif %}
         </div>
       </div>

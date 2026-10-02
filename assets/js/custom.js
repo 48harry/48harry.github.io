@@ -37,7 +37,7 @@
     const targets = document.querySelectorAll(
       ".posts-list .post-preview, .blog-post > h2, .blog-post > h3, .blog-post > p > img, " +
       ".blog-post > .highlighter-rouge, .blog-post > table, .blog-post > blockquote, " +
-      ".pagination, #social-share-section"
+      ".pagination, #social-share-section, .post-nav, .about-card"
     );
     if (!targets.length) return;
     if (reduceMotion || !("IntersectionObserver" in window)) return;
@@ -53,7 +53,8 @@
     let batch = 0;
     targets.forEach(function (el) {
       // Stagger cards that start inside the first viewport
-      if (el.classList.contains("post-preview") && el.getBoundingClientRect().top < window.innerHeight) {
+      if ((el.classList.contains("post-preview") || el.classList.contains("about-card")) &&
+          el.getBoundingClientRect().top < window.innerHeight) {
         el.style.setProperty("--reveal-delay", (batch++ * 90) + "ms");
       }
       el.classList.add("reveal");
@@ -164,6 +165,77 @@
     });
   }
 
+  /* --- Search palette: shortcuts, keyboard nav, backdrop close ------------ */
+
+  function initSearchPalette() {
+    const overlay = document.getElementById("beautifuljekyll-search-overlay");
+    const input = document.getElementById("nav-search-input");
+    const results = document.getElementById("search-results-container");
+    const openLink = document.getElementById("nav-search-link");
+    const exit = document.getElementById("nav-search-exit");
+    if (!overlay || !input || !results) return;
+    let active = -1;
+
+    function isOpen() { return overlay.style.display === "block"; }
+    function links() { return Array.prototype.slice.call(results.querySelectorAll("a")); }
+    function setActive(i) {
+      const all = links();
+      if (!all.length) { active = -1; return; }
+      active = (i + all.length) % all.length;
+      all.forEach(function (a, n) { a.classList.toggle("is-active", n === active); });
+      all[active].scrollIntoView({ block: "nearest" });
+    }
+
+    // Ctrl/Cmd+K or "/" opens search from anywhere
+    document.addEventListener("keydown", function (e) {
+      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName) || document.activeElement.isContentEditable;
+      if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") || (e.key === "/" && !typing)) {
+        if (!openLink || isOpen()) return;
+        e.preventDefault();
+        openLink.click();
+      }
+    });
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") { e.preventDefault(); setActive(active + 1); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); setActive(active - 1); }
+      else if (e.key === "Enter") {
+        const all = links();
+        const target = all[active] || all[0];
+        if (target) { e.preventDefault(); target.click(); }
+      }
+    });
+    // New results: start with the first one highlighted
+    new MutationObserver(function () { active = -1; if (links().length) setActive(0); })
+      .observe(results, { childList: true });
+
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay && exit) exit.click();
+    });
+  }
+
+  /* --- Reading progress (posts only) -------------------------------------- */
+
+  function initReadProgress() {
+    const post = document.querySelector(".blog-post");
+    if (!post) return;
+    const bar = document.createElement("div");
+    bar.className = "read-progress";
+    bar.setAttribute("aria-hidden", "true");
+    document.body.appendChild(bar);
+    let frame = null;
+    function update() {
+      frame = null;
+      const r = post.getBoundingClientRect();
+      const total = r.height - window.innerHeight * 0.6;
+      const p = total > 0 ? Math.min(Math.max(-r.top / total, 0), 1) : 1;
+      bar.style.setProperty("--p", p.toFixed(4));
+    }
+    window.addEventListener("scroll", function () { if (!frame) frame = requestAnimationFrame(update); }, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+  }
+
   /* --- Page leave fade ---------------------------------------------------- */
 
   function initPageTransitions() {
@@ -197,6 +269,8 @@
     initMagnetic();
     initHeroScroll();
     initPageTransitions();
+    initSearchPalette();
+    initReadProgress();
   }
 
   if (document.readyState === "loading") {

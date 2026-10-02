@@ -1,17 +1,30 @@
 {% if site.post_search %}
 
-<div id="beautifuljekyll-search-overlay">
+<div id="beautifuljekyll-search-overlay" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-panel">
+    <div class="search-bar">
+      <i class="fas fa-search search-bar-icon" aria-hidden="true"></i>
+      <input type="text" id="nav-search-input" placeholder="글 제목이나 태그로 검색" autocomplete="off" spellcheck="false">
+      <button type="button" id="nav-search-exit" title="Exit search"><kbd>ESC</kbd></button>
+    </div>
+    <ul id="search-results-container"></ul>
+    <p class="search-hint search-hint-empty">찾고 싶은 글의 키워드를 입력하세요</p>
+    <div class="search-footer" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> 이동</span>
+      <span><kbd>Enter</kbd> 열기</span>
+      <span><kbd>Ctrl</kbd><kbd>K</kbd> 검색 열기</span>
+    </div>
+  </div>
 
-  <div id="nav-search-exit" title="Exit search">✕</div>
-  <input type="text" id="nav-search-input" placeholder="Search">
-  <ul id="search-results-container"></ul>
-  
   <script src="https://unpkg.com/simple-jekyll-search@latest/dest/simple-jekyll-search.min.js"></script>
   <script>
     SimpleJekyllSearch({
       searchInput: document.getElementById('nav-search-input'),
       resultsContainer: document.getElementById('search-results-container'),
-      json: '{{ site.baseurl }}/assets/data/searchcorpus.json' 
+      json: '{{ site.baseurl }}/assets/data/searchcorpus.json',
+      searchResultTemplate: '<li><a class="search-result" href="{url}"><span class="search-result-title">{title}</span><span class="search-result-meta">{date}<span class="search-result-cat">{category}</span></span></a></li>',
+      noResultsText: '<li class="search-no-results">검색 결과가 없어요</li>',
+      limit: 12
     });
   </script>
 </div>
