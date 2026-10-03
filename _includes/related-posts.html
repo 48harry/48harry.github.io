@@ -1,0 +1,35 @@
+{%- comment -%}
+  Up to 3 recent posts sharing a tag with this one (falls back to the same category).
+  BDAI posts skip this: the series box already links the whole series.
+{%- endcomment -%}
+{%- unless page.tags contains "bdai" -%}
+{%- assign related = "" | split: "" -%}
+{%- for post in site.posts -%}
+  {%- if related.size >= 3 -%}{%- break -%}{%- endif -%}
+  {%- if post.url == page.url -%}{%- continue -%}{%- endif -%}
+  {%- assign hit = false -%}
+  {%- for tag in page.tags -%}
+    {%- if post.tags contains tag -%}{%- assign hit = true -%}{%- break -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if hit == false and page.tags.size == 0 and page.categories.size > 0 -%}
+    {%- if post.categories contains page.categories[0] -%}{%- assign hit = true -%}{%- endif -%}
+  {%- endif -%}
+  {%- if hit -%}{%- assign related = related | push: post -%}{%- endif -%}
+{%- endfor -%}
+{%- if related.size > 0 -%}
+<section class="related-posts" aria-labelledby="related-title">
+  <h2 class="related-title" id="related-title">함께 읽으면 좋은 글</h2>
+  <ul class="related-list">
+    {%- for post in related %}
+    <li>
+      <a href="{{ post.url | relative_url }}">
+        {%- if post.tags.size > 0 %}<span class="related-tag">{{ post.tags | first }}</span>{% endif %}
+        <span class="related-post-title">{{ post.title | strip_html }}</span>
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
+      </a>
+    </li>
+    {%- endfor %}
+  </ul>
+</section>
+{%- endif -%}
+{%- endunless -%}

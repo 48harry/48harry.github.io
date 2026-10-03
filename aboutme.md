@@ -15,13 +15,13 @@ hide-title: true
     <p class="profile-role">Industrial Engineering &amp; Applied AI @ Ajou University</p>
     <p class="profile-now"><span class="pulse-dot" aria-hidden="true"></span> Now · 팔달노인복지관 사회복무요원 (2025.2 – 2026.11)</p>
     <div class="profile-links">
-      <a class="profile-btn primary magnetic" href="https://app.notion.com/p/Geunyeong-Cho-30fe1c4e64ee4130a9e8c7081873789d" target="_blank" rel="noopener"><i class="fas fa-file-lines" aria-hidden="true"></i> Resume</a>
-      <a class="profile-icon magnetic" href="https://github.com/48harry" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-      <a class="profile-icon magnetic" href="https://www.linkedin.com/in/geunyeong-cho-929a6239a" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-      <a class="profile-icon magnetic" href="https://www.kaggle.com/48harry" target="_blank" rel="noopener" title="Kaggle" aria-label="Kaggle"><i class="fab fa-kaggle"></i></a>
-      <a class="profile-icon magnetic" href="https://www.youtube.com/@Geunyeong_Cho" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      <a class="profile-icon magnetic" href="https://blog.naver.com/48harry" target="_blank" rel="noopener" title="Naver Blog" aria-label="Naver Blog"><i class="fas fa-n"></i></a>
-      <a class="profile-icon magnetic" href="mailto:a01062064071@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
+      <a class="profile-btn primary" href="https://app.notion.com/p/Geunyeong-Cho-30fe1c4e64ee4130a9e8c7081873789d" target="_blank" rel="noopener"><i class="fas fa-file-lines" aria-hidden="true"></i> Resume</a>
+      <a class="profile-icon" href="https://github.com/48harry" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a class="profile-icon" href="https://www.linkedin.com/in/geunyeong-cho-929a6239a" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      <a class="profile-icon" href="https://www.kaggle.com/48harry" target="_blank" rel="noopener" title="Kaggle" aria-label="Kaggle"><i class="fab fa-kaggle"></i></a>
+      <a class="profile-icon" href="https://www.youtube.com/@Geunyeong_Cho" target="_blank" rel="noopener" title="YouTube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a class="profile-icon" href="https://blog.naver.com/48harry" target="_blank" rel="noopener" title="Naver Blog" aria-label="Naver Blog"><i class="fas fa-n"></i></a>
+      <a class="profile-icon" href="mailto:a01062064071@gmail.com" title="Email" aria-label="Email"><i class="fas fa-envelope"></i></a>
     </div>
   </div>
 </section>

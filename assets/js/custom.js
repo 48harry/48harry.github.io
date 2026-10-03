@@ -1,4 +1,4 @@
-// Motion, card interactions and dark-mode toggle.
+// Theme toggle, light motion, post reading aids (TOC, code blocks, images) and search.
 // Loaded through `site-js` in _config.yml, after beautifuljekyll.js.
 
 (function () {
@@ -6,7 +6,6 @@
 
   const root = document.documentElement;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   /* --- Theme toggle ------------------------------------------------------- */
 
@@ -43,9 +42,7 @@
 
   function initReveal() {
     const targets = document.querySelectorAll(
-      ".posts-list .post-preview, .blog-post > h2, .blog-post > h3, .blog-post > p > img, " +
-      ".blog-post > .highlighter-rouge, .blog-post > table, .blog-post > blockquote, " +
-      ".pagination, #social-share-section, .post-nav, .about-card, .series-step, .tag-group, .series-box"
+      ".posts-list .post-preview, .pagination, .about-card, .series-step, .tag-group"
     );
     if (!targets.length) return;
     if (reduceMotion || !("IntersectionObserver" in window)) return;
@@ -70,35 +67,7 @@
     });
   }
 
-  /* --- Card spotlight + tilt --------------------------------------------- */
-
-  function initCards() {
-    if (!canHover) return;
-    document.querySelectorAll(".posts-list .post-preview").forEach(function (card) {
-      let frame = null;
-      card.addEventListener("pointermove", function (e) {
-        if (frame) return;
-        frame = requestAnimationFrame(function () {
-          frame = null;
-          const r = card.getBoundingClientRect();
-          const x = (e.clientX - r.left) / r.width;
-          const y = (e.clientY - r.top) / r.height;
-          card.style.setProperty("--mx", (x * 100) + "%");
-          card.style.setProperty("--my", (y * 100) + "%");
-          if (!reduceMotion) {
-            card.style.setProperty("--rx", ((0.5 - y) * 4).toFixed(2) + "deg");
-            card.style.setProperty("--ry", ((x - 0.5) * 4).toFixed(2) + "deg");
-          }
-        });
-      });
-      card.addEventListener("pointerleave", function () {
-        card.style.setProperty("--rx", "0deg");
-        card.style.setProperty("--ry", "0deg");
-      });
-    });
-  }
-
-  /* --- Hero: typing, parallax, magnetic pills ---------------------------- */
+  /* --- Hero: typing ------------------------------------------------------- */
 
   function initTyping() {
     const el = document.querySelector(".hero-typed");
@@ -129,37 +98,6 @@
       setTimeout(tick, 95);
     }
     setTimeout(tick, 2600);
-  }
-
-  function initHeroParallax() {
-    const hero = document.getElementById("hero");
-    const bg = hero && hero.querySelector(".hero-bg");
-    if (!bg || !canHover || reduceMotion) return;
-    let frame = null;
-    hero.addEventListener("pointermove", function (e) {
-      if (frame) return;
-      frame = requestAnimationFrame(function () {
-        frame = null;
-        const r = hero.getBoundingClientRect();
-        bg.style.setProperty("--px", ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
-        bg.style.setProperty("--py", ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
-      });
-    });
-  }
-
-  function initMagnetic() {
-    if (!canHover || reduceMotion) return;
-    document.querySelectorAll(".magnetic").forEach(function (el) {
-      el.addEventListener("pointermove", function (e) {
-        const r = el.getBoundingClientRect();
-        const dx = e.clientX - (r.left + r.width / 2);
-        const dy = e.clientY - (r.top + r.height / 2);
-        el.style.transform = "translate(" + dx * 0.25 + "px," + dy * 0.35 + "px)";
-      });
-      el.addEventListener("pointerleave", function () {
-        el.style.transform = "";
-      });
-    });
   }
 
   function initHeroScroll() {
@@ -219,6 +157,11 @@
 
     overlay.addEventListener("click", function (e) {
       if (e.target === overlay && exit) exit.click();
+    });
+
+    // In-page buttons (e.g. on the 404 page) that open the palette
+    document.querySelectorAll("[data-open-search]").forEach(function (btn) {
+      btn.addEventListener("click", function () { if (openLink) openLink.click(); });
     });
   }
 
@@ -315,42 +258,149 @@
     });
   }
 
-  /* --- Page leave fade ---------------------------------------------------- */
+  /* --- Code blocks: language label + copy button -------------------------- */
 
-  function initPageTransitions() {
-    if (reduceMotion) return;
-    document.addEventListener("click", function (e) {
-      const a = e.target.closest && e.target.closest("a[href]");
-      if (!a || e.defaultPrevented || e.button !== 0) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-      if (a.target && a.target !== "_self") return;
-      if (a.hasAttribute("download") || a.getAttribute("href").charAt(0) === "#") return;
-      if (a.getAttribute("data-toggle")) return;
-      const url = new URL(a.href, location.href);
-      if (url.origin !== location.origin) return;
-      if (url.pathname === location.pathname && url.hash) return;
-      e.preventDefault();
-      document.body.classList.add("page-leaving");
-      setTimeout(function () { location.href = a.href; }, 180);
+  function initCodeBlocks() {
+    document.querySelectorAll(".blog-post div.highlighter-rouge").forEach(function (block) {
+      const pre = block.querySelector("pre.highlight");
+      if (!pre) return;
+      const m = block.className.match(/language-([\w+#-]+)/);
+      const lang = m && m[1] !== "plaintext" ? m[1] : "text";
+
+      const bar = document.createElement("div");
+      bar.className = "code-bar";
+      const label = document.createElement("span");
+      label.className = "code-lang";
+      label.textContent = lang;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "code-copy";
+      btn.setAttribute("aria-label", "코드 복사");
+      btn.innerHTML = '<i class="far fa-copy" aria-hidden="true"></i><span>복사</span>';
+      bar.appendChild(label);
+      bar.appendChild(btn);
+      block.insertBefore(bar, block.firstChild);
+
+      let timer = null;
+      btn.addEventListener("click", function () {
+        const code = pre.querySelector("code") || pre;
+        const done = function (ok) {
+          btn.classList.toggle("is-copied", ok);
+          btn.innerHTML = ok
+            ? '<i class="fas fa-check" aria-hidden="true"></i><span>복사됨</span>'
+            : '<i class="fas fa-xmark" aria-hidden="true"></i><span>실패</span>';
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            btn.classList.remove("is-copied");
+            btn.innerHTML = '<i class="far fa-copy" aria-hidden="true"></i><span>복사</span>';
+          }, 1600);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(code.innerText).then(function () { done(true); }, function () { done(false); });
+        } else {
+          done(false);
+        }
+      });
     });
-    // Restore the page when it comes back from the back/forward cache
-    window.addEventListener("pageshow", function (e) {
-      if (e.persisted) document.body.classList.remove("page-leaving");
+  }
+
+  /* --- Tables: scroll sideways inside a wrapper so the table can stay full width */
+
+  function initTables() {
+    document.querySelectorAll(".blog-post table").forEach(function (table) {
+      if (table.parentElement.classList.contains("table-scroll")) return;
+      const wrap = document.createElement("div");
+      wrap.className = "table-scroll";
+      table.parentNode.insertBefore(wrap, table);
+      wrap.appendChild(table);
+    });
+  }
+
+  /* --- Images: ![alt](src "caption") becomes a captioned figure ------------ */
+
+  function initFigures() {
+    document.querySelectorAll(".blog-post img[title]").forEach(function (img) {
+      const caption = img.getAttribute("title").trim();
+      if (!caption) return;
+      const p = img.parentElement;
+      const figure = document.createElement("figure");
+      figure.className = "post-figure";
+      // A lone image in its own paragraph: replace the paragraph itself
+      const target = p && p.tagName === "P" && p.childNodes.length === 1 ? p : img;
+      target.parentNode.insertBefore(figure, target);
+      figure.appendChild(img);
+      if (target !== img) target.remove();
+      const fc = document.createElement("figcaption");
+      fc.textContent = caption;
+      figure.appendChild(fc);
+      img.removeAttribute("title");
+    });
+  }
+
+  /* --- Images: click to enlarge ------------------------------------------- */
+
+  function initLightbox() {
+    const imgs = document.querySelectorAll(".blog-post img");
+    if (!imgs.length) return;
+
+    const box = document.createElement("div");
+    box.className = "lightbox";
+    box.setAttribute("role", "dialog");
+    box.setAttribute("aria-modal", "true");
+    box.setAttribute("aria-label", "이미지 크게 보기");
+    box.hidden = true;
+    box.innerHTML = '<button type="button" class="lightbox-close" aria-label="닫기"><i class="fas fa-xmark" aria-hidden="true"></i></button><img alt="">';
+    document.body.appendChild(box);
+    const big = box.querySelector("img");
+    const closeBtn = box.querySelector(".lightbox-close");
+    let opener = null;
+
+    function close() {
+      box.classList.remove("is-open");
+      document.documentElement.classList.remove("lightbox-lock");
+      setTimeout(function () { box.hidden = true; big.removeAttribute("src"); }, reduceMotion ? 0 : 200);
+      if (opener) opener.focus();
+    }
+
+    imgs.forEach(function (img) {
+      // Linked images keep their link; tiny images (icons, badges) are not worth enlarging
+      if (img.closest("a")) return;
+      img.classList.add("zoomable");
+      img.tabIndex = 0;
+      function open() {
+        if (img.naturalWidth && img.naturalWidth < 200) return;
+        opener = img;
+        big.src = img.currentSrc || img.src;
+        big.alt = img.alt;
+        box.hidden = false;
+        document.documentElement.classList.add("lightbox-lock");
+        requestAnimationFrame(function () { box.classList.add("is-open"); });
+        closeBtn.focus();
+      }
+      img.addEventListener("click", open);
+      img.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+      });
+    });
+
+    box.addEventListener("click", function (e) { if (e.target !== big) close(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !box.hidden) close();
     });
   }
 
   function init() {
     initThemeToggle();
     initReveal();
-    initCards();
     initTyping();
-    initHeroParallax();
-    initMagnetic();
     initHeroScroll();
-    initPageTransitions();
     initSearchPalette();
     initReadProgress();
     initToc();
+    initCodeBlocks();
+    initTables();
+    initFigures();
+    initLightbox();
   }
 
   if (document.readyState === "loading") {
