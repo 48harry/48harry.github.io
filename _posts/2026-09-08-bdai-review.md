@@ -4,7 +4,6 @@ title: BDAI 데이터 분석 실전반 추천 시스템 구현 2주차 Review (1
 subtitle: BDAI
 tags:
   - bdai
-comments: true
 mathjax: false
 author: Geunyeong Cho
 published: true

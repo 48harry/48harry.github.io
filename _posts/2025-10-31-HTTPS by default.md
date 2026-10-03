@@ -3,7 +3,6 @@ layout: post
 title: HTTPS by default
 subtitle: 
 tags: [article]
-comments: true
 mathjax: false
 author: Geunyeong Cho
 published : true

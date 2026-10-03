@@ -5,7 +5,6 @@ subtitle:
 # gh-repo: daattali/beautiful-jekyll
 # gh-badge: [star, fork, follow]
 tags: [article]
-comments: true
 mathjax: false
 author: Geunyeong Cho
 published : true

@@ -3,7 +3,6 @@ layout: post
 title: 짜잔 사실 BERT는 diffusion model이었음(와전)
 subtitle: BERT is just a Single Text Diffusion Step
 tags: [article]
-comments: true
 mathjax: false
 author: Geunyeong Cho
 published : true
