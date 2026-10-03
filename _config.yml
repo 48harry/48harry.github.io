@@ -62,11 +62,7 @@ social-network-links:
   email: "a01062064071@gmail.com"
   github: 48harry
   linkedin: geunyeong-cho-929a6239a
-  instagram: geunyeongcho
   youtube: "@Geunyeong_Cho"
-  discord: "48harry"
-  whatsapp: 821062064071
-  kaggle: 48harry
   rss: true  # remove this line if you don't want to show an RSS link at the bottom
   # facebook: deanattali
   # patreon: DeanAttali
@@ -148,17 +144,17 @@ navbar-var-length: false
 
 # Personalize the colours in your website. Colour values can be any valid CSS colour
 
-page-col: "#FFFFFF"
-text-col: "#404040"
-link-col: "#008AFF"
-hover-col: "#0085A1"
-navbar-col: "#EAEAEA"
-navbar-text-col: "#404040"
-navbar-border-col: "#DDDDDD"
-footer-col: "#EAEAEA"
-footer-text-col: "#777777"
-footer-link-col: "#404040"
-footer-hover-col: "#0085A1"
+page-col: "#F7F8FC"
+text-col: "#2B2F3A"
+link-col: "#7C3AED"
+hover-col: "#5B21B6"
+navbar-col: "#FFFFFF"
+navbar-text-col: "#2B2F3A"
+navbar-border-col: "#E5E7EF"
+footer-col: "#F7F8FC"
+footer-text-col: "#6B7280"
+footer-link-col: "#2B2F3A"
+footer-hover-col: "#5B21B6"
 
 # Alternatively, the navbar, footer, and page background can be set to an image
 # instead of colour
@@ -168,7 +164,7 @@ footer-hover-col: "#0085A1"
 #page-img: "/assets/img/bgimage.png"
 
 # Suggest a colour for mobile browsers to use as the browser's theme. This is only supported by a few mobile browsers.
-#mobile-theme-col: "#0085A1"
+mobile-theme-col: "#7C3AED"
 
 # For any extra visual customization, you can include additional CSS files in every page on your site. List any custom CSS files here
 site-css:

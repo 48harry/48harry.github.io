@@ -42,7 +42,7 @@ layout: base
       {% include series.html %}
 
       <div class="blog-post">
-        {{ content }}
+        {{ content | replace: '<img ', '<img loading="lazy" decoding="async" ' }}
       </div>
 
       {% if page.tags.size > 0 %}
@@ -80,6 +80,9 @@ layout: base
         </a>
         {% endif %}
       </nav>
+
+      {% include related-posts.html %}
+
       {% include comments.html %}
     </div>
   </div>

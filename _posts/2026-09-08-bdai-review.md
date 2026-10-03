@@ -66,13 +66,13 @@ redirect_from:
 
 BDAI 관련된 발표자료, 여러가지 활동내용들이 올라와있다
 
-![](/assets/img/Pasted%20image%2020260914224818.png)
+![BDAI 활동 자료 게시판 1](/assets/img/bdai-0908-community-1.png)
 
-![](/assets/img/Pasted%20image%2020260914224733.png)
+![BDAI 활동 자료 게시판 2](/assets/img/bdai-0908-community-2.png)
 
 채용시즌엔 이렇게 매주 채용공고도 보기 편하게 올려주는듯
 
-![](/assets/img/Pasted%20image%2020260914231501.png)
+![매주 올라오는 채용공고 게시글](/assets/img/bdai-0908-recruiting.png)
 
 서이추 한번 걸었더니 그냥 이웃신청은 안되네요
 
