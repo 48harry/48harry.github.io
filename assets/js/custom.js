@@ -1,4 +1,4 @@
-// Theme toggle, light motion, post reading aids (TOC, code blocks, images) and search.
+// Theme toggle, palette panel, glass interactions, post reading aids (TOC, code blocks, images) and search.
 // Loaded through `site-js` in _config.yml, after beautifuljekyll.js.
 
 (function () {
@@ -381,8 +381,290 @@
     });
   }
 
+  /* --- Palette panel ------------------------------------------------------ */
+
+  const PALETTES = [
+    { id: "aurora", name: "오로라", c: ["#7C3AED", "#3B82F6", "#06B6D4", "#EC4899"] },
+    { id: "sunset", name: "선셋",   c: ["#F97316", "#EC4899", "#8B5CF6", "#FACC15"] },
+    { id: "ocean",  name: "오션",   c: ["#2563EB", "#0EA5E9", "#14B8A6", "#6366F1"] },
+    { id: "forest", name: "포레스트", c: ["#059669", "#84CC16", "#0EA5E9", "#14B8A6"] },
+    { id: "sakura", name: "벚꽃",   c: ["#DB2777", "#F472B6", "#A855F7", "#FB7185"] },
+    { id: "lava",   name: "라바",   c: ["#DC2626", "#F97316", "#DB2777", "#F59E0B"] },
+    { id: "mono",   name: "모노",   c: ["#475569", "#94A3B8", "#64748B", "#CBD5E1"] }
+  ];
+
+  function store(key, value) {
+    try {
+      if (value === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
+    } catch (e) {}
+  }
+  function read(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  // One picked colour -> four related accents by rotating the hue
+  function hexToHsl(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    let r = (n >> 16) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0;
+    const l = (max + min) / 2;
+    if (max !== min) {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      h = max === r ? (g - b) / d + (g < b ? 6 : 0) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+      h *= 60;
+    }
+    return [h, s * 100, l * 100];
+  }
+  function hsl(h, s, l) {
+    return "hsl(" + Math.round((h + 360) % 360) + " " + Math.round(s) + "% " + Math.round(l) + "%)";
+  }
+  function deriveAccents(hex) {
+    const [h, s, l] = hexToHsl(hex);
+    const sat = Math.max(s, 55);
+    return [hex, hsl(h + 35, sat, Math.min(l + 6, 62)), hsl(h - 40, sat, Math.min(l + 4, 58)), hsl(h + 150, sat * .9, Math.min(l + 10, 66))];
+  }
+
+  function applyPalette(id, colors) {
+    for (let i = 1; i <= 4; i++) root.style.removeProperty("--accent-" + i);
+    if (id === "custom" && colors) {
+      colors.forEach(function (col, i) { root.style.setProperty("--accent-" + (i + 1), col); });
+    }
+    if (id === "aurora") root.removeAttribute("data-palette");
+    else root.setAttribute("data-palette", id);
+  }
+
+  function initPalette() {
+    const btn = document.getElementById("palette-toggle");
+    if (!btn) return;
+
+    const swatches = PALETTES.map(function (p) {
+      return '<button type="button" class="palette-swatch" data-palette-id="' + p.id + '" aria-pressed="false">' +
+        '<span class="palette-dot" style="--c1:' + p.c[0] + ';--c2:' + p.c[1] + ';--c3:' + p.c[2] + ';--c4:' + p.c[3] + '"></span>' +
+        p.name + "</button>";
+    }).join("");
+
+    const panel = document.createElement("div");
+    panel.className = "palette-panel";
+    panel.id = "palette-panel";
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-label", "색 팔레트");
+    panel.innerHTML =
+      '<div class="palette-head"><p class="palette-title">Palette</p>' +
+      '<button type="button" class="palette-close" aria-label="닫기"><i class="fas fa-xmark" aria-hidden="true"></i></button></div>' +
+      '<div class="palette-grid">' + swatches +
+        '<label class="palette-swatch" data-palette-id="custom" aria-pressed="false">' +
+          '<span class="palette-dot palette-dot-custom" style="--c1:#FF6B6B;--c2:#FFD93D;--c3:#6BCB77;--c4:#4D96FF">' +
+          '<input type="color" value="#7C3AED" aria-label="직접 고르기"></span>직접</label>' +
+      "</div>" +
+      '<div class="palette-row"><label for="palette-frost">유리 블러</label>' +
+        '<input id="palette-frost" type="range" min="4" max="48" step="1"><span class="palette-value"></span></div>' +
+      '<div class="palette-row"><label for="palette-motion">배경 움직임</label>' +
+        '<input id="palette-motion" class="palette-switch" type="checkbox"></div>' +
+      '<button type="button" class="palette-reset">기본값으로</button>';
+    document.body.appendChild(panel);
+
+    const frost = panel.querySelector("#palette-frost");
+    const frostVal = panel.querySelector(".palette-value");
+    const motion = panel.querySelector("#palette-motion");
+    const picker = panel.querySelector('input[type="color"]');
+    const customDot = panel.querySelector(".palette-dot-custom");
+
+    function sync() {
+      const current = read("palette") || "aurora";
+      panel.querySelectorAll(".palette-swatch").forEach(function (s) {
+        s.setAttribute("aria-pressed", String(s.dataset.paletteId === current));
+      });
+      const custom = (read("paletteCustom") || "").split(",");
+      if (custom.length === 4) {
+        picker.value = custom[0];
+        custom.forEach(function (col, i) { customDot.style.setProperty("--c" + (i + 1), col); });
+      }
+      const f = getComputedStyle(root).getPropertyValue("--frost").trim() || "22";
+      frost.value = f;
+      frostVal.textContent = f;
+      motion.checked = root.getAttribute("data-motion") !== "off";
+    }
+
+    function open() {
+      sync();
+      panel.classList.add("is-open");
+      btn.setAttribute("aria-expanded", "true");
+    }
+    function close() {
+      panel.classList.remove("is-open");
+      btn.setAttribute("aria-expanded", "false");
+    }
+
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      panel.classList.contains("is-open") ? close() : open();
+    });
+    panel.querySelector(".palette-close").addEventListener("click", close);
+    document.addEventListener("click", function (e) {
+      if (panel.classList.contains("is-open") && !panel.contains(e.target) && e.target !== btn) close();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") close();
+    });
+
+    panel.querySelectorAll("button.palette-swatch").forEach(function (s) {
+      s.addEventListener("click", function () {
+        const id = s.dataset.paletteId;
+        applyPalette(id);
+        store("palette", id === "aurora" ? null : id);
+        sync();
+      });
+    });
+
+    picker.addEventListener("input", function () {
+      const colors = deriveAccents(picker.value);
+      applyPalette("custom", colors);
+      store("palette", "custom");
+      store("paletteCustom", colors.join(","));
+      sync();
+    });
+
+    frost.addEventListener("input", function () {
+      root.style.setProperty("--frost", frost.value);
+      frostVal.textContent = frost.value;
+      store("frost", frost.value);
+    });
+
+    motion.addEventListener("change", function () {
+      if (motion.checked) root.removeAttribute("data-motion");
+      else root.setAttribute("data-motion", "off");
+      store("motion", motion.checked ? null : "off");
+    });
+
+    panel.querySelector(".palette-reset").addEventListener("click", function () {
+      applyPalette("aurora");
+      root.style.removeProperty("--frost");
+      root.removeAttribute("data-motion");
+      ["palette", "paletteCustom", "frost", "motion"].forEach(function (k) { store(k, null); });
+      sync();
+    });
+  }
+
+  /* --- Ambient orbs: follow the pointer and the scroll -------------------- */
+
+  function initAmbient() {
+    const amb = document.querySelector(".ambient");
+    if (!amb) return;
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    let tx = -9999, ty = -9999, cx = tx, cy = ty, raf = 0;
+
+    function onScroll() {
+      const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+      amb.style.setProperty("--sy", (window.scrollY / max).toFixed(3));
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    if (!finePointer || reduceMotion) return;
+
+    // The cursor orb trails the pointer, so glass shows a moving glow under it
+    function tick() {
+      cx += (tx - cx) * 0.12;
+      cy += (ty - cy) * 0.12;
+      amb.style.setProperty("--cx", cx.toFixed(1) + "px");
+      amb.style.setProperty("--cy", cy.toFixed(1) + "px");
+      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.5 ? requestAnimationFrame(tick) : 0;
+    }
+
+    window.addEventListener("pointermove", function (e) {
+      if (root.getAttribute("data-motion") === "off") return;
+      if (cx < -9000) { cx = e.clientX; cy = e.clientY; }
+      tx = e.clientX;
+      ty = e.clientY;
+      amb.classList.add("has-cursor");
+      amb.style.setProperty("--px", (e.clientX / window.innerWidth * 2 - 1).toFixed(3));
+      amb.style.setProperty("--py", (e.clientY / window.innerHeight * 2 - 1).toFixed(3));
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, { passive: true });
+    document.addEventListener("pointerleave", function () { amb.classList.remove("has-cursor"); });
+  }
+
+  /* --- Glass: pointer highlight, tilt, magnetic buttons, ripple ----------- */
+
+  const GLASS = ".posts-list .post-preview, .post-nav-link, .series-step, .series-box, .tag-pill, .tag-group, " +
+    ".toc-inline, .profile, .about-card, .related-posts, .btn-ghost, .hero-pill, .section-more, .blog-post, " +
+    ".palette-panel, .page-link";
+  const TILT = ".posts-list .post-preview, .series-step, .post-nav-link, .about-card";
+  const MAGNETIC = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .profile-btn";
+  const RIPPLE = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .post-preview, .series-step, .post-nav-link, .palette-swatch, .page-link";
+
+  function initGlassPointer() {
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+    if (finePointer) {
+      let tilted = null, magnet = null;
+
+      document.addEventListener("pointermove", function (e) {
+        const glass = e.target.closest && e.target.closest(GLASS);
+        if (glass) {
+          const r = glass.getBoundingClientRect();
+          glass.style.setProperty("--mx", (e.clientX - r.left) + "px");
+          glass.style.setProperty("--my", (e.clientY - r.top) + "px");
+        }
+        if (reduceMotion || root.getAttribute("data-motion") === "off") return;
+
+        const card = e.target.closest && e.target.closest(TILT);
+        if (tilted && tilted !== card) untilt(tilted);
+        if (card) {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5;
+          const y = (e.clientY - r.top) / r.height - 0.5;
+          card.classList.add("is-tilting");
+          card.style.transform = "perspective(900px) rotateX(" + (-y * 7).toFixed(2) + "deg) rotateY(" +
+            (x * 9).toFixed(2) + "deg) translateY(-4px)";
+          tilted = card;
+        }
+
+        const m = e.target.closest && e.target.closest(MAGNETIC);
+        if (magnet && magnet !== m) magnet.style.translate = "";
+        if (m) {
+          const r = m.getBoundingClientRect();
+          m.classList.add("is-magnetic");
+          m.style.translate = ((e.clientX - r.left - r.width / 2) * 0.25).toFixed(1) + "px " +
+            ((e.clientY - r.top - r.height / 2) * 0.35).toFixed(1) + "px";
+          magnet = m;
+        }
+      }, { passive: true });
+
+      function untilt(card) {
+        card.style.transform = "";
+        card.classList.remove("is-tilting");
+        tilted = null;
+      }
+      document.addEventListener("pointerleave", function () {
+        if (tilted) untilt(tilted);
+        if (magnet) magnet.style.translate = "";
+      });
+    }
+
+    if (reduceMotion) return;
+    document.addEventListener("pointerdown", function (e) {
+      const host = e.target.closest && e.target.closest(RIPPLE);
+      if (!host) return;
+      const r = host.getBoundingClientRect();
+      const dot = document.createElement("span");
+      dot.className = "ripple";
+      dot.style.left = (e.clientX - r.left) + "px";
+      dot.style.top = (e.clientY - r.top) + "px";
+      host.classList.add("ripple-host");
+      host.appendChild(dot);
+      dot.addEventListener("animationend", function () { dot.remove(); });
+    });
+  }
+
   function init() {
     initThemeToggle();
+    initPalette();
+    initAmbient();
+    initGlassPointer();
     initReveal();
     initTyping();
     initHeroScroll();

@@ -12,6 +12,17 @@
         theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
       root.setAttribute("data-theme", theme);
+      // Palette, glass strength and motion chosen in the palette panel
+      try {
+        var p = localStorage.getItem("palette"), c = localStorage.getItem("paletteCustom");
+        var f = localStorage.getItem("frost"), m = localStorage.getItem("motion");
+        if (p) root.setAttribute("data-palette", p);
+        if (p === "custom" && c) {
+          c.split(",").forEach(function (col, i) { root.style.setProperty("--accent-" + (i + 1), col); });
+        }
+        if (f) root.style.setProperty("--frost", f);
+        if (m === "off") root.setAttribute("data-motion", "off");
+      } catch (e) {}
     })();
   </script>
 
@@ -96,7 +107,7 @@
 
   {% if site.site-css %}
     {% for css in site.site-css %}
-      <link rel="stylesheet" href="{{ css | relative_url }}">
+      <link rel="stylesheet" href="{{ css | relative_url }}?v={{ site.time | date: '%s' }}">
     {% endfor %}
   {% endif %}
 
