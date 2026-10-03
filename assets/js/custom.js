@@ -27,15 +27,7 @@
       root.setAttribute("data-theme", next);
       try { localStorage.setItem("theme", next); } catch (e) {}
       syncNavbarClass();
-      syncGiscusTheme();
     });
-  }
-
-  function syncGiscusTheme() {
-    const frame = document.querySelector("iframe.giscus-frame");
-    if (!frame) return;
-    const theme = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
-    frame.contentWindow.postMessage({ giscus: { setConfig: { theme: theme } } }, "https://giscus.app");
   }
 
   /* --- Scroll reveal ------------------------------------------------------ */

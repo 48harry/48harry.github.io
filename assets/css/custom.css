@@ -1297,24 +1297,6 @@ html.lightbox-lock { overflow: hidden; }
 @media (max-width: 1299px) { .toc-side { display: none; } }
 @media (min-width: 1300px) { .toc-inline { display: none; } }
 
-/* --- Comments -------------------------------------------------------------- */
-
-.comments-section {
-  margin: 3rem 0 1rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
-}
-.comments-title {
-  display: flex;
-  align-items: center;
-  gap: .55rem;
-  margin: 0 0 1.25rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--heading-col);
-}
-.comments-title i { color: var(--accent-1); }
-
 /* --- Footer ---------------------------------------------------------------- */
 
 footer {

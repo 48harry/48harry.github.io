@@ -1,0 +1,34 @@
+{%- comment -%}
+  Post body with Obsidian image links repaired, so pasted images show up even
+  when Obsidian wrote a link Jekyll can't resolve:
+    ![[Pasted image 2026….png]]          wikilink          -> /assets/img/…
+    ![](Pasted%20image%202026….png)       shortest path     -> /assets/img/…
+    ![](assets/img/….png)                 vault-absolute    -> /assets/img/…
+  Also lazy-loads every image.
+{%- endcomment -%}
+{%- assign img_dir = "/assets/img/" | relative_url -%}
+{%- assign html = include.content -%}
+
+{%- if html contains "![[" -%}
+  {%- assign parts = html | split: "![[" -%}
+  {%- capture html -%}
+    {{- parts[0] -}}
+    {%- for part in parts offset: 1 -%}
+      {%- if part contains "]]" -%}
+        {%- assign link = part | split: "]]" | first -%}
+        {%- assign file = link | split: "|" | first | strip -%}
+        {%- assign rest = part | remove_first: link | remove_first: "]]" -%}
+        <img src="{{ img_dir }}{{ file | split: '/' | last | uri_escape }}" alt="">{{- rest -}}
+      {%- else -%}
+        ![[{{- part -}}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- assign src_abs = 'src="' | append: img_dir -%}
+{%- assign src_pasted = src_abs | append: "Pasted%20image" -%}
+{{- html
+  | replace: 'src="assets/img/', src_abs
+  | replace: 'src="Pasted%20image', src_pasted
+  | replace: '<img ', '<img loading="lazy" decoding="async" ' -}}

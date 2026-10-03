@@ -21,7 +21,10 @@ Box. -->
 When \\(a \ne 0\\), there are two solutions to \\(ax^2 + bx + c = 0\\) and they are $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$ -->
 
 <!-- 사진첨부 예시
+이미지는 그냥 붙여넣기(Ctrl+V) 하면 assets/img/ 에 저장되고 ![](assets/img/...) 링크가 생깁니다.
 ![부연설명](로컬주소)
+캡션까지 달려면
+![부연설명](로컬주소 "이미지 아래에 보일 캡션")
 가운데설정 하면
 ![부연설명](로컬주소){: .mx-auto.d-block :} -->
 
