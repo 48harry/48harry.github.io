@@ -1935,3 +1935,239 @@ html.js .posts-list .post-preview.reveal.is-visible:hover { transform: translate
   .posts-list .post-preview,
   .posts-list .post-preview:hover { transform: none !important; }
 }
+
+/* ==========================================================================
+   Glass layer
+   A fixed colour field sits behind the page; every surface is frosted glass
+   over it (blur + saturation, a light rim and a top highlight).
+   ========================================================================== */
+
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.42);
+  --glass-bg-strong: rgba(255, 255, 255, 0.74);
+  --glass-rim: rgba(255, 255, 255, 0.75);
+  --glass-edge: rgba(30, 27, 75, 0.07);
+  --glass-blur: saturate(190%) blur(24px);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+  --glass-shadow: 0 0 0 1px var(--glass-edge), 0 2px 6px -2px rgba(30, 27, 75, 0.08), 0 18px 40px -20px rgba(30, 27, 75, 0.28);
+  --glass-shadow-hover: 0 0 0 1px var(--glass-edge), 0 4px 10px -4px rgba(30, 27, 75, 0.1), 0 28px 60px -24px rgba(76, 29, 149, 0.38);
+  --ambient:
+    radial-gradient(42rem 42rem at 6% 4%, rgba(124, 58, 237, 0.38), transparent 62%),
+    radial-gradient(38rem 38rem at 96% 14%, rgba(59, 130, 246, 0.32), transparent 62%),
+    radial-gradient(46rem 46rem at 80% 96%, rgba(6, 182, 212, 0.30), transparent 62%),
+    radial-gradient(34rem 34rem at 10% 88%, rgba(236, 72, 153, 0.26), transparent 62%),
+    radial-gradient(36rem 28rem at 30% 50%, rgba(167, 139, 250, 0.22), transparent 70%),
+    radial-gradient(30rem 26rem at 78% 55%, rgba(244, 114, 182, 0.16), transparent 70%);
+  --page-col: #EEF0F8;
+  --code-bg: rgba(238, 240, 248, 0.7);
+  --surface-2: rgba(255, 255, 255, 0.55);
+}
+:root[data-theme="dark"] {
+  --glass-bg: rgba(24, 28, 44, 0.48);
+  --glass-bg-strong: rgba(20, 23, 37, 0.78);
+  --glass-rim: rgba(255, 255, 255, 0.09);
+  --glass-edge: rgba(0, 0, 0, 0.35);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, 0.10), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --glass-shadow: 0 0 0 1px var(--glass-edge), 0 2px 6px -2px rgba(0, 0, 0, 0.4), 0 22px 44px -22px rgba(0, 0, 0, 0.75);
+  --glass-shadow-hover: 0 0 0 1px var(--glass-edge), 0 4px 12px -4px rgba(0, 0, 0, 0.5), 0 30px 64px -24px rgba(91, 33, 182, 0.55);
+  --ambient:
+    radial-gradient(42rem 42rem at 6% 4%, rgba(124, 58, 237, 0.34), transparent 62%),
+    radial-gradient(38rem 38rem at 96% 14%, rgba(37, 99, 235, 0.28), transparent 62%),
+    radial-gradient(46rem 46rem at 80% 96%, rgba(8, 145, 178, 0.24), transparent 62%),
+    radial-gradient(34rem 34rem at 10% 88%, rgba(219, 39, 119, 0.24), transparent 62%),
+    radial-gradient(36rem 28rem at 30% 50%, rgba(109, 40, 217, 0.22), transparent 70%),
+    radial-gradient(30rem 26rem at 78% 55%, rgba(190, 24, 93, 0.14), transparent 70%);
+  --page-col: #07080F;
+  --code-bg: rgba(8, 10, 18, 0.55);
+  --surface-2: rgba(255, 255, 255, 0.05);
+}
+
+/* Colour field: fixed, so glass panels slide over it as you scroll */
+html { background-color: var(--page-col); }
+body { background-color: transparent; }
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10vh -10vw;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--ambient);
+  animation: ambient-drift 40s ease-in-out infinite alternate;
+}
+@keyframes ambient-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(3vw, -2vh, 0) scale(1.05); }
+  100% { transform: translate3d(-2vw, 3vh, 0) scale(1.02); }
+}
+.hero::after { display: none; }
+/* Blobs melt into the colour field instead of stopping at the hero edge */
+.hero-bg {
+  -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+}
+/* Scrolling rows would clip the glass shadows; give them room to fall */
+.series-track { padding: .5rem 1rem 2.5rem; margin: 0 -1rem -2rem; }
+::-webkit-scrollbar-thumb { border-color: transparent; background-clip: padding-box; }
+
+/* Shared glass recipe */
+.posts-list .post-preview,
+.posts-list .post-preview.is-featured,
+.pagination .page-item .page-link,
+.post-nav-link,
+.section-more,
+.series-step,
+.series-box,
+.tag-pill,
+.tag-group,
+.toc-inline,
+.profile,
+.about-card,
+.blog-post,
+.related-posts,
+.btn-ghost,
+.hero-pill {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-rim);
+  box-shadow: var(--glass-shine), var(--glass-shadow);
+}
+.posts-list .post-preview.is-featured {
+  background:
+    radial-gradient(30rem circle at 100% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%),
+    var(--glass-bg);
+}
+.posts-list .post-preview:last-child { border-bottom: 1px solid var(--glass-rim); }
+:root[data-theme="dark"] .post-preview { border-bottom-color: var(--glass-rim); }
+
+.posts-list .post-preview,
+.post-nav-link,
+.series-step,
+.tag-group,
+.about-card { border-radius: 1.5rem; }
+
+.posts-list .post-preview:hover,
+.posts-list .post-preview:focus-within,
+.post-nav-link:hover,
+.series-step:hover,
+.tag-pill:hover,
+.section-more:hover,
+.hero-pill:hover,
+.hero-pill:focus,
+.btn-ghost:hover {
+  background: var(--glass-bg-strong);
+  border-color: var(--glass-rim);
+  box-shadow: var(--glass-shine), var(--glass-shadow-hover);
+}
+
+/* The article itself is one large sheet of glass */
+.blog-post {
+  padding: 2.75rem 3rem;
+  border-radius: 2rem;
+  background: var(--glass-bg-strong);
+}
+@media (max-width: 767px) {
+  .blog-post { padding: 1.5rem 1.25rem; border-radius: 1.5rem; margin-left: -.25rem; margin-right: -.25rem; }
+}
+.related-posts { padding: 1.25rem 1.5rem .5rem; border-radius: 1.5rem; }
+.related-list { border-top: 0; }
+.related-list li:last-child { border-bottom: 0; }
+
+/* Glass inside glass: code, tables, quotes become tinted wells */
+.blog-post div.highlighter-rouge,
+.highlight > pre {
+  background: var(--code-bg);
+  border-color: var(--glass-rim);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+.blog-post blockquote { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+table tr,
+table tr:nth-child(2n) { background-color: transparent; }
+.blog-post table th { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+
+/* Navbar and dropdowns: heavier frost, like macOS menus */
+.navbar-custom {
+  background-color: color-mix(in srgb, var(--page-col) 55%, transparent);
+  -webkit-backdrop-filter: saturate(200%) blur(30px);
+  backdrop-filter: saturate(200%) blur(30px);
+  border-bottom: 1px solid var(--glass-rim);
+  box-shadow: inset 0 -1px 0 var(--glass-edge);
+}
+.navbar-custom .nav-item.dropdown .dropdown-menu {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-rim);
+  box-shadow: var(--glass-shine), var(--glass-shadow-hover);
+  border-radius: 1rem;
+  padding: .35rem;
+}
+.navbar-custom .nav-item.dropdown .dropdown-menu .dropdown-item { background-color: transparent; border-radius: .6rem; }
+.navbar-custom .nav-item.dropdown .dropdown-menu .dropdown-item:hover,
+.navbar-custom .nav-item.dropdown .dropdown-menu .dropdown-item:focus { background-color: var(--accent-soft); }
+
+/* Search palette: a floating glass panel over a softly blurred page */
+#beautifuljekyll-search-overlay {
+  background: rgba(8, 10, 18, 0.22);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+  backdrop-filter: blur(6px) saturate(140%);
+}
+.search-panel {
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: saturate(200%) blur(40px);
+  backdrop-filter: saturate(200%) blur(40px);
+  border: 1px solid var(--glass-rim);
+  box-shadow: var(--glass-shine), 0 40px 100px -30px rgba(0, 0, 0, 0.5);
+  border-radius: 1.5rem;
+}
+.search-footer { background: transparent; }
+
+/* Footer floats as a glass strip */
+footer {
+  background: color-mix(in srgb, var(--page-col) 40%, transparent);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--glass-rim);
+}
+
+/* Side TOC gets its own frosted card */
+.toc-side {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--glass-rim);
+  border-radius: 1.25rem;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shine), var(--glass-shadow);
+}
+
+/* Lightbox backdrop */
+.lightbox {
+  background: rgba(8, 10, 18, 0.45);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  backdrop-filter: blur(24px) saturate(160%);
+}
+
+/* Accent button: a lit glass capsule */
+.btn-solid {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-1) 82%, #fff), var(--accent-1));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 10px 24px -10px rgba(124, 58, 237, 0.7);
+}
+
+/* Phones: lighter blur keeps scrolling smooth */
+@media (max-width: 767px) {
+  :root { --glass-blur: saturate(180%) blur(16px); }
+}
+
+/* People who ask for less transparency or motion get solid, still surfaces */
+@media (prefers-reduced-transparency: reduce) {
+  :root, :root[data-theme="dark"] { --glass-bg: var(--surface); --glass-bg-strong: var(--surface); --glass-blur: none; }
+  .navbar-custom, footer, .search-panel { background-color: var(--surface); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root { --glass-bg: rgba(255, 255, 255, 0.88); --glass-bg-strong: rgba(255, 255, 255, 0.94); }
+  :root[data-theme="dark"] { --glass-bg: rgba(22, 26, 40, 0.92); --glass-bg-strong: rgba(20, 23, 37, 0.96); }
+}
