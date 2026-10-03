@@ -554,35 +554,59 @@
     const amb = document.querySelector(".ambient");
     if (!amb) return;
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    let tx = -9999, ty = -9999, cx = tx, cy = ty, raf = 0;
 
-    function onScroll() {
+    // Targets (t*) are set by events; current values ease toward them each frame,
+    // so the orbs glide instead of snapping with every scroll tick.
+    const cur = { sy: 0, px: 0, py: 0, cx: -9999, cy: -9999 };
+    const tgt = { sy: 0, px: 0, py: 0, cx: -9999, cy: -9999 };
+    let raf = 0;
+
+    function scrollRatio() {
       const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      amb.style.setProperty("--sy", (window.scrollY / max).toFixed(3));
+      return window.scrollY / max;
     }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    cur.sy = tgt.sy = scrollRatio();
+    amb.style.setProperty("--sy", cur.sy.toFixed(4));
 
-    if (!finePointer || reduceMotion) return;
-
-    // The cursor orb trails the pointer, so glass shows a moving glow under it
     function tick() {
-      cx += (tx - cx) * 0.12;
-      cy += (ty - cy) * 0.12;
-      amb.style.setProperty("--cx", cx.toFixed(1) + "px");
-      amb.style.setProperty("--cy", cy.toFixed(1) + "px");
-      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.5 ? requestAnimationFrame(tick) : 0;
+      let moving = false;
+      ["sy", "px", "py"].forEach(function (k) {
+        cur[k] += (tgt[k] - cur[k]) * 0.06;
+        if (Math.abs(tgt[k] - cur[k]) > 0.0005) moving = true;
+      });
+      cur.cx += (tgt.cx - cur.cx) * 0.08;
+      cur.cy += (tgt.cy - cur.cy) * 0.08;
+      if (Math.abs(tgt.cx - cur.cx) + Math.abs(tgt.cy - cur.cy) > 0.5) moving = true;
+
+      amb.style.setProperty("--sy", cur.sy.toFixed(4));
+      amb.style.setProperty("--px", cur.px.toFixed(4));
+      amb.style.setProperty("--py", cur.py.toFixed(4));
+      amb.style.setProperty("--cx", cur.cx.toFixed(1) + "px");
+      amb.style.setProperty("--cy", cur.cy.toFixed(1) + "px");
+      raf = moving ? requestAnimationFrame(tick) : 0;
     }
+    function kick() {
+      if (!raf) raf = requestAnimationFrame(tick);
+    }
+
+    if (reduceMotion) return;
+
+    window.addEventListener("scroll", function () {
+      tgt.sy = scrollRatio();
+      kick();
+    }, { passive: true });
+
+    if (!finePointer) return;
 
     window.addEventListener("pointermove", function (e) {
       if (root.getAttribute("data-motion") === "off") return;
-      if (cx < -9000) { cx = e.clientX; cy = e.clientY; }
-      tx = e.clientX;
-      ty = e.clientY;
+      if (cur.cx < -9000) { cur.cx = e.clientX; cur.cy = e.clientY; }
+      tgt.cx = e.clientX;
+      tgt.cy = e.clientY;
+      tgt.px = e.clientX / window.innerWidth * 2 - 1;
+      tgt.py = e.clientY / window.innerHeight * 2 - 1;
       amb.classList.add("has-cursor");
-      amb.style.setProperty("--px", (e.clientX / window.innerWidth * 2 - 1).toFixed(3));
-      amb.style.setProperty("--py", (e.clientY / window.innerHeight * 2 - 1).toFixed(3));
-      if (!raf) raf = requestAnimationFrame(tick);
+      kick();
     }, { passive: true });
     document.addEventListener("pointerleave", function () { amb.classList.remove("has-cursor"); });
   }
