@@ -59,13 +59,12 @@ hide-title: true
   <section class="about-card about-wide">
     <h2 class="about-title"><i class="fas fa-code" aria-hidden="true"></i> Tech Stack</h2>
     <ul class="chip-list">
-      <li class="chip"><i class="fab fa-python" aria-hidden="true"></i> Python <small>Pandas · NumPy · scikit-learn</small></li>
+      <li class="chip"><i class="fab fa-python" aria-hidden="true"></i> Python</li>
       <li class="chip"><i class="fas fa-database" aria-hidden="true"></i> SQL <small>MySQL</small></li>
       <li class="chip"><i class="fas fa-hashtag" aria-hidden="true"></i> C#</li>
-      <li class="chip"><i class="fas fa-brain" aria-hidden="true"></i> ML / DL</li>
-      <li class="chip"><i class="fas fa-robot" aria-hidden="true"></i> Automation</li>
+      <li class="chip"><i class="fas fa-brain" aria-hidden="true"></i> AI <small>ML · DL</small></li>
+      <li class="chip"><i class="fas fa-robot" aria-hidden="true"></i> Automation <small>Docker · n8n</small></li>
       <li class="chip"><i class="fab fa-github" aria-hidden="true"></i> GitHub</li>
-      <li class="chip"><i class="fas fa-photo-film" aria-hidden="true"></i> Creative Media</li>
     </ul>
   </section>
 
