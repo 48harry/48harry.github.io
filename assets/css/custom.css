@@ -2083,6 +2083,7 @@ body { background-color: transparent; }
 .nl-switch,
 .archive-month,
 .heat-tip,
+.resume,
 .toast {
   background:
     radial-gradient(22rem circle at var(--mx, 20%) var(--my, -30%), var(--glass-shine-col), transparent 55%),
@@ -2488,39 +2489,7 @@ details.callout[open] .callout-body { animation: fade-up .35s var(--ease-out); }
 .mermaid-figure.is-loading > pre { opacity: .45; animation: mermaid-wait 1.2s ease-in-out infinite alternate; }
 @keyframes mermaid-wait { to { opacity: .2; } }
 
-/* --- Hero lens ------------------------------------------------------------ */
-
-.hero-content { position: relative; z-index: 1; }
-.hero-scroll { z-index: 1; }
-.hero-lens {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-  width: 16rem;
-  height: 16rem;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  scale: .55;
-  transform: translate(var(--lx, -50vw), var(--ly, -50vh)) translate(-50%, -50%);
-  background:
-    radial-gradient(circle at 32% 26%, rgba(255, 255, 255, 0.6), transparent 34%),
-    radial-gradient(circle at 70% 78%, color-mix(in srgb, var(--accent-3) 30%, transparent), transparent 55%),
-    radial-gradient(circle, transparent 58%, color-mix(in srgb, var(--accent-1) 22%, transparent) 72%, transparent 73%);
-  -webkit-backdrop-filter: blur(6px) saturate(280%) brightness(1.12) contrast(1.05);
-  backdrop-filter: blur(6px) saturate(280%) brightness(1.12) contrast(1.05);
-  border: 1px solid;
-  border-color: var(--rim-hi) var(--rim-lo) var(--rim-lo) var(--rim-hi);
-  box-shadow:
-    var(--glass-inset),
-    inset 0 -18px 40px color-mix(in srgb, var(--accent-1) 18%, transparent),
-    0 40px 80px -30px color-mix(in srgb, var(--accent-1) 70%, transparent);
-  transition: opacity .5s ease, scale .6s var(--ease-out);
-  will-change: transform;
-}
-.hero-lens.is-on { opacity: 1; scale: 1; }
-:root[data-motion="off"] .hero-lens { display: none; }
+/* --- Hero: title letters rise around the pointer -------------------------- */
 
 .hero-char {
   transform: translateY(calc(var(--lift, 0) * -0.14em)) scale(calc(1 + var(--lift, 0) * 0.1));
@@ -2896,3 +2865,72 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.45); z-index: 1; positio
 @media (prefers-reduced-motion: reduce) {
   .heat-grid.is-in .cell, .cal-grid.is-in .cal-day.has-post, .cal-grid.slide-left, .cal-grid.slide-right { animation: none; }
 }
+
+/* --- Resume reading ------------------------------------------------------- */
+
+.resume {
+  position: fixed;
+  left: 50%;
+  bottom: 1.75rem;
+  z-index: 1090;
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+  padding: .3rem;
+  border-radius: 999px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translate(-50%, 1.5rem) scale(.95);
+  transition: opacity .35s ease, transform .5s var(--ease-out);
+}
+.resume.is-shown { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.resume::after {
+  /* how far the reader got last time */
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: calc(var(--p, 0) * 100%);
+  background: var(--accent-grad);
+}
+.resume-go, .resume-close {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color .2s ease, transform .3s var(--ease-out);
+}
+.resume-go {
+  padding: .6rem 1.1rem;
+  font-size: .9rem;
+  color: #fff;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-1) 78%, #fff), var(--accent-1));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 10px 22px -10px var(--accent-1);
+}
+.resume-go:hover { transform: scale(1.04); }
+.resume-pct { padding: .05rem .45rem; border-radius: 999px; font-size: .75rem; background: rgba(255, 255, 255, 0.22); font-variant-numeric: tabular-nums; }
+.resume-close {
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  color: var(--mid-col);
+  background: transparent;
+}
+.resume-close:hover { color: var(--heading-col); background: var(--surface-2); }
+
+/* --- Lite mode (data-perf="lite"): thinner glass, still background ------- */
+
+:root[data-perf="lite"] {
+  --frost: 8 !important;
+  --glass-blur: blur(8px) saturate(150%);
+}
+:root[data-perf="lite"] .ambient .orb,
+:root[data-perf="lite"] .hero-blob { animation: none; will-change: auto; }
+:root[data-perf="lite"] .ambient .orb { translate: none; }
+:root[data-perf="lite"] .orb-cursor { display: none; }
+:root[data-perf="lite"] .hero-char { filter: none; }

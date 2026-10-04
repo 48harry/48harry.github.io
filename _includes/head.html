@@ -22,6 +22,12 @@
         }
         if (f) root.style.setProperty("--frost", f);
         if (m === "off") root.setAttribute("data-motion", "off");
+        // Lite glass: chosen in the panel, or detected on a slow device (custom.js remembers it as perfAuto)
+        var perf = localStorage.getItem("perf"), auto = localStorage.getItem("perfAuto");
+        var weak = navigator.connection && navigator.connection.saveData ||
+          (navigator.deviceMemory && navigator.deviceMemory <= 2) ||
+          (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
+        if (perf === "lite" || (perf !== "full" && (auto === "lite" || weak))) root.setAttribute("data-perf", "lite");
       } catch (e) {}
     })();
   </script>
