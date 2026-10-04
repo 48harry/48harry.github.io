@@ -1,4 +1,5 @@
-// Theme toggle, palette panel, glass interactions, post reading aids (TOC, code blocks, images) and search.
+// Theme toggle, palette panel, glass interactions, post reading aids (TOC, callouts, heading links,
+// Mermaid, code blocks, images), search, the archive heatmap and the newsletter calendar.
 // Loaded through `site-js` in _config.yml, after beautifuljekyll.js.
 
 (function () {
@@ -615,10 +616,11 @@
 
   const GLASS = ".posts-list .post-preview, .post-nav-link, .series-step, .series-box, .tag-pill, .tag-group, " +
     ".toc-inline, .profile, .about-card, .related-posts, .btn-ghost, .hero-pill, .section-more, .blog-post, " +
-    ".palette-panel, .page-link";
+    ".palette-panel, .page-link, .heat, .heat-stat, .cal, .cal-preview-card, .nl-switch, .archive-month, .callout";
   const TILT = ".posts-list .post-preview, .series-step, .post-nav-link, .about-card";
   const MAGNETIC = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .profile-btn";
-  const RIPPLE = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .post-preview, .series-step, .post-nav-link, .palette-swatch, .page-link";
+  const RIPPLE = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .post-preview, .series-step, .post-nav-link, .palette-swatch, .page-link, " +
+    ".cal-day.has-post, .cal-nav, .cal-today, .nl-switch-btn, .heat-range";
 
   function initGlassPointer() {
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -684,6 +686,582 @@
     });
   }
 
+  /* --- Toast --------------------------------------------------------------- */
+
+  let toastTimer = null;
+  function toast(msg) {
+    let t = document.querySelector(".toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.className = "toast";
+      t.setAttribute("role", "status");
+      document.body.appendChild(t);
+    }
+    t.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> ';
+    t.appendChild(document.createTextNode(msg));
+    requestAnimationFrame(function () { t.classList.add("is-shown"); });
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("is-shown"); }, 1800);
+  }
+
+  /* --- Obsidian callouts: > [!type]± Title ----------------------------------- */
+
+  const CALLOUT_TYPES = {
+    note: "fa-pen", abstract: "fa-clipboard-list", info: "fa-circle-info", todo: "fa-circle-check",
+    tip: "fa-fire-flame-curved", success: "fa-check", question: "fa-circle-question",
+    warning: "fa-triangle-exclamation", failure: "fa-xmark", danger: "fa-bolt", bug: "fa-bug",
+    example: "fa-list", quote: "fa-quote-left"
+  };
+  const CALLOUT_ALIASES = {
+    summary: "abstract", tldr: "abstract", hint: "tip", important: "tip", check: "success", done: "success",
+    help: "question", faq: "question", caution: "warning", attention: "warning", fail: "failure",
+    missing: "failure", error: "danger", cite: "quote"
+  };
+
+  function initCallouts() {
+    // kramdown (GFM, hard_wrap) renders the marker line and the next lines as one <p> split by <br />
+    const marker = /^\s*\[!([\w-]+)\]([+-]?)[ \t]*((?:(?!<br)[^\n])*?)\s*(?:<br\s*\/?>\s*|\n|$)/i;
+    document.querySelectorAll(".blog-post blockquote").forEach(function (bq) {
+      const first = bq.firstElementChild;
+      if (!first || first.tagName !== "P") return;
+      const m = first.innerHTML.match(marker);
+      if (!m) return;
+
+      const name = m[1].toLowerCase();
+      const type = CALLOUT_TYPES[name] ? name : CALLOUT_ALIASES[name] || "note";
+      const fold = m[2];
+      first.innerHTML = first.innerHTML.slice(m[0].length);
+      if (!first.innerHTML.trim()) first.remove();
+
+      const box = document.createElement(fold ? "details" : "div");
+      box.className = "callout callout-" + type;
+      if (fold === "+") box.open = true;
+      const head = document.createElement(fold ? "summary" : "div");
+      head.className = "callout-title";
+      head.innerHTML = '<i class="fas ' + CALLOUT_TYPES[type] + ' callout-icon" aria-hidden="true"></i><span>' +
+        (m[3] || name.charAt(0).toUpperCase() + name.slice(1)) + "</span>" +
+        (fold ? '<i class="fas fa-chevron-down callout-fold" aria-hidden="true"></i>' : "");
+      box.appendChild(head);
+
+      if (bq.childNodes.length && bq.textContent.trim() || bq.querySelector("img")) {
+        const body = document.createElement("div");
+        body.className = "callout-body";
+        while (bq.firstChild) body.appendChild(bq.firstChild);
+        box.appendChild(body);
+      }
+      bq.replaceWith(box);
+    });
+  }
+
+  /* --- Heading anchors: hover a heading, click the link to copy it -------- */
+
+  function initHeadingAnchors() {
+    const post = document.querySelector(".blog-post");
+    if (!post) return;
+    post.querySelectorAll("h1, h2, h3, h4").forEach(function (h, i) {
+      if (h.closest(".callout")) return;
+      if (!h.id) h.id = "h-" + (i + 1);
+      const a = document.createElement("a");
+      a.className = "heading-anchor";
+      a.href = "#" + h.id;
+      a.setAttribute("aria-label", "이 섹션 링크 복사");
+      a.innerHTML = '<i class="fas fa-link" aria-hidden="true"></i>';
+      h.appendChild(a);
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        const url = new URL("#" + h.id, location.href).href;
+        history.replaceState(null, "", "#" + h.id);
+        const top = h.getBoundingClientRect().top + window.pageYOffset - 80;
+        window.scrollTo({ top: top, behavior: reduceMotion ? "auto" : "smooth" });
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(url).then(function () { toast("섹션 링크를 복사했어요"); }, function () {});
+        }
+      });
+    });
+  }
+
+  /* --- Mermaid: ```mermaid blocks become diagrams in the current palette -- */
+
+  const MERMAID_URL = "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+  function initMermaid() {
+    // Rouge wraps fenced code in div.language-x; unknown languages can come out as a bare pre > code
+    const blocks = document.querySelectorAll(".blog-post div.language-mermaid, .blog-post pre > code.language-mermaid");
+    if (!blocks.length) return;
+
+    const items = [];
+    blocks.forEach(function (node) {
+      const b = node.tagName === "CODE" ? node.parentElement : node;
+      const src = (b.querySelector("code") || b).textContent;
+      const fig = document.createElement("figure");
+      fig.className = "mermaid-figure is-loading";
+      const pre = document.createElement("pre");
+      pre.textContent = src;
+      fig.appendChild(pre);
+      b.replaceWith(fig);
+      items.push({ el: fig, src: src });
+    });
+
+    // Any CSS colour (hex, hsl(), color-mix() result) -> [r, g, b]
+    const ctx = document.createElement("canvas").getContext("2d");
+    function rgb(css) {
+      ctx.fillStyle = "#000";
+      ctx.fillStyle = css.trim() || "#000";
+      ctx.fillRect(0, 0, 1, 1);
+      return Array.prototype.slice.call(ctx.getImageData(0, 0, 1, 1).data, 0, 3);
+    }
+    function mix(a, b, t) {
+      return "#" + a.map(function (v, i) {
+        return Math.round(v * (1 - t) + b[i] * t).toString(16).padStart(2, "0");
+      }).join("");
+    }
+    function themeVars() {
+      const cs = getComputedStyle(root);
+      const dark = root.getAttribute("data-theme") === "dark";
+      const base = dark ? [21, 26, 43] : [255, 255, 255];
+      const ink = dark ? [229, 231, 239] : [31, 35, 48];
+      const a = [1, 2, 3, 4].map(function (n) { return rgb(cs.getPropertyValue("--accent-" + n)); });
+      const t = dark ? 0.72 : 0.84;
+      return {
+        darkMode: dark,
+        background: "transparent",
+        fontFamily: cs.getPropertyValue("--body-font").trim(),
+        fontSize: "15px",
+        primaryColor: mix(a[0], base, t),
+        primaryBorderColor: mix(a[0], base, 0.15),
+        primaryTextColor: mix(ink, ink, 0),
+        secondaryColor: mix(a[1], base, t),
+        secondaryBorderColor: mix(a[1], base, 0.15),
+        tertiaryColor: mix(a[2], base, t + 0.04),
+        tertiaryBorderColor: mix(a[2], base, 0.15),
+        lineColor: mix(a[0], ink, 0.45),
+        textColor: mix(ink, ink, 0),
+        noteBkgColor: mix(a[3], base, t),
+        noteBorderColor: mix(a[3], base, 0.2),
+        clusterBkg: mix(a[1], base, 0.92),
+        clusterBorder: mix(a[1], base, 0.4),
+        edgeLabelBackground: mix(base, base, 0)
+      };
+    }
+
+    let mermaid = null, seq = 0, last = "";
+    async function render() {
+      const vars = themeVars();
+      const sig = JSON.stringify(vars);
+      if (sig === last) return;
+      last = sig;
+      mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict", themeVariables: vars });
+      for (const it of items) {
+        try {
+          const out = await mermaid.render("mermaid-" + (++seq), it.src);
+          it.el.innerHTML = out.svg;
+          it.el.classList.remove("is-error");
+        } catch (e) {
+          it.el.classList.add("is-error");
+        }
+        it.el.classList.remove("is-loading");
+      }
+    }
+
+    import(MERMAID_URL).then(function (mod) {
+      mermaid = mod.default;
+      render();
+      // Re-draw when the theme or palette changes
+      let timer = null;
+      new MutationObserver(function () {
+        clearTimeout(timer);
+        timer = setTimeout(render, 250);
+      }).observe(root, { attributes: true, attributeFilter: ["data-theme", "data-palette", "style"] });
+    }, function () {
+      items.forEach(function (it) { it.el.classList.remove("is-loading"); it.el.classList.add("is-error"); });
+    });
+  }
+
+  /* --- Hero: glass lens that follows the pointer, letters rise beneath it - */
+
+  function initHeroLens() {
+    const hero = document.querySelector(".hero");
+    const lens = hero && hero.querySelector(".hero-lens");
+    if (!lens) return;
+    if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      lens.remove();
+      return;
+    }
+    const chars = Array.prototype.slice.call(hero.querySelectorAll(".hero-char:not(.hero-space)"));
+    const cur = { x: 0, y: 0 }, tgt = { x: 0, y: 0 };
+    let centers = [], raf = 0, fresh = true;
+
+    function measure() {
+      const h = hero.getBoundingClientRect();
+      centers = chars.map(function (c) {
+        const r = c.getBoundingClientRect();
+        return [r.left - h.left + r.width / 2, r.top - h.top + r.height / 2];
+      });
+    }
+    function tick() {
+      cur.x += (tgt.x - cur.x) * 0.16;
+      cur.y += (tgt.y - cur.y) * 0.16;
+      lens.style.setProperty("--lx", cur.x.toFixed(1) + "px");
+      lens.style.setProperty("--ly", cur.y.toFixed(1) + "px");
+      chars.forEach(function (c, i) {
+        const dx = centers[i][0] - cur.x, dy = centers[i][1] - cur.y;
+        const f = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 170);
+        c.style.setProperty("--lift", (f * f * (3 - 2 * f)).toFixed(3));
+      });
+      raf = Math.abs(tgt.x - cur.x) + Math.abs(tgt.y - cur.y) > 0.3 ? requestAnimationFrame(tick) : 0;
+    }
+
+    hero.addEventListener("pointerenter", function () {
+      if (root.getAttribute("data-motion") === "off") return;
+      measure();
+      fresh = true;
+      lens.classList.add("is-on");
+    });
+    hero.addEventListener("pointermove", function (e) {
+      if (root.getAttribute("data-motion") === "off") { lens.classList.remove("is-on"); return; }
+      const h = hero.getBoundingClientRect();
+      tgt.x = e.clientX - h.left;
+      tgt.y = e.clientY - h.top;
+      if (fresh) { cur.x = tgt.x; cur.y = tgt.y; fresh = false; if (!centers.length) measure(); }
+      lens.classList.add("is-on");
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+    hero.addEventListener("pointerleave", function () {
+      lens.classList.remove("is-on");
+      chars.forEach(function (c) { c.style.setProperty("--lift", "0"); });
+    });
+    window.addEventListener("resize", function () { centers = []; });
+  }
+
+  /* --- Dates (local, so a post on the 2nd stays on the 2nd) ---------------- */
+
+  const DAY = 86400000;
+  function dayKey(d) {
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function parseDay(s) {
+    const p = s.split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  function addDays(d, n) {
+    // via setDate so DST shifts never skip or repeat a day
+    const r = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    r.setDate(r.getDate() + n);
+    return r;
+  }
+  function readJson(id) {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    try { return JSON.parse(el.textContent); } catch (e) { return null; }
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function groupByDay(posts) {
+    const map = {};
+    posts.forEach(function (p) { (map[p.d] = map[p.d] || []).push(p); });
+    return map;
+  }
+
+  /* --- Archive: activity heatmap ------------------------------------------ */
+
+  function initHeatmap() {
+    const box = document.querySelector(".heat");
+    const posts = readJson("archive-data");
+    if (!box || !posts || !posts.length) return;
+
+    const byDay = groupByDay(posts);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const grid = box.querySelector(".heat-grid");
+    const monthsRow = box.querySelector(".heat-months");
+    const stats = box.querySelector(".heat-stats");
+    const rangesEl = box.querySelector(".heat-ranges");
+    const scroller = box.querySelector(".heat-scroll");
+
+    const years = Object.keys(posts.reduce(function (o, p) { o[p.d.slice(0, 4)] = 1; return o; }, {}))
+      .sort().reverse();
+    const ranges = [{ id: "recent", label: "최근 1년", start: addDays(today, -364), end: today }]
+      .concat(years.map(function (y) {
+        return { id: y, label: y, start: new Date(+y, 0, 1), end: new Date(+y, 11, 31) };
+      }));
+
+    rangesEl.innerHTML = ranges.map(function (r) {
+      return '<button type="button" class="heat-range" data-range="' + r.id + '" aria-pressed="false">' + r.label + "</button>";
+    }).join("");
+
+    function streaks(start, end) {
+      let best = 0, run = 0, active = 0, count = 0;
+      for (let d = start; d <= end; d = addDays(d, 1)) {
+        const n = (byDay[dayKey(d)] || []).length;
+        count += n;
+        if (n) { active++; run++; best = Math.max(best, run); } else run = 0;
+      }
+      // Current streak: a run ending today, or yesterday if today has nothing yet
+      let cur = 0;
+      let d = byDay[dayKey(today)] ? today : addDays(today, -1);
+      while (byDay[dayKey(d)]) { cur++; d = addDays(d, -1); }
+      return { count: count, active: active, best: best, cur: cur };
+    }
+
+    function render(range) {
+      rangesEl.querySelectorAll(".heat-range").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.dataset.range === range.id));
+      });
+
+      const gridStart = addDays(range.start, -range.start.getDay());
+      const gridEnd = addDays(range.end, 6 - range.end.getDay());
+      let html = "", week = 0, months = "";
+      for (let d = gridStart, i = 0; d <= gridEnd; d = addDays(d, 1), i++) {
+        week = Math.floor(i / 7);
+        if (d < range.start || d > range.end) { html += '<span class="cell is-out"></span>'; continue; }
+        // Label each month at its first week; label the starting month too unless the next label is too close
+        if (d.getDate() === 1 || (+d === +range.start && d.getDate() < 20)) {
+          months += '<span style="grid-column:' + (week + 1) + '">' + (d.getMonth() + 1) + "월</span>";
+        }
+        const key = dayKey(d);
+        const list = byDay[key];
+        const future = d > today ? " is-future" : "";
+        const isToday = +d === +today ? " is-today" : "";
+        if (!list) {
+          html += '<span class="cell lv-0' + future + isToday + '" data-key="' + key + '" style="--w:' + week + '"></span>';
+          continue;
+        }
+        const level = Math.min(list.length, 4);
+        const href = list.length === 1 ? list[0].u : "#m-" + key.slice(0, 7);
+        html += '<a class="cell lv-' + level + ' kind-' + list[0].k + isToday + '" href="' + href + '" data-key="' + key +
+          '" style="--w:' + week + '" aria-label="' + key + " 글 " + list.length + "개: " +
+          escapeHtml(list.map(function (p) { return p.t; }).join(", ")) + '"></a>';
+      }
+      grid.style.setProperty("--weeks", week + 1);
+      monthsRow.style.setProperty("--weeks", week + 1);
+      grid.innerHTML = html;
+      monthsRow.innerHTML = months;
+      grid.classList.remove("is-in");
+      void grid.offsetWidth;
+      grid.classList.add("is-in");
+
+      const s = streaks(range.start, range.end < today ? range.end : today);
+      stats.innerHTML = [
+        ["글", s.count, "fa-pen-nib"],
+        ["활동한 날", s.active, "fa-calendar-check"],
+        ["최장 연속", s.best + "일", "fa-fire"],
+        ["현재 연속", s.cur + "일", "fa-bolt"]
+      ].map(function (x) {
+        return '<div class="heat-stat"><i class="fas ' + x[2] + '" aria-hidden="true"></i><strong>' + x[1] +
+          "</strong><span>" + x[0] + "</span></div>";
+      }).join("");
+
+      fit();
+      scroller.scrollLeft = scroller.scrollWidth;
+    }
+
+    // Size cells so the whole range fits the card; narrow screens scroll instead
+    function fit() {
+      const weeks = +grid.style.getPropertyValue("--weeks") || 53;
+      const gap = 3;
+      const avail = scroller.clientWidth - 8 - box.querySelector(".heat-weekdays").offsetWidth - gap;
+      const cell = Math.max(9, Math.min(16, Math.floor(avail / weeks) - gap));
+      box.style.setProperty("--gap", gap + "px");
+      box.style.setProperty("--cell", cell + "px");
+    }
+    let resizeTimer = null;
+    window.addEventListener("resize", function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(fit, 150); });
+
+    rangesEl.addEventListener("click", function (e) {
+      const b = e.target.closest(".heat-range");
+      if (!b) return;
+      render(ranges.filter(function (r) { return r.id === b.dataset.range; })[0]);
+    });
+
+    // Tooltip
+    const tip = document.createElement("div");
+    tip.className = "heat-tip";
+    tip.setAttribute("aria-hidden", "true");
+    document.body.appendChild(tip);
+    function showTip(cell) {
+      const key = cell.dataset.key;
+      if (!key) return;
+      const list = byDay[key] || [];
+      const d = parseDay(key);
+      tip.innerHTML = '<p class="heat-tip-date">' + d.getFullYear() + ". " + (d.getMonth() + 1) + ". " + d.getDate() +
+        " (" + "일월화수목금토"[d.getDay()] + ")</p>" +
+        (list.length
+          ? "<ul>" + list.slice(0, 4).map(function (p) {
+              return '<li><i class="kind-dot kind-' + p.k + '"></i>' + escapeHtml(p.t) + "</li>";
+            }).join("") + (list.length > 4 ? "<li>+" + (list.length - 4) + "</li>" : "") + "</ul>"
+          : '<p class="heat-tip-empty">글 없음</p>');
+      const r = cell.getBoundingClientRect();
+      tip.classList.add("is-shown");
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      const x = Math.min(Math.max(r.left + r.width / 2 - w / 2, 8), window.innerWidth - w - 8);
+      const y = r.top - h - 10 < 8 ? r.bottom + 10 : r.top - h - 10;
+      tip.style.transform = "translate(" + x + "px," + y + "px)";
+    }
+    function hideTip() { tip.classList.remove("is-shown"); }
+    grid.addEventListener("pointerover", function (e) {
+      const c = e.target.closest(".cell[data-key]");
+      if (c) showTip(c);
+    });
+    grid.addEventListener("pointerleave", hideTip);
+    grid.addEventListener("focusin", function (e) {
+      const c = e.target.closest(".cell[data-key]");
+      if (c) showTip(c);
+    });
+    grid.addEventListener("focusout", hideTip);
+    window.addEventListener("scroll", hideTip, { passive: true });
+    scroller.addEventListener("scroll", hideTip, { passive: true });
+
+    render(ranges[0]);
+  }
+
+  /* --- Newsletters: month calendar ---------------------------------------- */
+
+  function initNewsCalendar() {
+    const view = document.querySelector(".nl-view");
+    const posts = readJson("news-data");
+    if (!view || !posts || !posts.length) return;
+
+    const byDay = groupByDay(posts);
+    const cal = view.querySelector(".cal");
+    const sw = view.querySelector(".nl-switch");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    function ym(d) { return d.getFullYear() * 12 + d.getMonth(); }
+    const dates = posts.map(function (p) { return parseDay(p.d); });
+    const min = Math.min.apply(null, dates.map(ym));
+    const latest = Math.max.apply(null, dates.map(ym));
+    const max = Math.max(latest, ym(today));
+    let month = latest;
+    const fromHash = location.hash.match(/^#(\d{4})-(\d{2})$/);
+    if (fromHash) {
+      const h = +fromHash[1] * 12 + +fromHash[2] - 1;
+      if (h >= min && h <= max) month = h;
+    }
+
+    cal.innerHTML =
+      '<div class="cal-head">' +
+        '<button type="button" class="cal-nav" data-step="-1" aria-label="이전 달"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>' +
+        '<h2 class="cal-title" aria-live="polite"></h2>' +
+        '<button type="button" class="cal-nav" data-step="1" aria-label="다음 달"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>' +
+        '<button type="button" class="cal-today">최신</button>' +
+      "</div>" +
+      '<div class="cal-week" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>' +
+      '<div class="cal-grid"></div>' +
+      '<div class="cal-preview" aria-live="polite"></div>';
+    const title = cal.querySelector(".cal-title");
+    const grid = cal.querySelector(".cal-grid");
+    const preview = cal.querySelector(".cal-preview");
+    const prev = cal.querySelector('[data-step="-1"]');
+    const next = cal.querySelector('[data-step="1"]');
+
+    function showPreview(list) {
+      if (!list || !list.length) {
+        preview.innerHTML = '<p class="cal-preview-empty">이 달에는 뉴스레터가 없어요.</p>';
+        return;
+      }
+      const p = list[0];
+      const d = parseDay(p.d);
+      preview.innerHTML =
+        '<a class="cal-preview-card" href="' + p.u + '">' +
+          '<span class="cal-preview-date">' + (d.getMonth() + 1) + "월 " + d.getDate() + "일 " +
+            "일월화수목금토"[d.getDay()] + "요일" + (list.length > 1 ? " · " + list.length + "개" : "") + "</span>" +
+          '<strong class="cal-preview-title">' + escapeHtml(p.t) + "</strong>" +
+          '<span class="cal-preview-text">' + escapeHtml(p.e) + "</span>" +
+          '<span class="cal-preview-more">읽기 <i class="fas fa-arrow-right" aria-hidden="true"></i></span>' +
+        "</a>";
+    }
+
+    function render(dir) {
+      const y = Math.floor(month / 12), m = month % 12;
+      const first = new Date(y, m, 1);
+      const days = new Date(y, m + 1, 0).getDate();
+      const lead = first.getDay();
+      const cells = Math.ceil((lead + days) / 7) * 7;
+      let html = "", monthPosts = [];
+      for (let i = 0; i < cells; i++) {
+        const day = i - lead + 1;
+        if (day < 1 || day > days) { html += '<span class="cal-day is-out" aria-hidden="true"></span>'; continue; }
+        const d = new Date(y, m, day);
+        const key = dayKey(d);
+        const list = byDay[key];
+        const cls = "cal-day" + (d.getDay() === 0 ? " is-sun" : d.getDay() === 6 ? " is-sat" : "") +
+          (+d === +today ? " is-today" : "") + (d > today ? " is-future" : "");
+        const num = '<span class="cal-num">' + day + "</span>";
+        if (!list) { html += '<span class="' + cls + '">' + num + "</span>"; continue; }
+        monthPosts = list.concat(monthPosts);
+        html += '<a class="' + cls + ' has-post" href="' + list[0].u + '" data-key="' + key + '" style="--n:' + i + '" ' +
+          'aria-label="' + (m + 1) + "월 " + day + "일: " + escapeHtml(list[0].t) + '">' + num +
+          '<span class="cal-post">' + escapeHtml(list[0].t) + "</span>" +
+          (list.length > 1 ? '<span class="cal-more">+' + (list.length - 1) + "</span>" : "") + "</a>";
+      }
+      grid.innerHTML = html;
+      title.innerHTML = y + "년 " + (m + 1) + '월 <span class="cal-count">' + monthPosts.length + "개</span>";
+      prev.disabled = month <= min;
+      next.disabled = month >= max;
+      showPreview(monthPosts.length ? [monthPosts[0]] : null);
+
+      grid.classList.remove("slide-left", "slide-right", "is-in");
+      void grid.offsetWidth;
+      grid.classList.add(dir > 0 ? "slide-left" : dir < 0 ? "slide-right" : "is-in");
+    }
+
+    function go(step) {
+      const to = Math.min(Math.max(month + step, min), max);
+      if (to === month) return;
+      month = to;
+      render(step);
+      history.replaceState(null, "", "#" + Math.floor(month / 12) + "-" + String(month % 12 + 1).padStart(2, "0"));
+    }
+
+    prev.addEventListener("click", function () { go(-1); });
+    next.addEventListener("click", function () { go(1); });
+    cal.querySelector(".cal-today").addEventListener("click", function () { go(latest - month); });
+
+    grid.addEventListener("pointerover", function (e) {
+      const c = e.target.closest(".has-post");
+      if (c) showPreview(byDay[c.dataset.key]);
+    });
+    grid.addEventListener("focusin", function (e) {
+      const c = e.target.closest(".has-post");
+      if (c) showPreview(byDay[c.dataset.key]);
+    });
+    cal.addEventListener("keydown", function (e) {
+      if (e.key === "PageUp") { e.preventDefault(); go(-1); }
+      else if (e.key === "PageDown") { e.preventDefault(); go(1); }
+    });
+
+    // Swipe between months on touch screens
+    let sx = null, sy = null;
+    grid.addEventListener("touchstart", function (e) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+    grid.addEventListener("touchend", function (e) {
+      if (sx === null) return;
+      const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+      sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
+    function setView(v) {
+      view.dataset.view = v;
+      sw.querySelectorAll(".nl-switch-btn").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.dataset.view === v));
+      });
+      store("newsView", v === "calendar" ? null : v);
+    }
+    sw.addEventListener("click", function (e) {
+      const b = e.target.closest(".nl-switch-btn");
+      if (b) setView(b.dataset.view);
+    });
+
+    sw.hidden = false;
+    cal.hidden = false;
+    setView(read("newsView") === "list" ? "list" : "calendar");
+    render(0);
+  }
+
   function init() {
     initThemeToggle();
     initPalette();
@@ -693,12 +1271,18 @@
     initTyping();
     initHeroScroll();
     initSearchPalette();
+    initHeroLens();
     initReadProgress();
+    initCallouts();
     initToc();
+    initHeadingAnchors();
+    initMermaid();
     initCodeBlocks();
     initTables();
     initFigures();
     initLightbox();
+    initHeatmap();
+    initNewsCalendar();
   }
 
   if (document.readyState === "loading") {

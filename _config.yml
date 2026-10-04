@@ -24,6 +24,7 @@ navbar-links:
     - Tech Articles : "articles"
     - Daily Newsletter : "newsletters"
     - BDAI : "bdai"
+    - Archive : "archive"
   About Me: "aboutme"
   Resources:
     - GitHub: "https://github.com/48harry"

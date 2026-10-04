@@ -1,0 +1,74 @@
+---
+layout: page
+title: Archive
+subtitle: 지금까지 쓴 모든 글
+permalink: /archive/
+---
+
+{%- comment -%}
+  Activity heatmap (drawn by initHeatmap in custom.js from #archive-data) and a
+  year → month timeline of every post. Kinds: a = article, n = newsletter, b = BDAI.
+{%- endcomment -%}
+
+<section class="heat" aria-label="글 작성 기록">
+  <div class="heat-head">
+    <h2 class="heat-title"><i class="fas fa-seedling" aria-hidden="true"></i> Activity</h2>
+    <div class="heat-ranges" role="group" aria-label="기간"></div>
+  </div>
+  <div class="heat-stats"></div>
+  <div class="heat-scroll">
+    <div class="heat-board">
+      <div class="heat-months" aria-hidden="true"></div>
+      <div class="heat-body">
+        <div class="heat-weekdays" aria-hidden="true"><span></span><span>월</span><span></span><span>수</span><span></span><span>금</span><span></span></div>
+        <div class="heat-grid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="heat-foot">
+    <span class="heat-kinds">
+      <span><i class="kind-dot kind-a"></i>Article</span>
+      <span><i class="kind-dot kind-n"></i>Newsletter</span>
+      <span><i class="kind-dot kind-b"></i>BDAI</span>
+    </span>
+    <span class="heat-legend" aria-hidden="true">적음 <i class="lv-0"></i><i class="lv-1"></i><i class="lv-2"></i><i class="lv-3"></i><i class="lv-4"></i> 많음</span>
+  </div>
+</section>
+
+<script type="application/json" id="archive-data">
+[{%- for p in site.posts -%}
+  {%- if p.categories contains "News" -%}{%- assign kind = "n" -%}
+  {%- elsif p.tags contains "bdai" -%}{%- assign kind = "b" -%}
+  {%- else -%}{%- assign kind = "a" -%}{%- endif -%}
+  {"d":{{ p.date | date: "%Y-%m-%d" | jsonify }},"t":{{ p.title | strip_html | jsonify }},"u":{{ p.url | relative_url | jsonify }},"k":"{{ kind }}"}{% unless forloop.last %},{% endunless %}
+{%- endfor -%}]
+</script>
+
+<div class="archive">
+  {%- assign years = site.posts | group_by_exp: "p", "p.date | date: '%Y'" -%}
+  {%- for y in years %}
+  <section class="archive-year">
+    <h2 class="archive-year-title">{{ y.name }} <span class="tag-count">{{ y.size }}</span></h2>
+    {%- assign months = y.items | group_by_exp: "p", "p.date | date: '%m'" -%}
+    {%- for m in months %}
+    <div class="archive-month" id="m-{{ y.name }}-{{ m.name }}">
+      <h3 class="archive-month-title">{{ m.name | plus: 0 }}월 <span class="archive-month-count">{{ m.size }}</span></h3>
+      <ul class="archive-list">
+        {%- for p in m.items -%}
+          {%- if p.categories contains "News" -%}{%- assign kind = "n" -%}{%- assign kind_label = "Newsletter" -%}
+          {%- elsif p.tags contains "bdai" -%}{%- assign kind = "b" -%}{%- assign kind_label = "BDAI" -%}
+          {%- else -%}{%- assign kind = "a" -%}{%- assign kind_label = "Article" -%}{%- endif %}
+        <li>
+          <a href="{{ p.url | relative_url }}" data-date="{{ p.date | date: '%Y-%m-%d' }}">
+            <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%m.%d" }}</time>
+            <span class="archive-title">{{ p.title | strip_html }}</span>
+            <span class="archive-kind kind-{{ kind }}">{{ kind_label }}</span>
+          </a>
+        </li>
+        {%- endfor %}
+      </ul>
+    </div>
+    {%- endfor %}
+  </section>
+  {%- endfor %}
+</div>
