@@ -464,12 +464,16 @@
         '<input id="palette-frost" type="range" min="4" max="48" step="1"><span class="palette-value"></span></div>' +
       '<div class="palette-row"><label for="palette-motion">배경 움직임</label>' +
         '<input id="palette-motion" class="palette-switch" type="checkbox"></div>' +
+      '<div class="palette-row"><label for="palette-lite">가벼운 모드</label><span class="palette-value palette-auto"></span>' +
+        '<input id="palette-lite" class="palette-switch" type="checkbox"></div>' +
       '<button type="button" class="palette-reset">기본값으로</button>';
     document.body.appendChild(panel);
 
     const frost = panel.querySelector("#palette-frost");
     const frostVal = panel.querySelector(".palette-value");
     const motion = panel.querySelector("#palette-motion");
+    const lite = panel.querySelector("#palette-lite");
+    const liteAuto = panel.querySelector(".palette-auto");
     const picker = panel.querySelector('input[type="color"]');
     const customDot = panel.querySelector(".palette-dot-custom");
 
@@ -487,6 +491,8 @@
       frost.value = f;
       frostVal.textContent = f;
       motion.checked = root.getAttribute("data-motion") !== "off";
+      lite.checked = root.getAttribute("data-perf") === "lite";
+      liteAuto.textContent = lite.checked && !read("perf") ? "자동" : "";
     }
 
     function open() {
@@ -540,13 +546,126 @@
       store("motion", motion.checked ? null : "off");
     });
 
+    lite.addEventListener("change", function () {
+      setLite(lite.checked);
+      store("perf", lite.checked ? "lite" : "full");
+      sync();
+    });
+
     panel.querySelector(".palette-reset").addEventListener("click", function () {
       applyPalette("aurora");
       root.style.removeProperty("--frost");
       root.removeAttribute("data-motion");
-      ["palette", "paletteCustom", "frost", "motion"].forEach(function (k) { store(k, null); });
+      ["palette", "paletteCustom", "frost", "motion", "perf"].forEach(function (k) { store(k, null); });
+      setLite(read("perfAuto") === "lite");
       sync();
     });
+  }
+
+  /* --- Lite mode: lighter glass on slow devices --------------------------- */
+
+  function setLite(on) {
+    if (on) root.setAttribute("data-perf", "lite");
+    else root.removeAttribute("data-perf");
+  }
+  function isLite() { return root.getAttribute("data-perf") === "lite"; }
+
+  // head.html already applies a stored choice or obvious low-end hints; here we
+  // time real frames once, and switch to lite if the page can't keep up.
+  function initPerfProbe() {
+    if (read("perf") || read("perfAuto") || isLite() || reduceMotion) return;
+    if (!("requestAnimationFrame" in window)) return;
+    setTimeout(function () {
+      if (document.visibilityState !== "visible") return;
+      const deltas = [];
+      let last = performance.now(), aborted = false;
+      const stop = last + 2000;
+      function onHide() { aborted = true; }
+      document.addEventListener("visibilitychange", onHide, { once: true });
+      function frame(now) {
+        deltas.push(now - last);
+        last = now;
+        if (now < stop && !aborted) return requestAnimationFrame(frame);
+        document.removeEventListener("visibilitychange", onHide);
+        if (aborted || deltas.length < 10) return;
+        deltas.sort(function (a, b) { return a - b; });
+        const median = deltas[Math.floor(deltas.length / 2)];
+        const slow = deltas.filter(function (d) { return d > 50; }).length / deltas.length;
+        // under ~35fps typical, or one frame in four badly late
+        if (median > 28 || slow > 0.25) {
+          store("perfAuto", "lite");
+          setLite(true);
+          toast("기기가 버거워 보여서 가벼운 모드로 바꿨어요");
+        } else {
+          store("perfAuto", "full");
+        }
+      }
+      requestAnimationFrame(frame);
+    }, 1500);
+  }
+
+  /* --- Resume reading: offer to jump back to where the reader left off ---- */
+
+  function initResume() {
+    const post = document.querySelector(".blog-post");
+    if (!post) return;
+    const key = location.pathname;
+    let all = {};
+    try { all = JSON.parse(read("readpos") || "{}") || {}; } catch (e) {}
+    const saved = all[key];
+
+    function postTop() { return post.getBoundingClientRect().top + window.pageYOffset; }
+    function progress() {
+      const total = post.offsetHeight - window.innerHeight * 0.6;
+      return total > 0 ? Math.min(Math.max((window.pageYOffset - postTop()) / total, 0), 1) : 1;
+    }
+    function save() {
+      const p = progress();
+      if (p >= 0.95) delete all[key];
+      else if (p > 0.05) all[key] = { y: Math.round(window.pageYOffset - postTop()), p: Math.round(p * 100), t: Date.now() };
+      else return;
+      // keep the 40 most recent posts
+      const keys = Object.keys(all).sort(function (a, b) { return all[b].t - all[a].t; });
+      keys.slice(40).forEach(function (k) { delete all[k]; });
+      store("readpos", JSON.stringify(all));
+    }
+    let timer = null;
+    window.addEventListener("scroll", function () { clearTimeout(timer); timer = setTimeout(save, 400); }, { passive: true });
+    window.addEventListener("pagehide", save);
+
+    if (!saved || location.hash) return;
+    // Let the browser restore scroll first (back/forward); only offer when we're still near the top
+    setTimeout(function () {
+      if (window.pageYOffset > 200) return;
+      const pill = document.createElement("div");
+      pill.className = "resume";
+      pill.setAttribute("role", "region");
+      pill.setAttribute("aria-label", "이어 읽기");
+      pill.style.setProperty("--p", saved.p / 100);
+      pill.innerHTML =
+        '<button type="button" class="resume-go"><i class="fas fa-bookmark" aria-hidden="true"></i>' +
+        "<span>이어 읽기</span><span class=\"resume-pct\">" + saved.p + "%</span></button>" +
+        '<button type="button" class="resume-close" aria-label="닫기"><i class="fas fa-xmark" aria-hidden="true"></i></button>';
+      document.body.appendChild(pill);
+      requestAnimationFrame(function () { pill.classList.add("is-shown"); });
+
+      let hideTimer = setTimeout(hide, 12000);
+      const startY = window.pageYOffset;
+      function hide() {
+        clearTimeout(hideTimer);
+        window.removeEventListener("scroll", onScroll);
+        pill.classList.remove("is-shown");
+        setTimeout(function () { pill.remove(); }, 400);
+      }
+      function onScroll() { if (Math.abs(window.pageYOffset - startY) > 600) hide(); }
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      pill.querySelector(".resume-go").addEventListener("click", function () {
+        hide();
+        window.scrollTo({ top: postTop() + saved.y, behavior: reduceMotion ? "auto" : "smooth" });
+      });
+      pill.querySelector(".resume-close").addEventListener("click", hide);
+    }, 600);
   }
 
   /* --- Ambient orbs: follow the pointer and the scroll -------------------- */
@@ -600,7 +719,7 @@
     if (!finePointer) return;
 
     window.addEventListener("pointermove", function (e) {
-      if (root.getAttribute("data-motion") === "off") return;
+      if (root.getAttribute("data-motion") === "off" || isLite()) return;
       if (cur.cx < -9000) { cur.cx = e.clientX; cur.cy = e.clientY; }
       tgt.cx = e.clientX;
       tgt.cy = e.clientY;
@@ -635,7 +754,7 @@
           glass.style.setProperty("--mx", (e.clientX - r.left) + "px");
           glass.style.setProperty("--my", (e.clientY - r.top) + "px");
         }
-        if (reduceMotion || root.getAttribute("data-motion") === "off") return;
+        if (reduceMotion || isLite() || root.getAttribute("data-motion") === "off") return;
 
         const card = e.target.closest && e.target.closest(TILT);
         if (tilted && tilted !== card) untilt(tilted);
@@ -877,16 +996,11 @@
     });
   }
 
-  /* --- Hero: glass lens that follows the pointer, letters rise beneath it - */
+  /* --- Hero: title letters rise around the pointer ------------------------- */
 
-  function initHeroLens() {
+  function initHeroLift() {
     const hero = document.querySelector(".hero");
-    const lens = hero && hero.querySelector(".hero-lens");
-    if (!lens) return;
-    if (reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      lens.remove();
-      return;
-    }
+    if (!hero || reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     const chars = Array.prototype.slice.call(hero.querySelectorAll(".hero-char:not(.hero-space)"));
     const cur = { x: 0, y: 0 }, tgt = { x: 0, y: 0 };
     let centers = [], raf = 0, fresh = true;
@@ -901,8 +1015,6 @@
     function tick() {
       cur.x += (tgt.x - cur.x) * 0.16;
       cur.y += (tgt.y - cur.y) * 0.16;
-      lens.style.setProperty("--lx", cur.x.toFixed(1) + "px");
-      lens.style.setProperty("--ly", cur.y.toFixed(1) + "px");
       chars.forEach(function (c, i) {
         const dx = centers[i][0] - cur.x, dy = centers[i][1] - cur.y;
         const f = Math.max(0, 1 - Math.sqrt(dx * dx + dy * dy) / 170);
@@ -910,26 +1022,23 @@
       });
       raf = Math.abs(tgt.x - cur.x) + Math.abs(tgt.y - cur.y) > 0.3 ? requestAnimationFrame(tick) : 0;
     }
+    function reset() {
+      chars.forEach(function (c) { c.style.setProperty("--lift", "0"); });
+    }
 
     hero.addEventListener("pointerenter", function () {
-      if (root.getAttribute("data-motion") === "off") return;
       measure();
       fresh = true;
-      lens.classList.add("is-on");
     });
     hero.addEventListener("pointermove", function (e) {
-      if (root.getAttribute("data-motion") === "off") { lens.classList.remove("is-on"); return; }
+      if (root.getAttribute("data-motion") === "off") { reset(); return; }
       const h = hero.getBoundingClientRect();
       tgt.x = e.clientX - h.left;
       tgt.y = e.clientY - h.top;
       if (fresh) { cur.x = tgt.x; cur.y = tgt.y; fresh = false; if (!centers.length) measure(); }
-      lens.classList.add("is-on");
       if (!raf) raf = requestAnimationFrame(tick);
     });
-    hero.addEventListener("pointerleave", function () {
-      lens.classList.remove("is-on");
-      chars.forEach(function (c) { c.style.setProperty("--lift", "0"); });
-    });
+    hero.addEventListener("pointerleave", reset);
     window.addEventListener("resize", function () { centers = []; });
   }
 
@@ -1271,8 +1380,9 @@
     initTyping();
     initHeroScroll();
     initSearchPalette();
-    initHeroLens();
+    initHeroLift();
     initReadProgress();
+    initResume();
     initCallouts();
     initToc();
     initHeadingAnchors();
@@ -1281,6 +1391,7 @@
     initTables();
     initFigures();
     initLightbox();
+    initPerfProbe();
     initHeatmap();
     initNewsCalendar();
   }
