@@ -22,12 +22,16 @@
         }
         if (f) root.style.setProperty("--frost", f);
         if (m === "off") root.setAttribute("data-motion", "off");
-        // Lite glass: chosen in the panel, or detected on a slow device (custom.js remembers it as perfAuto)
-        var perf = localStorage.getItem("perf"), auto = localStorage.getItem("perfAuto");
+        // Lite glass: chosen in the panel, or automatic on a weak device or after custom.js's frame
+        // probe found the page too heavy (perfAuto, which expires at perfAutoUntil and is re-measured).
+        // data-perf-auto records the automatic choice so the panel's reset can return to it.
+        var perf = localStorage.getItem("perf");
         var weak = navigator.connection && navigator.connection.saveData ||
           (navigator.deviceMemory && navigator.deviceMemory <= 2) ||
           (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
-        if (perf === "lite" || (perf !== "full" && (auto === "lite" || weak))) root.setAttribute("data-perf", "lite");
+        var auto = weak || (localStorage.getItem("perfAuto") === "lite" && Date.now() < +localStorage.getItem("perfAutoUntil"));
+        if (auto) root.setAttribute("data-perf-auto", "lite");
+        if (perf === "lite" || (perf !== "full" && auto)) root.setAttribute("data-perf", "lite");
       } catch (e) {}
     })();
   </script>

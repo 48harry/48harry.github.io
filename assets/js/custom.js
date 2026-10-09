@@ -487,12 +487,16 @@
         picker.value = custom[0];
         custom.forEach(function (col, i) { customDot.style.setProperty("--c" + (i + 1), col); });
       }
+      const liteOn = isLite();
       const f = getComputedStyle(root).getPropertyValue("--frost").trim() || "22";
       frost.value = f;
       frostVal.textContent = f;
-      motion.checked = root.getAttribute("data-motion") !== "off";
-      lite.checked = root.getAttribute("data-perf") === "lite";
-      liteAuto.textContent = lite.checked && !read("perf") ? "자동" : "";
+      // Lite mode pins the blur and stills the background: show that, and rest both controls until it's off
+      frost.disabled = motion.disabled = liteOn;
+      frost.title = motion.title = liteOn ? "가벼운 모드에서는 고정돼요" : "";
+      motion.checked = !liteOn && root.getAttribute("data-motion") !== "off";
+      lite.checked = liteOn;
+      liteAuto.textContent = liteOn && !read("perf") ? "자동" : "";
     }
 
     function open() {
@@ -557,23 +561,30 @@
       root.style.removeProperty("--frost");
       root.removeAttribute("data-motion");
       ["palette", "paletteCustom", "frost", "motion", "perf"].forEach(function (k) { store(k, null); });
-      setLite(read("perfAuto") === "lite");
+      setLite(autoLite());
       sync();
     });
+    syncPalette = sync;
   }
 
   /* --- Lite mode: lighter glass on slow devices --------------------------- */
+
+  const AUTO_LITE_DAYS = 7;
+  let syncPalette = function () {};
 
   function setLite(on) {
     if (on) root.setAttribute("data-perf", "lite");
     else root.removeAttribute("data-perf");
   }
   function isLite() { return root.getAttribute("data-perf") === "lite"; }
+  // head.html's automatic choice (weak-device hints or a recent slow probe), whatever the panel says
+  function autoLite() { return root.getAttribute("data-perf-auto") === "lite"; }
 
-  // head.html already applies a stored choice or obvious low-end hints; here we
-  // time real frames once, and switch to lite if the page can't keep up.
+  // head.html already applies a stored choice, low-end hints and a recent slow verdict; here we
+  // time real frames and switch to lite if the page can't keep up. A slow verdict expires after
+  // AUTO_LITE_DAYS, so one unlucky sample (a busy CPU, a throttled tab) can't stick for good.
   function initPerfProbe() {
-    if (read("perf") || read("perfAuto") || isLite() || reduceMotion) return;
+    if (read("perf") || read("perfAuto") === "full" || isLite() || reduceMotion) return;
     if (!("requestAnimationFrame" in window)) return;
     setTimeout(function () {
       if (document.visibilityState !== "visible") return;
@@ -590,14 +601,22 @@
         if (aborted || deltas.length < 10) return;
         deltas.sort(function (a, b) { return a - b; });
         const median = deltas[Math.floor(deltas.length / 2)];
+        const fastest = deltas[Math.floor(deltas.length / 10)];
         const slow = deltas.filter(function (d) { return d > 50; }).length / deltas.length;
+        // Steady ~30fps with nothing faster is a 30Hz cap (Chrome Energy Saver, iOS Low Power
+        // Mode), not a struggling page: decide nothing and measure again next visit
+        if (fastest > 28 && median < 40 && slow <= 0.25) return;
         // under ~35fps typical, or one frame in four badly late
         if (median > 28 || slow > 0.25) {
           store("perfAuto", "lite");
+          store("perfAutoUntil", String(Date.now() + AUTO_LITE_DAYS * DAY));
+          root.setAttribute("data-perf-auto", "lite");
           setLite(true);
+          syncPalette();
           toast("기기가 버거워 보여서 가벼운 모드로 바꿨어요");
         } else {
           store("perfAuto", "full");
+          store("perfAutoUntil", null);
         }
       }
       requestAnimationFrame(frame);
@@ -610,24 +629,83 @@
     const post = document.querySelector(".blog-post");
     if (!post) return;
     const key = location.pathname;
-    let all = {};
-    try { all = JSON.parse(read("readpos") || "{}") || {}; } catch (e) {}
-    const saved = all[key];
+    function load() {
+      try { return JSON.parse(read("readpos") || "{}") || {}; } catch (e) { return {}; }
+    }
+    const saved = load()[key];
 
-    function postTop() { return post.getBoundingClientRect().top + window.pageYOffset; }
+    function docTop(el) { return el.getBoundingClientRect().top + window.pageYOffset; }
     function progress() {
       const total = post.offsetHeight - window.innerHeight * 0.6;
-      return total > 0 ? Math.min(Math.max((window.pageYOffset - postTop()) / total, 0), 1) : 1;
+      return total > 0 ? Math.min(Math.max((window.pageYOffset - docTop(post)) / total, 0), 1) : 1;
+    }
+    // The spot is the block at the top of the screen and how far into it the reader was, not a pixel
+    // offset: on the next visit, lazy images above it may not have their height yet.
+    // (f < 0 when the top of the screen sits in the margin just above the block.)
+    function spot() {
+      const y = window.pageYOffset;
+      for (let i = 0; i < post.children.length; i++) {
+        const el = post.children[i], top = docTop(el), h = el.offsetHeight;
+        if (top + h > y) return { i: i, f: h ? +((y - top) / h).toFixed(4) : 0 };
+      }
+      return { y: Math.round(y - docTop(post)) };
+    }
+    function spotTop(s) {
+      const el = s.i !== undefined && post.children[s.i];
+      // entries saved before spots existed only have a pixel offset
+      const top = el ? docTop(el) + s.f * el.offsetHeight : docTop(post) + (s.y || 0);
+      return Math.min(top, document.documentElement.scrollHeight - window.innerHeight);
     }
     function save() {
       const p = progress();
+      if (p <= 0.05) return;
+      // Read again: another tab, or this page before a back/forward restore, may have saved since
+      const all = load();
       if (p >= 0.95) delete all[key];
-      else if (p > 0.05) all[key] = { y: Math.round(window.pageYOffset - postTop()), p: Math.round(p * 100), t: Date.now() };
-      else return;
+      else all[key] = Object.assign(spot(), { p: Math.round(p * 100), t: Date.now() });
       // keep the 40 most recent posts
       const keys = Object.keys(all).sort(function (a, b) { return all[b].t - all[a].t; });
       keys.slice(40).forEach(function (k) { delete all[k]; });
       store("readpos", JSON.stringify(all));
+    }
+
+    // Images above the spot load first, so the page above it has its final height before we glide
+    function preload() {
+      const anchor = saved.i !== undefined && post.children[saved.i];
+      const imgs = Array.prototype.filter.call(post.querySelectorAll("img"), function (img) {
+        return !img.complete && (!anchor || anchor.contains(img) ||
+          !!(img.compareDocumentPosition(anchor) & Node.DOCUMENT_POSITION_FOLLOWING));
+      });
+      return Promise.all(imgs.map(function (img) {
+        return new Promise(function (done) {
+          img.addEventListener("load", done, { once: true });
+          img.addEventListener("error", done, { once: true });
+          img.loading = "eager";
+        });
+      }));
+    }
+    function jump(y) {
+      try { window.scrollTo({ top: y, behavior: "instant" }); } catch (e) { window.scrollTo(0, y); }
+    }
+    // After the glide, keep the spot in place while late images above it still change the page,
+    // until the reader scrolls on their own or a few seconds pass
+    function hold() {
+      const inputs = ["wheel", "touchstart", "keydown", "pointerdown"];
+      let on = true, last = NaN, still = 0;
+      function stop() {
+        on = false;
+        inputs.forEach(function (t) { window.removeEventListener(t, stop); });
+      }
+      inputs.forEach(function (t) { window.addEventListener(t, stop, { passive: true }); });
+      setTimeout(stop, 4000);
+      (function check() {
+        if (!on) return;
+        const y = window.pageYOffset;
+        still = y === last ? still + 1 : 0;
+        last = y;
+        if (still > 5 && Math.abs(spotTop(saved) - y) > 2) jump(spotTop(saved));
+        requestAnimationFrame(check);
+      })();
     }
     let timer = null;
     window.addEventListener("scroll", function () { clearTimeout(timer); timer = setTimeout(save, 400); }, { passive: true });
@@ -637,6 +715,7 @@
     // Let the browser restore scroll first (back/forward); only offer when we're still near the top
     setTimeout(function () {
       if (window.pageYOffset > 200) return;
+      const ready = preload();
       const pill = document.createElement("div");
       pill.className = "resume";
       pill.setAttribute("role", "region");
@@ -662,7 +741,11 @@
 
       pill.querySelector(".resume-go").addEventListener("click", function () {
         hide();
-        window.scrollTo({ top: postTop() + saved.y, behavior: reduceMotion ? "auto" : "smooth" });
+        // give images still loading a moment; hold() covers any that take longer
+        Promise.race([ready, new Promise(function (r) { setTimeout(r, 800); })]).then(function () {
+          window.scrollTo({ top: spotTop(saved), behavior: reduceMotion ? "auto" : "smooth" });
+          hold();
+        });
       });
       pill.querySelector(".resume-close").addEventListener("click", hide);
     }, 600);
@@ -735,7 +818,7 @@
 
   const GLASS = ".posts-list .post-preview, .post-nav-link, .series-step, .series-box, .tag-pill, .tag-group, " +
     ".toc-inline, .profile, .about-card, .related-posts, .btn-ghost, .hero-pill, .section-more, .blog-post, " +
-    ".palette-panel, .page-link, .heat, .heat-stat, .cal, .cal-preview-card, .nl-switch, .archive-month, .callout";
+    ".palette-panel, .page-link, .heat, .heat-stat, .cal, .cal-day.has-post, .cal-preview-card, .nl-switch, .archive-month, .callout";
   const TILT = ".posts-list .post-preview, .series-step, .post-nav-link, .about-card";
   const MAGNETIC = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .profile-btn";
   const RIPPLE = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .post-preview, .series-step, .post-nav-link, .palette-swatch, .page-link, " +
@@ -901,7 +984,8 @@
 
   /* --- Mermaid: ```mermaid blocks become diagrams in the current palette -- */
 
-  const MERMAID_URL = "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  // Pinned: a floating tag would change the renderer (and its error handling) under the site
+  const MERMAID_URL = "https://cdn.jsdelivr.net/npm/mermaid@11.17.2/dist/mermaid.esm.min.mjs";
 
   function initMermaid() {
     // Rouge wraps fenced code in div.language-x; unknown languages can come out as a bare pre > code
@@ -969,7 +1053,9 @@
       const sig = JSON.stringify(vars);
       if (sig === last) return;
       last = sig;
-      mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict", themeVariables: vars });
+      // suppressErrorRendering: otherwise a failed render leaves mermaid's error graphic on <body>,
+      // one more copy on every theme or palette change; the figure's .is-error state covers it
+      mermaid.initialize({ startOnLoad: false, theme: "base", securityLevel: "strict", suppressErrorRendering: true, themeVariables: vars });
       for (const it of items) {
         try {
           const out = await mermaid.render("mermaid-" + (++seq), it.src);
@@ -1013,6 +1099,8 @@
       });
     }
     function tick() {
+      // a resize clears the centres, possibly with a frame already queued
+      if (!centers.length) measure();
       cur.x += (tgt.x - cur.x) * 0.16;
       cur.y += (tgt.y - cur.y) * 0.16;
       chars.forEach(function (c, i) {
@@ -1023,6 +1111,10 @@
       raf = Math.abs(tgt.x - cur.x) + Math.abs(tgt.y - cur.y) > 0.3 ? requestAnimationFrame(tick) : 0;
     }
     function reset() {
+      // drop a queued frame too, or it would lift the letters again right after
+      cancelAnimationFrame(raf);
+      raf = 0;
+      fresh = true;
       chars.forEach(function (c) { c.style.setProperty("--lift", "0"); });
     }
 
@@ -1031,11 +1123,12 @@
       fresh = true;
     });
     hero.addEventListener("pointermove", function (e) {
-      if (root.getAttribute("data-motion") === "off") { reset(); return; }
+      // lite mode stills motion like the switch does (the panel shows that switch off then)
+      if (root.getAttribute("data-motion") === "off" || isLite()) { reset(); return; }
       const h = hero.getBoundingClientRect();
       tgt.x = e.clientX - h.left;
       tgt.y = e.clientY - h.top;
-      if (fresh) { cur.x = tgt.x; cur.y = tgt.y; fresh = false; if (!centers.length) measure(); }
+      if (fresh) { cur.x = tgt.x; cur.y = tgt.y; fresh = false; }
       if (!raf) raf = requestAnimationFrame(tick);
     });
     hero.addEventListener("pointerleave", reset);
@@ -1051,6 +1144,21 @@
   function parseDay(s) {
     const p = s.split("-");
     return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  // Post days come from Jekyll in the site's timezone (_config.yml), so "today" has to be that day
+  // too: the visitor's own date would put the newest post in the future west of Korea
+  const SITE_TZ = "Asia/Seoul";
+  function siteToday() {
+    const p = {};
+    try {
+      new Intl.DateTimeFormat("en-US", { timeZone: SITE_TZ, year: "numeric", month: "numeric", day: "numeric" })
+        .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+      return new Date(+p.year, +p.month - 1, +p.day);
+    } catch (e) {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
   }
   function addDays(d, n) {
     // via setDate so DST shifts never skip or repeat a day
@@ -1082,8 +1190,7 @@
     if (!box || !posts || !posts.length) return;
 
     const byDay = groupByDay(posts);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = siteToday();
     const grid = box.querySelector(".heat-grid");
     const monthsRow = box.querySelector(".heat-months");
     const stats = box.querySelector(".heat-stats");
@@ -1236,8 +1343,7 @@
     const byDay = groupByDay(posts);
     const cal = view.querySelector(".cal");
     const sw = view.querySelector(".nl-switch");
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const today = siteToday();
 
     function ym(d) { return d.getFullYear() * 12 + d.getMonth(); }
     const dates = posts.map(function (p) { return parseDay(p.d); });
@@ -1254,7 +1360,7 @@
     cal.innerHTML =
       '<div class="cal-head">' +
         '<button type="button" class="cal-nav" data-step="-1" aria-label="이전 달"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>' +
-        '<h2 class="cal-title" aria-live="polite"></h2>' +
+        '<h2 class="cal-title" aria-live="polite" tabindex="-1"></h2>' +
         '<button type="button" class="cal-nav" data-step="1" aria-label="다음 달"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>' +
         '<button type="button" class="cal-today">최신</button>' +
       "</div>" +
@@ -1267,8 +1373,14 @@
     const prev = cal.querySelector('[data-step="-1"]');
     const next = cal.querySelector('[data-step="1"]');
 
-    function showPreview(list) {
-      if (!list || !list.length) {
+    // Rebuilding the card restarts its fade-in, so only do it when the day changes
+    // (pointerover also fires for the number, title and "+1" inside the same day)
+    let shown;
+    function showPreview(key) {
+      if (key === shown) return;
+      shown = key;
+      const list = key && byDay[key];
+      if (!list) {
         preview.innerHTML = '<p class="cal-preview-empty">이 달에는 뉴스레터가 없어요.</p>';
         return;
       }
@@ -1309,9 +1421,10 @@
       }
       grid.innerHTML = html;
       title.innerHTML = y + "년 " + (m + 1) + '월 <span class="cal-count">' + monthPosts.length + "개</span>";
-      prev.disabled = month <= min;
-      next.disabled = month >= max;
-      showPreview(monthPosts.length ? [monthPosts[0]] : null);
+      // aria-disabled, not disabled: a disabled button would drop the keyboard focus it holds
+      prev.setAttribute("aria-disabled", String(month <= min));
+      next.setAttribute("aria-disabled", String(month >= max));
+      showPreview(monthPosts.length ? monthPosts[0].d : null);
 
       grid.classList.remove("slide-left", "slide-right", "is-in");
       void grid.offsetWidth;
@@ -1321,8 +1434,13 @@
     function go(step) {
       const to = Math.min(Math.max(month + step, min), max);
       if (to === month) return;
+      // The new grid and preview replace a focused day or card; keep focus in the calendar so
+      // PageUp/PageDown keep working
+      const inGrid = grid.contains(document.activeElement), inPreview = preview.contains(document.activeElement);
       month = to;
       render(step);
+      if (inGrid) (grid.querySelector(".has-post") || title).focus();
+      else if (inPreview) (preview.querySelector("a") || title).focus();
       history.replaceState(null, "", "#" + Math.floor(month / 12) + "-" + String(month % 12 + 1).padStart(2, "0"));
     }
 
@@ -1332,11 +1450,11 @@
 
     grid.addEventListener("pointerover", function (e) {
       const c = e.target.closest(".has-post");
-      if (c) showPreview(byDay[c.dataset.key]);
+      if (c) showPreview(c.dataset.key);
     });
     grid.addEventListener("focusin", function (e) {
       const c = e.target.closest(".has-post");
-      if (c) showPreview(byDay[c.dataset.key]);
+      if (c) showPreview(c.dataset.key);
     });
     cal.addEventListener("keydown", function (e) {
       if (e.key === "PageUp") { e.preventDefault(); go(-1); }
