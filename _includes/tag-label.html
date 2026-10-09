@@ -1,0 +1,9 @@
+{%- comment -%}
+  Display name for a tag. Tags are typed in lower case in front matter;
+  labels read better capitalised now that they're no longer forced upper case.
+{%- endcomment -%}
+{%- case include.tag -%}
+  {%- when "article" -%}Article
+  {%- when "bdai" -%}BDAI
+  {%- else -%}{{ include.tag }}
+{%- endcase -%}

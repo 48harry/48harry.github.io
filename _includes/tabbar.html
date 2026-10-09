@@ -1,0 +1,20 @@
+{%- comment -%}
+  Phone navigation: a floating tab bar plus a round search button, in the
+  manner of iOS 26. Shown below 768px only (custom.css); custom.js tucks it in
+  while scrolling down. Posts light up their section's tab.
+{%- endcomment -%}
+{%- assign tab = "" -%}
+{%- if page.url == "/" -%}{%- assign tab = "home" -%}
+{%- elsif page.url == "/articles/" -%}{%- assign tab = "articles" -%}
+{%- elsif page.url == "/newsletters/" -%}{%- assign tab = "news" -%}
+{%- elsif page.url == "/archive/" -%}{%- assign tab = "archive" -%}
+{%- elsif page.categories contains "News" -%}{%- assign tab = "news" -%}
+{%- elsif page.collection == "posts" -%}{%- unless page.tags contains "bdai" -%}{%- assign tab = "articles" -%}{%- endunless -%}
+{%- endif -%}
+<nav class="tabbar" aria-label="주요 메뉴">
+  <a class="tab{% if tab == 'home' %} is-active{% endif %}" href="{{ '/' | relative_url }}"{% if tab == 'home' %} aria-current="page"{% endif %}><i class="fas fa-house" aria-hidden="true"></i><span>홈</span></a>
+  <a class="tab{% if tab == 'articles' %} is-active{% endif %}" href="{{ '/articles/' | relative_url }}"{% if tab == 'articles' %} aria-current="page"{% endif %}><i class="fas fa-code" aria-hidden="true"></i><span>아티클</span></a>
+  <a class="tab{% if tab == 'news' %} is-active{% endif %}" href="{{ '/newsletters/' | relative_url }}"{% if tab == 'news' %} aria-current="page"{% endif %}><i class="fas fa-newspaper" aria-hidden="true"></i><span>뉴스레터</span></a>
+  <a class="tab{% if tab == 'archive' %} is-active{% endif %}" href="{{ '/archive/' | relative_url }}"{% if tab == 'archive' %} aria-current="page"{% endif %}><i class="fas fa-box-archive" aria-hidden="true"></i><span>아카이브</span></a>
+</nav>
+<button type="button" class="tab-search" data-open-search aria-label="검색"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>
