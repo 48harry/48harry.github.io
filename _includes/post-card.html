@@ -3,7 +3,7 @@
 {%- assign card_mins = card_chars | divided_by: 500 | plus: 1 -%}
 <article class="post-preview{% if include.featured %} is-featured{% endif %}">
   {% if p.tags.size > 0 %}
-    <a class="card-tag" href="{{ '/tags/' | relative_url }}#{{ p.tags | first | slugify }}">{{ p.tags | first }}</a>
+    <a class="card-tag" href="{{ '/tags/' | relative_url }}#{{ p.tags | first | slugify }}">{% include tag-label.html tag=p.tags.first %}</a>
   {% endif %}
   <a class="card-link" href="{{ p.url | relative_url }}">
     <h2 class="post-title">{{ p.title | strip_html }}</h2>

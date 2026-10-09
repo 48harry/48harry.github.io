@@ -463,9 +463,9 @@
       '<div class="palette-row"><label for="palette-frost">유리 블러</label>' +
         '<input id="palette-frost" type="range" min="4" max="48" step="1"><span class="palette-value"></span></div>' +
       '<div class="palette-row"><label for="palette-motion">배경 움직임</label>' +
-        '<input id="palette-motion" class="palette-switch" type="checkbox"></div>' +
+        '<span class="switch"><input id="palette-motion" type="checkbox"><i aria-hidden="true"></i></span></div>' +
       '<div class="palette-row"><label for="palette-lite">가벼운 모드</label><span class="palette-value palette-auto"></span>' +
-        '<input id="palette-lite" class="palette-switch" type="checkbox"></div>' +
+        '<span class="switch"><input id="palette-lite" type="checkbox"><i aria-hidden="true"></i></span></div>' +
       '<button type="button" class="palette-reset">기본값으로</button>';
     document.body.appendChild(panel);
 
@@ -476,6 +476,11 @@
     const liteAuto = panel.querySelector(".palette-auto");
     const picker = panel.querySelector('input[type="color"]');
     const customDot = panel.querySelector(".palette-dot-custom");
+
+    // the slider's track fills up to the value
+    function fillFrost() {
+      frost.style.setProperty("--fill", (frost.value - frost.min) / (frost.max - frost.min) * 100 + "%");
+    }
 
     function sync() {
       const current = read("palette") || "aurora";
@@ -491,6 +496,7 @@
       const f = getComputedStyle(root).getPropertyValue("--frost").trim() || "22";
       frost.value = f;
       frostVal.textContent = f;
+      fillFrost();
       // Lite mode pins the blur and stills the background: show that, and rest both controls until it's off
       frost.disabled = motion.disabled = liteOn;
       frost.title = motion.title = liteOn ? "가벼운 모드에서는 고정돼요" : "";
@@ -541,6 +547,7 @@
     frost.addEventListener("input", function () {
       root.style.setProperty("--frost", frost.value);
       frostVal.textContent = frost.value;
+      fillFrost();
       store("frost", frost.value);
     });
 
@@ -814,78 +821,121 @@
     document.addEventListener("pointerleave", function () { amb.classList.remove("has-cursor"); });
   }
 
-  /* --- Glass: pointer highlight, tilt, magnetic buttons, ripple ----------- */
+  /* --- Glass: pointer highlight and magnetic buttons ---------------------- */
 
   const GLASS = ".posts-list .post-preview, .post-nav-link, .series-step, .series-box, .tag-pill, .tag-group, " +
     ".toc-inline, .profile, .about-card, .related-posts, .btn-ghost, .hero-pill, .section-more, .blog-post, " +
-    ".palette-panel, .page-link, .heat, .heat-stat, .cal, .cal-day.has-post, .cal-preview-card, .nl-switch, .archive-month, .callout";
-  const TILT = ".posts-list .post-preview, .series-step, .post-nav-link, .about-card";
+    ".palette-panel, .page-link, .heat, .heat-stat, .cal, .cal-day.has-post, .cal-preview-card, .archive-month, .callout";
   const MAGNETIC = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .profile-btn";
-  const RIPPLE = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .post-preview, .series-step, .post-nav-link, .palette-swatch, .page-link, " +
-    ".cal-day.has-post, .cal-nav, .cal-today, .nl-switch-btn, .heat-range";
 
   function initGlassPointer() {
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const nav = document.querySelector(".navbar-custom");
+    let magnet = null;
 
-    if (finePointer) {
-      let tilted = null, magnet = null;
-
-      document.addEventListener("pointermove", function (e) {
-        const glass = e.target.closest && e.target.closest(GLASS);
-        if (glass) {
-          const r = glass.getBoundingClientRect();
-          glass.style.setProperty("--mx", (e.clientX - r.left) + "px");
-          glass.style.setProperty("--my", (e.clientY - r.top) + "px");
-        }
-        if (reduceMotion || isLite() || root.getAttribute("data-motion") === "off") return;
-
-        const card = e.target.closest && e.target.closest(TILT);
-        if (tilted && tilted !== card) untilt(tilted);
-        if (card) {
-          const r = card.getBoundingClientRect();
-          const x = (e.clientX - r.left) / r.width - 0.5;
-          const y = (e.clientY - r.top) / r.height - 0.5;
-          card.classList.add("is-tilting");
-          card.style.transform = "perspective(900px) rotateX(" + (-y * 7).toFixed(2) + "deg) rotateY(" +
-            (x * 9).toFixed(2) + "deg) translateY(-4px)";
-          tilted = card;
-        }
-
-        const m = e.target.closest && e.target.closest(MAGNETIC);
-        if (magnet && magnet !== m) magnet.style.translate = "";
-        if (m) {
-          const r = m.getBoundingClientRect();
-          m.classList.add("is-magnetic");
-          m.style.translate = ((e.clientX - r.left - r.width / 2) * 0.25).toFixed(1) + "px " +
-            ((e.clientY - r.top - r.height / 2) * 0.35).toFixed(1) + "px";
-          magnet = m;
-        }
-      }, { passive: true });
-
-      function untilt(card) {
-        card.style.transform = "";
-        card.classList.remove("is-tilting");
-        tilted = null;
+    document.addEventListener("pointermove", function (e) {
+      const glass = e.target.closest && e.target.closest(GLASS);
+      if (glass) {
+        const r = glass.getBoundingClientRect();
+        glass.style.setProperty("--mx", (e.clientX - r.left) + "px");
+        glass.style.setProperty("--my", (e.clientY - r.top) + "px");
       }
-      document.addEventListener("pointerleave", function () {
-        if (tilted) untilt(tilted);
-        if (magnet) magnet.style.translate = "";
-      });
-    }
+      // The navbar's glass is its ::before, which can't hold --mx; it reads --nx/--ny instead
+      if (nav && nav.contains(e.target)) {
+        const r = nav.getBoundingClientRect();
+        nav.style.setProperty("--nx", (e.clientX - r.left) + "px");
+        nav.style.setProperty("--ny", (e.clientY - r.top) + "px");
+      }
+      if (reduceMotion || isLite() || root.getAttribute("data-motion") === "off") {
+        if (magnet) { magnet.style.translate = ""; magnet = null; }
+        return;
+      }
 
-    if (reduceMotion) return;
-    document.addEventListener("pointerdown", function (e) {
-      const host = e.target.closest && e.target.closest(RIPPLE);
-      if (!host) return;
-      const r = host.getBoundingClientRect();
-      const dot = document.createElement("span");
-      dot.className = "ripple";
-      dot.style.left = (e.clientX - r.left) + "px";
-      dot.style.top = (e.clientY - r.top) + "px";
-      host.classList.add("ripple-host");
-      host.appendChild(dot);
-      dot.addEventListener("animationend", function () { dot.remove(); });
+      const m = e.target.closest && e.target.closest(MAGNETIC);
+      if (magnet && magnet !== m) magnet.style.translate = "";
+      if (m) {
+        const r = m.getBoundingClientRect();
+        m.style.translate = ((e.clientX - r.left - r.width / 2) * 0.25).toFixed(1) + "px " +
+          ((e.clientY - r.top - r.height / 2) * 0.35).toFixed(1) + "px";
+      }
+      magnet = m;
+    }, { passive: true });
+
+    document.addEventListener("pointerleave", function () {
+      if (magnet) magnet.style.translate = "";
+      magnet = null;
     });
+  }
+
+  /* --- Navbar: a glass lens glides to the item under the pointer ------------ */
+
+  function initNavLens() {
+    const list = document.querySelector(".navbar-custom .navbar-nav");
+    if (!list || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const lens = document.createElement("li");
+    lens.className = "nav-lens";
+    lens.setAttribute("aria-hidden", "true");
+    list.appendChild(lens);
+
+    function place(link, jump) {
+      const l = list.getBoundingClientRect(), r = link.getBoundingClientRect();
+      if (jump) lens.style.transition = "none";
+      lens.style.width = r.width + "px";
+      lens.style.height = r.height + "px";
+      lens.style.transform = "translate(" + (r.left - l.left) + "px, " + (r.top - l.top) + "px)";
+      if (jump) { void lens.offsetWidth; lens.style.transition = ""; }
+    }
+    list.addEventListener("pointerover", function (e) {
+      const link = e.target.closest(".nav-link");
+      if (!link || window.innerWidth < 1200) return;
+      // appear under the first item the pointer reaches, then glide from item to item
+      place(link, !lens.classList.contains("is-on"));
+      lens.classList.add("is-on");
+    });
+    list.addEventListener("pointerleave", function () { lens.classList.remove("is-on"); });
+  }
+
+  /* --- Segmented controls: a raised lens slides to the pressed option -------- */
+
+  function initSegments() {
+    document.querySelectorAll(".nl-switch, .heat-ranges").forEach(function (seg) {
+      const lens = document.createElement("span");
+      lens.className = "seg-lens";
+      lens.setAttribute("aria-hidden", "true");
+      seg.prepend(lens);
+      let placed = false;
+
+      function place() {
+        const on = seg.querySelector('[aria-pressed="true"]');
+        if (!on || !on.offsetWidth) return;
+        // the first placement jumps there; later ones glide
+        if (!placed) lens.style.transition = "none";
+        lens.style.width = on.offsetWidth + "px";
+        lens.style.transform = "translateX(" + on.offsetLeft + "px)";
+        if (!placed) { void lens.offsetWidth; lens.style.transition = ""; placed = true; }
+      }
+      new MutationObserver(place).observe(seg, { subtree: true, attributes: true, attributeFilter: ["aria-pressed"] });
+      window.addEventListener("resize", place);
+      if (document.fonts) document.fonts.ready.then(place);
+      place();
+    });
+  }
+
+  /* --- Phone tab bar: tucks in while scrolling down, back on the way up ------ */
+
+  function initTabbar() {
+    if (!document.querySelector(".tabbar")) return;
+    let lastY = window.pageYOffset, frame = 0;
+    window.addEventListener("scroll", function () {
+      if (frame) return;
+      frame = requestAnimationFrame(function () {
+        frame = 0;
+        const y = window.pageYOffset, dy = y - lastY;
+        if (Math.abs(dy) < 8) return;
+        root.classList.toggle("tabbar-compact", dy > 0 && y > 120);
+        lastY = y;
+      });
+    }, { passive: true });
   }
 
   /* --- Toast --------------------------------------------------------------- */
@@ -1498,6 +1548,8 @@
     initTyping();
     initHeroScroll();
     initSearchPalette();
+    initNavLens();
+    initTabbar();
     initHeroLift();
     initReadProgress();
     initResume();
@@ -1512,6 +1564,7 @@
     initPerfProbe();
     initHeatmap();
     initNewsCalendar();
+    initSegments();
   }
 
   if (document.readyState === "loading") {
