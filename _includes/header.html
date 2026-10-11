@@ -1,4 +1,4 @@
-{% assign date_format = site.date_format | default: "%B %-d, %Y" %}
+{% assign date_format = site.date_format | default: "%Y.%m.%d" %}
 
 {% if page.cover-img %}
   <div id="header-big-imgs" data-num-img={% if page.cover-img.first %}{{ page.cover-img.size }}{% else %}1{% endif %}
@@ -26,8 +26,9 @@
     <div class="row">
       <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
         <div class="{{ include.type }}-heading">
-          {% if include.type == "post" and page.tags.size > 0 %}
-            <a class="post-eyebrow" href="{{ '/tags/' | relative_url }}#{{ page.tags | first | slugify }}">{% include tag-label.html tag=page.tags.first %}</a>
+          {% if include.type == "post" %}
+            {%- include post-section.html -%}
+            <a class="post-eyebrow" href="{{ section.url | relative_url }}">{% include icon.html name=section.icon %}{{ section.name }}</a>
           {% endif %}
           <h1>{% if page.title %}{{ page.title | strip_html }}{% else %}<br/>{% endif %}</h1>
           {% if page.subtitle %}
@@ -43,13 +44,13 @@
             {%- assign read_mins = read_chars | divided_by: 500 | plus: 1 -%}
             <div class="post-meta-row">
               {% if page.author %}
-                <span class="meta-item"><i class="far fa-user" aria-hidden="true"></i> {{ page.author | strip_html }}</span>
+                <span class="meta-item">{% include icon.html name="user" %} {{ page.author | strip_html }}</span>
               {% endif %}
-              <span class="meta-item"><i class="far fa-calendar" aria-hidden="true"></i> <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time></span>
+              <span class="meta-item">{% include icon.html name="calendar" %} <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time></span>
               {% if page.last-updated %}
-                <span class="meta-item"><i class="fas fa-rotate" aria-hidden="true"></i> {{ page.last-updated | date: "%Y.%m.%d" }} 수정</span>
+                <span class="meta-item">{% include icon.html name="rotate" %} {{ page.last-updated | date: "%Y.%m.%d" }} 수정</span>
               {% endif %}
-              <span class="meta-item"><i class="far fa-clock" aria-hidden="true"></i> {{ read_mins }}분 읽기</span>
+              <span class="meta-item">{% include icon.html name="clock" %} {{ read_mins }}분 읽기</span>
             </div>
           {% endif %}
         </div>

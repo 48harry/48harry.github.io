@@ -5,50 +5,45 @@ share-description: Geunyeong Cho의 기술 아티클, 데일리 테크 뉴스레
 hero: true
 ---
 
-<section class="home-section">
+{%- assign sections = site.data.sections -%}
+{%- assign news_posts = site.categories.News -%}
+{%- assign article_posts = "" | split: "" -%}
+{%- for post in site.posts -%}
+  {%- unless post.categories contains "News" or post.tags contains "bdai" -%}
+    {%- assign article_posts = article_posts | push: post -%}
+  {%- endunless -%}
+{%- endfor -%}
+{%- assign bdai_posts = site.tags.bdai | sort: "date" -%}
+
+<section class="home-section" aria-labelledby="home-news">
   <div class="section-head">
-    <div>
-      <p class="section-eyebrow">Daily Newsletter</p>
-      <h2 class="section-title">오늘의 테크 뉴스</h2>
-    </div>
-    <a class="section-more" href="{{ '/newsletters/' | relative_url }}">전체 {{ site.categories.News.size }}편 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    <h2 class="section-title" id="home-news">{{ sections.news.name }}</h2>
+    <a class="section-more" href="{{ sections.news.url | relative_url }}">전체 {{ news_posts.size }}편 {% include icon.html name="arrow-right" %}</a>
   </div>
   <div class="posts-list">
-    {% for post in site.categories.News limit: 1 %}
-      {% include post-card.html post=post featured=true %}
+    {% for post in news_posts limit: 1 %}
+      {% include post-card.html post=post featured=true level=3 %}
     {% endfor %}
   </div>
 </section>
 
-<section class="home-section">
+<section class="home-section" aria-labelledby="home-articles">
   <div class="section-head">
-    <div>
-      <p class="section-eyebrow">Tech Articles</p>
-      <h2 class="section-title">기술 아티클</h2>
-    </div>
-    <a class="section-more" href="{{ '/articles/' | relative_url }}">모두 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    <h2 class="section-title" id="home-articles">{{ sections.articles.name }}</h2>
+    <a class="section-more" href="{{ sections.articles.url | relative_url }}">전체 {{ article_posts.size }}편 {% include icon.html name="arrow-right" %}</a>
   </div>
-  <div class="posts-list posts-grid">
-    {% assign shown = 0 %}
-    {% for post in site.posts %}
-      {% if shown >= 4 %}{% break %}{% endif %}
-      {% unless post.categories contains "News" or post.tags contains "bdai" %}
-        {% include post-card.html post=post %}
-        {% assign shown = shown | plus: 1 %}
-      {% endunless %}
+  <ol class="post-rows">
+    {% for post in article_posts limit: 4 %}
+      {% include post-row.html post=post %}
     {% endfor %}
-  </div>
+  </ol>
 </section>
 
-{% assign bdai_posts = site.tags.bdai | sort: "date" %}
 {% if bdai_posts.size > 0 %}
-<section class="home-section">
+<section class="home-section" aria-labelledby="home-bdai">
   <div class="section-head">
-    <div>
-      <p class="section-eyebrow">BDAI Series</p>
-      <h2 class="section-title">추천 시스템 회고</h2>
-    </div>
-    <a class="section-more" href="{{ '/bdai/' | relative_url }}">시리즈 보기 <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    <h2 class="section-title" id="home-bdai">{{ sections.bdai.name }}</h2>
+    <a class="section-more" href="{{ sections.bdai.url | relative_url }}">전체 {{ bdai_posts.size }}편 {% include icon.html name="arrow-right" %}</a>
   </div>
   <ol class="series-track">
     {% for post in bdai_posts %}
@@ -56,6 +51,7 @@ hero: true
         <a class="series-step{% if forloop.last %} is-latest{% endif %}" href="{{ post.url | relative_url }}">
           <span class="series-step-num">{{ forloop.index }}</span>
           <span class="series-step-label">{{ forloop.index }}주차</span>
+          {% if post.subtitle and post.subtitle != "" %}<span class="series-step-topic">{{ post.subtitle | strip_html }}</span>{% endif %}
           <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m.%d" }}</time>
         </a>
       </li>

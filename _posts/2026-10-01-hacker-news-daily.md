@@ -3,7 +3,7 @@ layout: post
 title: "오픈소스 업스케일링부터 차세대 Gemini, 그리고 우주 인프라의 미래까지"
 date: 2026-10-01 18:14:04 +0900
 categories: [Tech, News]
-tags: [Hacker News, Tech Trend]
+tags: [Hacker News, Tech Trend, 오픈소스, LLM, 인프라]
 ---
 
 이번 주 테크 생태계는 그래픽스 최적화, 거대 언어 모델의 다음 단계, 그리고 인류의 활동 영역인 우주 인프라까지 경계를 넓히는 흥미로운 소식들로 가득합니다. 엔지니어링 관점에서 이 파편화된 기술 트렌드들이 어떻게 하나의 거대한 흐름을 만드는지 분석해 보았습니다.

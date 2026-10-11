@@ -1,4 +1,4 @@
-// Theme toggle, palette panel, glass interactions, post reading aids (TOC, callouts, heading links,
+// Theme and settings panel, glass interactions, post reading aids (TOC, callouts, heading links,
 // Mermaid, code blocks, images), search, the archive heatmap and the newsletter calendar.
 // Loaded through `site-js` in _config.yml, after beautifuljekyll.js.
 
@@ -8,7 +8,20 @@
   const root = document.documentElement;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* --- Theme toggle ------------------------------------------------------- */
+  /* --- Icons: the sprite next to this script's folder (assets/img/icons.svg) -- */
+
+  const ICON_SPRITE = (function () {
+    const src = document.currentScript && document.currentScript.src;
+    return src ? src.replace(/js\/custom\.js.*$/, "img/icons.svg") : "/assets/img/icons.svg";
+  })();
+  function icon(name, cls) {
+    return '<svg class="icon' + (cls ? " " + cls : "") + '" aria-hidden="true" focusable="false"><use href="' +
+      ICON_SPRITE + "#" + name + '"></use></svg>';
+  }
+
+  /* --- Theme: system, light or dark (chosen in the settings panel) ---------- */
+
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
 
   function syncNavbarClass() {
     const nav = document.querySelector(".navbar");
@@ -17,17 +30,23 @@
     nav.classList.toggle("navbar-dark", dark);
     nav.classList.toggle("navbar-light", !dark);
   }
+  // head.html applied the stored choice before first paint; "system" is no stored choice at all
+  function themeChoice() {
+    const t = read("theme");
+    return t === "light" || t === "dark" ? t : "system";
+  }
+  function applyTheme(choice) {
+    const theme = choice === "system" ? (systemDark.matches ? "dark" : "light") : choice;
+    root.setAttribute("data-theme", theme);
+    syncNavbarClass();
+  }
 
-  function initThemeToggle() {
-    const btn = document.getElementById("theme-toggle");
+  function initTheme() {
     // beautifuljekyll.js sets the navbar class after a 10ms timeout; run after it
     setTimeout(syncNavbarClass, 20);
-    if (!btn) return;
-    btn.addEventListener("click", function () {
-      const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      try { localStorage.setItem("theme", next); } catch (e) {}
-      syncNavbarClass();
+    // follow the system while the page is open, unless a theme was picked
+    systemDark.addEventListener("change", function () {
+      if (themeChoice() === "system") applyTheme("system");
     });
   }
 
@@ -35,7 +54,7 @@
 
   function initReveal() {
     const targets = document.querySelectorAll(
-      ".posts-list .post-preview, .pagination, .about-card, .series-step, .tag-group"
+      ".posts-list .post-preview, .post-rows, .pagination, .about-card, .series-step, .tag-group"
     );
     if (!targets.length) return;
     if (reduceMotion || !("IntersectionObserver" in window)) return;
@@ -57,50 +76,6 @@
       }
       el.classList.add("reveal");
       io.observe(el);
-    });
-  }
-
-  /* --- Hero: typing ------------------------------------------------------- */
-
-  function initTyping() {
-    const el = document.querySelector(".hero-typed");
-    if (!el) return;
-    const words = (el.getAttribute("data-words") || "").split("|").filter(Boolean);
-    if (words.length < 2 || reduceMotion) return;
-
-    let w = 0, i = words[0].length, deleting = true;
-    function tick() {
-      const word = words[w];
-      if (deleting) {
-        i--;
-        el.textContent = word.slice(0, i);
-        if (i === 0) {
-          deleting = false;
-          w = (w + 1) % words.length;
-          return setTimeout(tick, 350);
-        }
-        return setTimeout(tick, 45);
-      }
-      const next = words[w];
-      i++;
-      el.textContent = next.slice(0, i);
-      if (i === next.length) {
-        deleting = true;
-        return setTimeout(tick, 2200);
-      }
-      setTimeout(tick, 95);
-    }
-    setTimeout(tick, 2600);
-  }
-
-  function initHeroScroll() {
-    const link = document.querySelector(".hero-scroll");
-    const main = document.querySelector("body > main, main");
-    if (!link || !main) return;
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const top = main.getBoundingClientRect().top + window.pageYOffset - 70;
-      window.scrollTo({ top: top, behavior: reduceMotion ? "auto" : "smooth" });
     });
   }
 
@@ -207,13 +182,13 @@
     const side = document.createElement("nav");
     side.className = "toc toc-side";
     side.setAttribute("aria-label", "목차");
-    side.innerHTML = '<p class="toc-title">On this page</p>';
+    side.innerHTML = '<p class="toc-title">목차</p>';
     side.appendChild(buildList());
     document.body.appendChild(side);
 
     const inline = document.createElement("details");
     inline.className = "toc toc-inline";
-    inline.innerHTML = "<summary>목차</summary>";
+    inline.innerHTML = "<summary><span>목차</span>" + icon("chevron-down", "toc-caret") + "</summary>";
     inline.appendChild(buildList());
     post.parentNode.insertBefore(inline, post);
 
@@ -269,7 +244,7 @@
       btn.type = "button";
       btn.className = "code-copy";
       btn.setAttribute("aria-label", "코드 복사");
-      btn.innerHTML = '<i class="far fa-copy" aria-hidden="true"></i><span>복사</span>';
+      btn.innerHTML = icon("copy") + "<span>복사</span>";
       bar.appendChild(label);
       bar.appendChild(btn);
       block.insertBefore(bar, block.firstChild);
@@ -280,12 +255,12 @@
         const done = function (ok) {
           btn.classList.toggle("is-copied", ok);
           btn.innerHTML = ok
-            ? '<i class="fas fa-check" aria-hidden="true"></i><span>복사됨</span>'
-            : '<i class="fas fa-xmark" aria-hidden="true"></i><span>실패</span>';
+            ? icon("check") + "<span>복사됨</span>"
+            : icon("xmark") + "<span>실패</span>";
           clearTimeout(timer);
           timer = setTimeout(function () {
             btn.classList.remove("is-copied");
-            btn.innerHTML = '<i class="far fa-copy" aria-hidden="true"></i><span>복사</span>';
+            btn.innerHTML = icon("copy") + "<span>복사</span>";
           }, 1600);
         };
         if (navigator.clipboard && window.isSecureContext) {
@@ -342,7 +317,7 @@
     box.setAttribute("aria-modal", "true");
     box.setAttribute("aria-label", "이미지 크게 보기");
     box.hidden = true;
-    box.innerHTML = '<button type="button" class="lightbox-close" aria-label="닫기"><i class="fas fa-xmark" aria-hidden="true"></i></button><img alt="">';
+    box.innerHTML = '<button type="button" class="lightbox-close" aria-label="닫기">' + icon("xmark") + '</button><img alt="">';
     document.body.appendChild(box);
     const big = box.querySelector("img");
     const closeBtn = box.querySelector(".lightbox-close");
@@ -382,7 +357,7 @@
     });
   }
 
-  /* --- Palette panel ------------------------------------------------------ */
+  /* --- Settings panel: theme, palette and glass ------------------------- */
 
   const PALETTES = [
     { id: "aurora", name: "오로라", c: ["#7C3AED", "#3B82F6", "#06B6D4", "#EC4899"] },
@@ -437,10 +412,12 @@
     else root.setAttribute("data-palette", id);
   }
 
-  function initPalette() {
-    const btn = document.getElementById("palette-toggle");
+  // One "보기 설정" button opens this panel: theme, palette, glass blur, background motion, lite mode
+  function initSettings() {
+    const btn = document.getElementById("settings-toggle");
     if (!btn) return;
 
+    const themes = [["system", "시스템", "desktop"], ["light", "라이트", "sun"], ["dark", "다크", "moon"]];
     const swatches = PALETTES.map(function (p) {
       return '<button type="button" class="palette-swatch" data-palette-id="' + p.id + '" aria-pressed="false">' +
         '<span class="palette-dot" style="--c1:' + p.c[0] + ';--c2:' + p.c[1] + ';--c3:' + p.c[2] + ';--c4:' + p.c[3] + '"></span>' +
@@ -448,14 +425,20 @@
     }).join("");
 
     const panel = document.createElement("div");
-    panel.className = "palette-panel";
-    panel.id = "palette-panel";
+    panel.className = "settings-panel";
+    panel.id = "settings-panel";
     panel.setAttribute("role", "dialog");
-    panel.setAttribute("aria-label", "색 팔레트");
+    panel.setAttribute("aria-labelledby", "settings-title");
     panel.innerHTML =
-      '<div class="palette-head"><p class="palette-title">Palette</p>' +
-      '<button type="button" class="palette-close" aria-label="닫기"><i class="fas fa-xmark" aria-hidden="true"></i></button></div>' +
-      '<div class="palette-grid">' + swatches +
+      '<div class="palette-head"><p class="palette-title" id="settings-title">보기 설정</p>' +
+      '<button type="button" class="palette-close" aria-label="닫기">' + icon("xmark") + "</button></div>" +
+      '<div class="theme-seg" role="group" aria-label="테마">' +
+        themes.map(function (t) {
+          return '<button type="button" class="theme-seg-btn" data-theme-choice="' + t[0] + '" aria-pressed="false">' +
+            icon(t[2]) + t[1] + "</button>";
+        }).join("") +
+      "</div>" +
+      '<div class="palette-grid" role="group" aria-label="색 팔레트">' + swatches +
         '<label class="palette-swatch" data-palette-id="custom" aria-pressed="false">' +
           '<span class="palette-dot palette-dot-custom" style="--c1:#FF6B6B;--c2:#FFD93D;--c3:#6BCB77;--c4:#4D96FF">' +
           '<input type="color" value="#7C3AED" aria-label="직접 고르기"></span>직접</label>' +
@@ -483,6 +466,10 @@
     }
 
     function sync() {
+      const theme = themeChoice();
+      panel.querySelectorAll(".theme-seg-btn").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.dataset.themeChoice === theme));
+      });
       const current = read("palette") || "aurora";
       panel.querySelectorAll(".palette-swatch").forEach(function (s) {
         s.setAttribute("aria-pressed", String(s.dataset.paletteId === current));
@@ -506,6 +493,9 @@
     }
 
     function open() {
+      // on phones the button sits in the folded menu: fold it away so the panel stands alone
+      const menu = document.getElementById("main-navbar");
+      if (menu && menu.classList.contains("show") && window.jQuery) window.jQuery(menu).collapse("hide");
       sync();
       panel.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
@@ -521,10 +511,19 @@
     });
     panel.querySelector(".palette-close").addEventListener("click", close);
     document.addEventListener("click", function (e) {
-      if (panel.classList.contains("is-open") && !panel.contains(e.target) && e.target !== btn) close();
+      if (panel.classList.contains("is-open") && !panel.contains(e.target) && !btn.contains(e.target)) close();
     });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") close();
+    });
+
+    panel.querySelectorAll(".theme-seg-btn").forEach(function (b) {
+      b.addEventListener("click", function () {
+        const choice = b.dataset.themeChoice;
+        store("theme", choice === "system" ? null : choice);
+        applyTheme(choice);
+        sync();
+      });
     });
 
     panel.querySelectorAll("button.palette-swatch").forEach(function (s) {
@@ -565,9 +564,10 @@
 
     panel.querySelector(".palette-reset").addEventListener("click", function () {
       applyPalette("aurora");
+      applyTheme("system");
       root.style.removeProperty("--frost");
       root.removeAttribute("data-motion");
-      ["palette", "paletteCustom", "frost", "motion", "perf"].forEach(function (k) { store(k, null); });
+      ["theme", "palette", "paletteCustom", "frost", "motion", "perf"].forEach(function (k) { store(k, null); });
       setLite(autoLite());
       sync();
     });
@@ -729,9 +729,9 @@
       pill.setAttribute("aria-label", "이어 읽기");
       pill.style.setProperty("--p", saved.p / 100);
       pill.innerHTML =
-        '<button type="button" class="resume-go"><i class="fas fa-bookmark" aria-hidden="true"></i>' +
+        '<button type="button" class="resume-go">' + icon("bookmark") +
         "<span>이어 읽기</span><span class=\"resume-pct\">" + saved.p + "%</span></button>" +
-        '<button type="button" class="resume-close" aria-label="닫기"><i class="fas fa-xmark" aria-hidden="true"></i></button>';
+        '<button type="button" class="resume-close" aria-label="닫기">' + icon("xmark") + "</button>";
       document.body.appendChild(pill);
       requestAnimationFrame(function () { pill.classList.add("is-shown"); });
 
@@ -823,10 +823,10 @@
 
   /* --- Glass: pointer highlight and magnetic buttons ---------------------- */
 
-  const GLASS = ".posts-list .post-preview, .post-nav-link, .series-step, .series-box, .tag-pill, .tag-group, " +
-    ".toc-inline, .profile, .about-card, .related-posts, .btn-ghost, .hero-pill, .section-more, .blog-post, " +
-    ".palette-panel, .page-link, .heat, .heat-stat, .cal, .cal-day.has-post, .cal-preview-card, .archive-month, .callout";
-  const MAGNETIC = ".hero-pill, .section-more, .btn-solid, .btn-ghost, .tag-pill, .profile-btn";
+  const GLASS = ".posts-list .post-preview, .post-rows, .post-nav-link, .series-step, .series-box, .tag-pill, .tag-group, " +
+    ".toc-inline, .profile, .about-card, .related-posts, .btn-ghost, .section-more, .blog-post, " +
+    ".settings-panel, .page-link, .heat, .heat-stat, .cal, .cal-day.has-post, .cal-preview-card, .archive-month, .callout";
+  const MAGNETIC = ".section-more, .btn-solid, .btn-ghost, .tag-pill, .profile-btn";
 
   function initGlassPointer() {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
@@ -887,7 +887,7 @@
     }
     list.addEventListener("pointerover", function (e) {
       const link = e.target.closest(".nav-link");
-      if (!link || window.innerWidth < 1200) return;
+      if (!link || window.innerWidth < 768) return;
       // appear under the first item the pointer reaches, then glide from item to item
       place(link, !lens.classList.contains("is-on"));
       lens.classList.add("is-on");
@@ -898,7 +898,7 @@
   /* --- Segmented controls: a raised lens slides to the pressed option -------- */
 
   function initSegments() {
-    document.querySelectorAll(".nl-switch, .heat-ranges").forEach(function (seg) {
+    document.querySelectorAll(".nl-switch, .heat-ranges, .theme-seg").forEach(function (seg) {
       const lens = document.createElement("span");
       lens.className = "seg-lens";
       lens.setAttribute("aria-hidden", "true");
@@ -949,7 +949,7 @@
       t.setAttribute("role", "status");
       document.body.appendChild(t);
     }
-    t.innerHTML = '<i class="fas fa-check" aria-hidden="true"></i> ';
+    t.innerHTML = icon("check") + " ";
     t.appendChild(document.createTextNode(msg));
     requestAnimationFrame(function () { t.classList.add("is-shown"); });
     clearTimeout(toastTimer);
@@ -958,11 +958,12 @@
 
   /* --- Obsidian callouts: > [!type]± Title ----------------------------------- */
 
+  // callout type -> icon in assets/img/icons.svg
   const CALLOUT_TYPES = {
-    note: "fa-pen", abstract: "fa-clipboard-list", info: "fa-circle-info", todo: "fa-circle-check",
-    tip: "fa-fire-flame-curved", success: "fa-check", question: "fa-circle-question",
-    warning: "fa-triangle-exclamation", failure: "fa-xmark", danger: "fa-bolt", bug: "fa-bug",
-    example: "fa-list", quote: "fa-quote-left"
+    note: "pen", abstract: "clipboard-list", info: "circle-info", todo: "circle-check",
+    tip: "fire-flame-curved", success: "check", question: "circle-question",
+    warning: "triangle-exclamation", failure: "xmark", danger: "bolt", bug: "bug",
+    example: "list", quote: "quote-left"
   };
   const CALLOUT_ALIASES = {
     summary: "abstract", tldr: "abstract", hint: "tip", important: "tip", check: "success", done: "success",
@@ -990,9 +991,9 @@
       if (fold === "+") box.open = true;
       const head = document.createElement(fold ? "summary" : "div");
       head.className = "callout-title";
-      head.innerHTML = '<i class="fas ' + CALLOUT_TYPES[type] + ' callout-icon" aria-hidden="true"></i><span>' +
+      head.innerHTML = icon(CALLOUT_TYPES[type], "callout-icon") + "<span>" +
         (m[3] || name.charAt(0).toUpperCase() + name.slice(1)) + "</span>" +
-        (fold ? '<i class="fas fa-chevron-down callout-fold" aria-hidden="true"></i>' : "");
+        (fold ? icon("chevron-down", "callout-fold") : "");
       box.appendChild(head);
 
       if (bq.childNodes.length && bq.textContent.trim() || bq.querySelector("img")) {
@@ -1002,6 +1003,37 @@
         box.appendChild(body);
       }
       bq.replaceWith(box);
+    });
+  }
+
+  /* --- Newsletter insights: the "💡 데이터/AI 엔지니어의 시선" item becomes a tip callout --
+     The n8n posts end each story's list with the author's own take; set apart, it reads as the
+     point of the story instead of a fourth bullet. Only a plain last item is moved. */
+
+  function initInsights() {
+    document.querySelectorAll(".blog-post li > strong:first-child").forEach(function (label) {
+      const li = label.parentElement, list = li.parentElement;
+      if (!/엔지니어의 시선/.test(label.textContent) || label.previousSibling && label.previousSibling.textContent.trim()) return;
+      if (list.lastElementChild !== li || li.querySelector("ul, ol, li")) return;
+
+      const box = document.createElement("div");
+      box.className = "callout callout-tip callout-insight";
+      box.innerHTML = '<div class="callout-title">' + icon("lightbulb", "callout-icon") + "<span></span></div>";
+      box.querySelector(".callout-title span").textContent =
+        label.textContent.replace(/^[\s\u{1F4A1}]+/u, "").replace(/[:：]\s*$/, "").trim();
+      label.remove();
+      const body = document.createElement("div");
+      body.className = "callout-body";
+      const p = document.createElement("p");
+      while (li.firstChild) p.appendChild(li.firstChild);
+      if (p.firstChild && p.firstChild.nodeType === Node.TEXT_NODE) {
+        p.firstChild.textContent = p.firstChild.textContent.replace(/^\s+/, "");
+      }
+      body.appendChild(p);
+      box.appendChild(body);
+      li.remove();
+      list.after(box);
+      if (!list.children.length) list.remove();
     });
   }
 
@@ -1017,7 +1049,7 @@
       a.className = "heading-anchor";
       a.href = "#" + h.id;
       a.setAttribute("aria-label", "이 섹션 링크 복사");
-      a.innerHTML = '<i class="fas fa-link" aria-hidden="true"></i>';
+      a.innerHTML = icon("link");
       h.appendChild(a);
       a.addEventListener("click", function (e) {
         e.preventDefault();
@@ -1311,12 +1343,12 @@
 
       const s = streaks(range.start, range.end < today ? range.end : today);
       stats.innerHTML = [
-        ["글", s.count, "fa-pen-nib"],
-        ["활동한 날", s.active, "fa-calendar-check"],
-        ["최장 연속", s.best + "일", "fa-fire"],
-        ["현재 연속", s.cur + "일", "fa-bolt"]
+        ["글", s.count, "pen-nib"],
+        ["활동한 날", s.active, "calendar-check"],
+        ["최장 연속", s.best + "일", "fire"],
+        ["현재 연속", s.cur + "일", "bolt"]
       ].map(function (x) {
-        return '<div class="heat-stat"><i class="fas ' + x[2] + '" aria-hidden="true"></i><strong>' + x[1] +
+        return '<div class="heat-stat">' + icon(x[2], "heat-stat-icon") + "<strong>" + x[1] +
           "</strong><span>" + x[0] + "</span></div>";
       }).join("");
 
@@ -1409,9 +1441,9 @@
 
     cal.innerHTML =
       '<div class="cal-head">' +
-        '<button type="button" class="cal-nav" data-step="-1" aria-label="이전 달"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>' +
+        '<button type="button" class="cal-nav" data-step="-1" aria-label="이전 달">' + icon("chevron-left") + '</button>' +
         '<h2 class="cal-title" aria-live="polite" tabindex="-1"></h2>' +
-        '<button type="button" class="cal-nav" data-step="1" aria-label="다음 달"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>' +
+        '<button type="button" class="cal-nav" data-step="1" aria-label="다음 달">' + icon("chevron-right") + '</button>' +
         '<button type="button" class="cal-today">최신</button>' +
       "</div>" +
       '<div class="cal-week" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>' +
@@ -1442,7 +1474,7 @@
             "일월화수목금토"[d.getDay()] + "요일" + (list.length > 1 ? " · " + list.length + "개" : "") + "</span>" +
           '<strong class="cal-preview-title">' + escapeHtml(p.t) + "</strong>" +
           '<span class="cal-preview-text">' + escapeHtml(p.e) + "</span>" +
-          '<span class="cal-preview-more">읽기 <i class="fas fa-arrow-right" aria-hidden="true"></i></span>' +
+          '<span class="cal-preview-more">읽기 ' + icon("arrow-right") + "</span>" +
         "</a>";
     }
 
@@ -1540,19 +1572,18 @@
   }
 
   function init() {
-    initThemeToggle();
-    initPalette();
+    initTheme();
+    initSettings();
     initAmbient();
     initGlassPointer();
     initReveal();
-    initTyping();
-    initHeroScroll();
     initSearchPalette();
     initNavLens();
     initTabbar();
     initHeroLift();
     initReadProgress();
     initResume();
+    initInsights();
     initCallouts();
     initToc();
     initHeadingAnchors();

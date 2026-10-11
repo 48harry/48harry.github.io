@@ -4,7 +4,9 @@
     ![[Pasted image 2026….png]]          wikilink          -> /assets/img/…
     ![](Pasted%20image%202026….png)       shortest path     -> /assets/img/…
     ![](assets/img/….png)                 vault-absolute    -> /assets/img/…
-  Also lazy-loads every image.
+  Also lazy-loads every image, names newsletter source links after their site (the n8n
+  posts call every one "Hacker News 기사 링크 바로가기"), and shifts heading levels so the
+  body's top level is h2 under the page's h1 (posts start at ### or use # for sections).
 {%- endcomment -%}
 {%- assign img_dir = "/assets/img/" | relative_url -%}
 {%- assign html = include.content -%}
@@ -24,6 +26,49 @@
       {%- endif -%}
     {%- endfor -%}
   {%- endcapture -%}
+{%- endif -%}
+
+{%- assign generic_link = '">Hacker News 기사 링크 바로가기</a>' -%}
+{%- if html contains generic_link -%}
+  {%- assign parts = html | split: generic_link -%}
+  {%- capture html -%}
+    {%- for part in parts -%}
+      {{- part -}}
+      {%- unless forloop.last -%}
+        {%- assign source_host = part | split: 'href="' | last | split: "//" | last | split: "/" | first | remove_first: "www." -%}
+        ">{{ source_host }}</a>
+      {%- endunless -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- comment -%}
+  Heading levels: the levels a post uses, in order, become h2, h3, h4… so "#, ###, #####"
+  reads h2, h3, h4 under the title's h1 instead of skipping. Each tag goes through a
+  placeholder (<@hN) first so a renamed level can't be renamed again.
+{%- endcomment -%}
+{%- assign used_levels = "" | split: "" -%}
+{%- for n in (1..6) -%}
+  {%- capture level_tag -%}<h{{ n }}{%- endcapture -%}
+  {%- if html contains level_tag -%}{%- assign used_levels = used_levels | push: n -%}{%- endif -%}
+{%- endfor -%}
+{%- if used_levels.size > 0 -%}
+  {%- for n in (1..6) -%}
+    {%- capture from_open -%}<h{{ n }}{%- endcapture -%}
+    {%- capture from_close -%}</h{{ n }}>{%- endcapture -%}
+    {%- capture to_open -%}<@h{{ n }}{%- endcapture -%}
+    {%- capture to_close -%}</@h{{ n }}>{%- endcapture -%}
+    {%- assign html = html | replace: from_open, to_open | replace: from_close, to_close -%}
+  {%- endfor -%}
+  {%- for n in used_levels -%}
+    {%- assign level_to = forloop.index | plus: 1 -%}
+    {%- if level_to > 6 -%}{%- assign level_to = 6 -%}{%- endif -%}
+    {%- capture from_open -%}<@h{{ n }}{%- endcapture -%}
+    {%- capture from_close -%}</@h{{ n }}>{%- endcapture -%}
+    {%- capture to_open -%}<h{{ level_to }}{%- endcapture -%}
+    {%- capture to_close -%}</h{{ level_to }}>{%- endcapture -%}
+    {%- assign html = html | replace: from_open, to_open | replace: from_close, to_close -%}
+  {%- endfor -%}
 {%- endif -%}
 
 {%- assign src_abs = 'src="' | append: img_dir -%}

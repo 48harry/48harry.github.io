@@ -1,0 +1,6 @@
+{%- comment -%}
+  An icon from assets/img/icons.svg (built by _tools/build-sprite.js):
+    {% include icon.html name="house" %}   optional class="extra classes"
+  Decorative: give the link or button around it its accessible name.
+{%- endcomment -%}
+<svg class="icon{% if include.class %} {{ include.class }}{% endif %}" aria-hidden="true" focusable="false"><use href="{{ '/assets/img/icons.svg' | relative_url }}#{{ include.name }}"></use></svg>

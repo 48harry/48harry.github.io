@@ -3,7 +3,7 @@ layout: post
 title: "거대 AI의 시대: GPT-6, Claude Opus 5.5의 도약과 MLOps를 위한 최소화된 가상화 JEV"
 date: 2026-09-23 17:23:21 +0900
 categories: [Tech, News]
-tags: [Hacker News, Tech Trend]
+tags: [Hacker News, Tech Trend, LLM, 인프라]
 ---
 
 오늘은 AI 기술의 최전선에서 터져 나온 흥미로운 소식들을 깊이 있게 파헤쳐 봅니다. OpenAI의 GPT-6, Anthropic의 Claude Opus 5.5로 대표되는 초거대 AI 모델들의 진화와 함께, 이 거대한 AI 시스템을 효율적으로 운영하기 위한 'Just Enough Virtualization (JEV)'이라는 독특한 접근법까지, 미래 AI 시스템 아키텍처와 MLOps의 방향성을 함께 고민해 보시죠.

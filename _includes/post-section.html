@@ -1,0 +1,17 @@
+{%- comment -%}
+  Works out which section include.post (or the current page) belongs to and sets
+  section_key and section (its entry in _data/sections.yml) for the caller.
+  Posts: the News category is the newsletter, the bdai tag is BDAI, anything else an article.
+{%- endcomment -%}
+{%- assign _sp = include.post | default: page -%}
+{%- assign section_key = nil -%}
+{%- if _sp.collection == "posts" -%}
+  {%- if _sp.categories contains "News" -%}{%- assign section_key = "news" -%}
+  {%- elsif _sp.tags contains "bdai" -%}{%- assign section_key = "bdai" -%}
+  {%- else -%}{%- assign section_key = "articles" -%}{%- endif -%}
+{%- else -%}
+  {%- for _s in site.data.sections -%}
+    {%- if _s[1].url == _sp.url -%}{%- assign section_key = _s[0] -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- assign section = site.data.sections[section_key] -%}

@@ -1,0 +1,26 @@
+# The site's sections, one name and one address each. The navbar, the phone tab bar, post
+# headers, search results and the archive all read their labels from here.
+articles:
+  name: 아티클
+  url: /articles/
+  icon: code
+news:
+  name: 뉴스레터
+  url: /newsletters/
+  icon: newspaper
+bdai:
+  name: BDAI
+  url: /bdai/
+  icon: layer-group
+archive:
+  name: 아카이브
+  url: /archive/
+  icon: box-archive
+about:
+  name: 소개
+  url: /aboutme/
+  icon: user
+tags:
+  name: 태그
+  url: /tags/
+  icon: hashtag

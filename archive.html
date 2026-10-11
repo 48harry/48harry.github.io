@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Archive
+title: 아카이브
 subtitle: 지금까지 쓴 모든 글
 permalink: /archive/
 ---
@@ -12,7 +12,7 @@ permalink: /archive/
 
 <section class="heat" aria-label="글 작성 기록">
   <div class="heat-head">
-    <h2 class="heat-title"><i class="fas fa-seedling" aria-hidden="true"></i> Activity</h2>
+    <h2 class="heat-title">{% include icon.html name="seedling" %} 글 쓴 날</h2>
     <div class="heat-ranges" role="group" aria-label="기간"></div>
   </div>
   <div class="heat-stats"></div>
@@ -27,9 +27,9 @@ permalink: /archive/
   </div>
   <div class="heat-foot">
     <span class="heat-kinds">
-      <span><i class="kind-dot kind-a"></i>Article</span>
-      <span><i class="kind-dot kind-n"></i>Newsletter</span>
-      <span><i class="kind-dot kind-b"></i>BDAI</span>
+      <span><i class="kind-dot kind-a"></i>{{ site.data.sections.articles.name }}</span>
+      <span><i class="kind-dot kind-n"></i>{{ site.data.sections.news.name }}</span>
+      <span><i class="kind-dot kind-b"></i>{{ site.data.sections.bdai.name }}</span>
     </span>
     <span class="heat-legend" aria-hidden="true">적음 <i class="lv-0"></i><i class="lv-1"></i><i class="lv-2"></i><i class="lv-3"></i><i class="lv-4"></i> 많음</span>
   </div>
@@ -55,9 +55,9 @@ permalink: /archive/
       <h3 class="archive-month-title">{{ m.name | plus: 0 }}월 <span class="archive-month-count">{{ m.size }}</span></h3>
       <ul class="archive-list">
         {%- for p in m.items -%}
-          {%- if p.categories contains "News" -%}{%- assign kind = "n" -%}{%- assign kind_label = "Newsletter" -%}
-          {%- elsif p.tags contains "bdai" -%}{%- assign kind = "b" -%}{%- assign kind_label = "BDAI" -%}
-          {%- else -%}{%- assign kind = "a" -%}{%- assign kind_label = "Article" -%}{%- endif %}
+          {%- if p.categories contains "News" -%}{%- assign kind = "n" -%}{%- assign kind_label = site.data.sections.news.name -%}
+          {%- elsif p.tags contains "bdai" -%}{%- assign kind = "b" -%}{%- assign kind_label = site.data.sections.bdai.name -%}
+          {%- else -%}{%- assign kind = "a" -%}{%- assign kind_label = site.data.sections.articles.name -%}{%- endif %}
         <li>
           <a href="{{ p.url | relative_url }}" data-date="{{ p.date | date: '%Y-%m-%d' }}">
             <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%m.%d" }}</time>

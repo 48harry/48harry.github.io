@@ -1,9 +1,11 @@
 ---
 layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 2주차 Review (13기)
-subtitle: BDAI
+subtitle: "규칙 기반 세그먼트 추천과 평가 지표"
 tags:
   - bdai
+  - 추천 시스템
+  - 데이터
 mathjax: false
 author: Geunyeong Cho
 published: true

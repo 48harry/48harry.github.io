@@ -2,7 +2,8 @@
 layout: post
 title: F3, The Open-Source Data File Format for the Future
 subtitle:
-tags: [article]
+description: "Wasm 디코더를 파일에 내장해 Parquet과 ORC의 한계를 넘으려는 F3 파일 포맷 논문 정리"
+tags: [article, 데이터, 성능]
 mathjax: false
 author: Geunyeong Cho
 published : true

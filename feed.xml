@@ -21,10 +21,8 @@ layout: null
         {% elsif site.author %}
         <dc:creator><![CDATA[ {{ site.author | xml_escape }} ]]></dc:creator>
         {% endif %}
-        <description>
-          {% if post.subtitle %}{{ post.subtitle | strip_html | xml_escape }} - {% endif %}
-          {{ post.content | strip_html | xml_escape | truncatewords: excerpt_length }}
-        </description>
+        {%- capture feed_excerpt -%}{% include excerpt.html post=post length=300 %}{%- endcapture %}
+        <description>{{ feed_excerpt | xml_escape }}</description>
         <pubDate>{{ post.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
         <link>{{ post.url | absolute_url }}</link>
         <guid isPermaLink="true">{{ post.url | absolute_url }}</guid>

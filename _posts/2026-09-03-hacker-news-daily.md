@@ -3,7 +3,7 @@ layout: post
 title: "AI의 가속화, 비용 효율성, 그리고 빅테크 규제 속 데이터 전략의 미래"
 date: 2026-09-03 12:04:09 +0900
 categories: [Tech, News]
-tags: [Hacker News, Tech Trend]
+tags: [Hacker News, Tech Trend, AI, LLM, 정책]
 ---
 
 오늘 우리는 AI 모델의 놀라운 발전 속도와 효율성, 그리고 이러한 혁신이 빅테크 기업의 규제 환경과 어떻게 맞물리는지 탐구할 예정입니다. Meta의 새로운 이미지 생성 AI부터 Google의 더 빠르고 저렴한 Gemini 모델, 그리고 Google의 광고 기술 사업에 대한 중요한 규제 소식까지, 2026년 가을 기술 트렌드의 핵심을 짚어봅니다.

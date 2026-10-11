@@ -3,7 +3,7 @@ layout: post
 title: "AI 추론의 경량화부터 소프트웨어 공학의 역사까지: 이번 주 테크 인사이트"
 date: 2026-10-08 13:36:54 +0900
 categories: [Tech, News]
-tags: [Hacker News, Tech Trend]
+tags: [Hacker News, Tech Trend, 개발 문화, LLM]
 ---
 
 이번 주는 AI 모델의 효율적인 배포 전략과 소프트웨어 공학의 근간을 다지는 소식들이 주목받고 있습니다. 경량 모델의 진화와 함께 잊지 말아야 할 기술의 역사적 발자취까지, 엔지니어가 주목해야 할 세 가지 기술적 지점을 짚어봅니다.

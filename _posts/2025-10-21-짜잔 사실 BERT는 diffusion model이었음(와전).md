@@ -2,7 +2,8 @@
 layout: post
 title: 짜잔 사실 BERT는 diffusion model이었음(와전)
 subtitle: BERT is just a Single Text Diffusion Step
-tags: [article]
+description: "BERT의 마스크 복원 학습을 1스텝 텍스트 확산으로 해석하는 글을 정리"
+tags: [article, LLM]
 mathjax: false
 author: Geunyeong Cho
 published : true

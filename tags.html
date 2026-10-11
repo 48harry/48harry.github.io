@@ -1,19 +1,24 @@
 ---
 layout: page
-title: Tags
+title: 태그
 subtitle: 주제별로 글 모아보기
 permalink: /tags/
 ---
 
-{%- comment -%} Sort tags by post count: build "0012#name" keys, sort, then reverse {%- endcomment -%}
+{%- comment -%}
+  Topic tags only: the section tags in site.system-tags (newsletter, article, BDAI) are covered
+  by the sections themselves. Sorted by post count: build "10012#name" keys, sort, then reverse.
+{%- endcomment -%}
 {%- capture tag_keys -%}
   {%- for tag in site.tags -%}
-    {{ tag[1].size | plus: 10000 }}#{{ tag[0] }}{% unless forloop.last %}|{% endunless %}
+    {%- if site.system-tags contains tag[0] -%}{%- continue -%}{%- endif -%}
+    {{ tag[1].size | plus: 10000 }}#{{ tag[0] }}|
   {%- endfor -%}
 {%- endcapture -%}
 {%- assign tag_keys = tag_keys | split: "|" | sort | reverse -%}
 
-<nav class="tag-cloud" aria-label="All tags">
+{% if tag_keys.size > 0 %}
+<nav class="tag-cloud" aria-label="모든 태그">
   {%- for key in tag_keys -%}
     {%- assign parts = key | split: "#" -%}
     {%- assign count = parts[0] | minus: 10000 -%}
@@ -26,10 +31,12 @@ permalink: /tags/
   {%- for key in tag_keys -%}
     {%- assign parts = key | split: "#" -%}
     {%- assign tag_name = parts[1] -%}
-    <section class="tag-group" id="{{ tag_name | slugify }}">
-      <h2 class="tag-group-title"><i class="fas fa-hashtag" aria-hidden="true"></i> {% include tag-label.html tag=tag_name %} <span class="tag-count">{{ site.tags[tag_name].size }}</span></h2>
+    {%- assign tag_slug = tag_name | slugify -%}
+    {%- assign tag_posts = site.tags[tag_name] %}
+    <section class="tag-group" id="{{ tag_slug }}">
+      <h2 class="tag-group-title">{% include icon.html name="hashtag" %} {% include tag-label.html tag=tag_name %} <span class="tag-count">{{ tag_posts.size }}</span></h2>
       <ul class="tag-post-list">
-        {%- for post in site.tags[tag_name] -%}
+        {%- for post in tag_posts -%}
           <li>
             <a href="{{ post.url | relative_url }}">
               <span class="tag-post-title">{{ post.title | strip_html }}</span>
@@ -38,6 +45,13 @@ permalink: /tags/
           </li>
         {%- endfor -%}
       </ul>
+      {%- comment -%} Only the 5 latest show until the group is the page's target (a tag pill or a post's tag) {%- endcomment -%}
+      {% if tag_posts.size > 5 %}
+        <a class="tag-more" href="#{{ tag_slug }}">{{ tag_posts.size | minus: 5 }}편 더 보기 {% include icon.html name="chevron-down" %}</a>
+      {% endif %}
     </section>
   {%- endfor -%}
 </div>
+{% else %}
+<p class="tags-empty">아직 주제 태그가 붙은 글이 없어요.</p>
+{% endif %}

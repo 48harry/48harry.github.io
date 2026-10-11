@@ -3,7 +3,7 @@ layout: post
 title: "AI의 급습, 노벨 평화상의 무게, 그리고 개발자의 사소한 유희"
 date: 2026-10-09 20:45:28 +0900
 categories: [Tech, News]
-tags: [Hacker News, Tech Trend]
+tags: [Hacker News, Tech Trend, LLM, 정책]
 ---
 
 이번 주 기술 생태계는 인공지능의 파격적인 행보와 그로 인해 변화하는 세상의 풍경, 그리고 여전히 엉뚱한 즐거움을 찾는 개발자들의 유머가 한데 섞여 숨 가쁘게 돌아갔습니다. AI 시스템의 경제적 파급력부터 평화의 정의까지, 오늘 우리가 주목해야 할 기술적 화두들을 정리해 드립니다.

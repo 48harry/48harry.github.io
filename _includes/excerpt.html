@@ -1,0 +1,26 @@
+{%- comment -%}
+  A plain-text summary of include.post, cut to include.length characters (default 160):
+  its `description:` front matter if it has one, otherwise its first real paragraph. Headings,
+  short lines and source-link lines ("원문 : https://…") are skipped, and a trailing link is cut
+  off, since those are what a first-paragraph excerpt used to show on cards.
+  The text comes out unescaped (entities decoded before cutting, so none is split): escape it
+  for where it goes, e.g. capture it and use | escape in HTML, | jsonify in JSON.
+{%- endcomment -%}
+{%- assign _ep = include.post -%}
+{%- assign _len = include.length | default: 160 -%}
+{%- assign _text = _ep.description | strip_html | normalize_whitespace | strip -%}
+{%- if _text == "" -%}
+  {%- assign _paras = _ep.content | replace: "<br", " <br" | split: "<p>" -%}
+  {%- for _para in _paras offset: 1 -%}
+    {%- assign _t = _para | split: "</p>" | first | strip_html | normalize_whitespace | strip -%}
+    {%- assign _t = _t | split: " http" | first | strip -%}
+    {%- assign _start = _t | slice: 0, 4 | downcase -%}
+    {%- if _t.size < 30 or _start == "http" or _start contains "원문" -%}{%- continue -%}{%- endif -%}
+    {%- assign _text = _t -%}
+    {%- break -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if _text == "" -%}
+  {%- assign _text = _ep.content | replace: "<br", " <br" | strip_html | normalize_whitespace | strip -%}
+{%- endif -%}
+{{- _text | replace: "&lt;", "<" | replace: "&gt;", ">" | replace: "&quot;", '"' | replace: "&#39;", "'" | replace: "&amp;", "&" | truncate: _len, "…" -}}

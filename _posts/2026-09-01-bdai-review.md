@@ -1,9 +1,11 @@
 ---
 layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 1주차 Review (13기)
-subtitle: BDAI 회고
+subtitle: "금융 데이터 EDA와 베이스라인"
 tags:
   - bdai
+  - 추천 시스템
+  - 데이터
 mathjax: false
 author: Geunyeong Cho
 published: true

@@ -1,11 +1,11 @@
 {% if site.post_search %}
 
-<div id="beautifuljekyll-search-overlay" role="dialog" aria-modal="true" aria-label="Search">
+<div id="beautifuljekyll-search-overlay" role="dialog" aria-modal="true" aria-label="검색">
   <div class="search-panel">
     <div class="search-bar">
-      <i class="fas fa-search search-bar-icon" aria-hidden="true"></i>
-      <input type="text" id="nav-search-input" placeholder="글 제목이나 태그로 검색" autocomplete="off" spellcheck="false">
-      <button type="button" id="nav-search-exit" title="Exit search"><kbd>ESC</kbd></button>
+      {% include icon.html name="magnifying-glass" class="search-bar-icon" %}
+      <input type="text" id="nav-search-input" placeholder="글 제목, 내용, 태그로 검색" aria-label="검색어" autocomplete="off" spellcheck="false">
+      <button type="button" id="nav-search-exit" title="닫기 (Esc)" aria-label="검색 닫기"><kbd>ESC</kbd></button>
     </div>
     <ul id="search-results-container"></ul>
     <p class="search-hint search-hint-empty">찾고 싶은 글의 키워드를 입력하세요</p>

@@ -2,7 +2,8 @@
 layout: post
 title: AI can code, but it can't build software
 subtitle: 
-tags: [article]
+description: "LLM이 기능 코딩은 잘해도 통합과 유지보수가 필요한 소프트웨어 개발에는 약하다는 글 요약"
+tags: [article, LLM, 개발 문화]
 mathjax: false
 author: Geunyeong Cho
 published : true

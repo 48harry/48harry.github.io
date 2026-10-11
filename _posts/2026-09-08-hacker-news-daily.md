@@ -3,7 +3,7 @@ layout: post
 title: "AI 시대, 더욱 중요해지는 시스템 견고성: 최신 암호화, 선제적 보안 그리고 에이전트 기반 테스트"
 date: 2026-09-08 14:23:38 +0900
 categories: [Tech, News]
-tags: [Hacker News, Tech Trend, Cryptography, AI, MLOps, Software Security, Agentic Testing]
+tags: [Hacker News, Tech Trend, 보안, 에이전트]
 ---
 
 오늘 우리는 소프트웨어 시스템의 근본적인 견고성을 고민하게 만드는 세 가지 흥미로운 소식을 다룹니다. 오래된 암호화 알고리즘의 한계부터, 보안을 위한 과감한 투자 제안, 그리고 AI가 소프트웨어 품질 보증을 어떻게 혁신할지에 대한 이야기까지, 더 안전하고 신뢰할 수 있는 시스템을 구축하기 위한 여정을 함께 살펴보시죠.

@@ -1,21 +1,33 @@
 {%- comment -%}
-  Up to 3 recent posts sharing a tag with this one (falls back to the same category).
-  BDAI posts skip this: the series box already links the whole series.
+  Up to 3 recent posts sharing a topic tag with this one (section tags in site.system-tags
+  don't count), topped up from the same section. BDAI posts skip this: the series box already
+  links the whole series.
 {%- endcomment -%}
 {%- unless page.tags contains "bdai" -%}
+{%- assign my_topics = "" | split: "" -%}
+{%- for tag in page.tags -%}
+  {%- unless site.system-tags contains tag -%}{%- assign my_topics = my_topics | push: tag -%}{%- endunless -%}
+{%- endfor -%}
+{%- include post-section.html -%}
+{%- assign my_section = section_key -%}
+
 {%- assign related = "" | split: "" -%}
 {%- for post in site.posts -%}
   {%- if related.size >= 3 -%}{%- break -%}{%- endif -%}
   {%- if post.url == page.url -%}{%- continue -%}{%- endif -%}
-  {%- assign hit = false -%}
-  {%- for tag in page.tags -%}
-    {%- if post.tags contains tag -%}{%- assign hit = true -%}{%- break -%}{%- endif -%}
+  {%- for tag in my_topics -%}
+    {%- if post.tags contains tag -%}{%- assign related = related | push: post -%}{%- break -%}{%- endif -%}
   {%- endfor -%}
-  {%- if hit == false and page.tags.size == 0 and page.categories.size > 0 -%}
-    {%- if post.categories contains page.categories[0] -%}{%- assign hit = true -%}{%- endif -%}
-  {%- endif -%}
-  {%- if hit -%}{%- assign related = related | push: post -%}{%- endif -%}
 {%- endfor -%}
+{%- if related.size < 3 -%}
+  {%- for post in site.posts -%}
+    {%- if related.size >= 3 -%}{%- break -%}{%- endif -%}
+    {%- if post.url == page.url or related contains post -%}{%- continue -%}{%- endif -%}
+    {%- include post-section.html post=post -%}
+    {%- if section_key == my_section -%}{%- assign related = related | push: post -%}{%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+
 {%- if related.size > 0 -%}
 <section class="related-posts" aria-labelledby="related-title">
   <h2 class="related-title" id="related-title">함께 읽으면 좋은 글</h2>
@@ -23,7 +35,6 @@
     {%- for post in related %}
     <li>
       <a href="{{ post.url | relative_url }}">
-        {%- if post.tags.size > 0 %}<span class="related-tag">{{ post.tags | first }}</span>{% endif %}
         <span class="related-post-title">{{ post.title | strip_html }}</span>
         <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
       </a>
