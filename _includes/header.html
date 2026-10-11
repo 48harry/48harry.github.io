@@ -35,7 +35,7 @@
             {% if include.type == "page" %}
               <span class="{{ include.type }}-subheading">{{ page.subtitle | strip_html }}</span>
             {% else %}
-              <h2 class="{{ include.type }}-subheading">{{ page.subtitle | strip_html }}</h2>
+              <p class="{{ include.type }}-subheading">{{ page.subtitle | strip_html }}</p>
             {% endif %}
           {% endif %}
           

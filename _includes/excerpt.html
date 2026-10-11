@@ -13,7 +13,7 @@
   {%- assign _paras = _ep.content | replace: "<br", " <br" | split: "<p>" -%}
   {%- for _para in _paras offset: 1 -%}
     {%- assign _t = _para | split: "</p>" | first | strip_html | normalize_whitespace | strip -%}
-    {%- assign _t = _t | split: " http" | first | strip -%}
+    {%- assign _t = _t | split: " https://" | first | split: " http://" | first | strip -%}
     {%- assign _start = _t | slice: 0, 4 | downcase -%}
     {%- if _t.size < 30 or _start == "http" or _start contains "원문" -%}{%- continue -%}{%- endif -%}
     {%- assign _text = _t -%}

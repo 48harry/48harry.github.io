@@ -53,10 +53,11 @@
   --navbar-col: rgba(13, 16, 26, 0.65);
   --navbar-text-col: #E5E7EF;
   --navbar-border-col: rgba(255, 255, 255, 0.07);
-  --footer-text-col: #8A90A2;
+  --footer-text-col: #B0B6C4;
   --footer-link-col: #D7DAE3;
   --footer-hover-col: #B9A4FF;
-  --mid-col: #8A90A2;
+  /* lighter than it looks necessary: dark glass lets the aurora through and lifts the background */
+  --mid-col: #B0B6C4;
   --heading-col: #F3F4F8;
 
   --surface: #131726;
@@ -117,7 +118,7 @@ html { scrollbar-color: color-mix(in srgb, var(--mid-col) 45%, transparent) tran
   border-radius: 999px;
   font-weight: 700;
   color: #fff;
-  background: var(--link-col);
+  background: var(--accent-solid);
   transform: translateY(-200%);
   transition: transform .2s ease;
 }
@@ -243,7 +244,7 @@ body::after {
   .nav-icon-text { display: none; }
   /* the section you are in rests on a faint lens */
   .navbar-custom .navbar-nav .nav-link[aria-current] {
-    color: var(--link-col);
+    color: var(--hover-col);
     background: color-mix(in srgb, var(--heading-col) 6%, transparent);
   }
   /* the hover lens glides between items (custom.js) */
@@ -333,7 +334,7 @@ body::after {
   .navbar-custom .navbar-nav { padding: .5rem 0 .25rem; }
   .navbar-custom .navbar-nav .nav-item { font-size: 1.4rem; letter-spacing: -0.025em; }
   .navbar-custom .navbar-nav .nav-link { padding: .4rem 0; font-weight: 700; }
-  .navbar-custom .navbar-nav .nav-link[aria-current] { color: var(--link-col); }
+  .navbar-custom .navbar-nav .nav-link[aria-current] { color: var(--hover-col); }
   /* search and settings: a quieter icon and their label */
   #main-navbar .nav-icon { display: flex; align-items: center; gap: .65rem; width: 100%; text-align: left; }
   #main-navbar .nav-icon .icon { width: .8em; height: .8em; color: var(--mid-col); }
@@ -353,6 +354,10 @@ body::after {
 
 .intro-header.hero-header {
   margin: 0 0 1.5rem;
+}
+/* the theme spaces page headers for its tall navbar only from 1200px; the capsule now opens from 768px */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .intro-header { margin-top: 7rem; }
 }
 
 /* Short: the latest newsletter should be on the first screen, not under a full-height banner */
@@ -442,6 +447,8 @@ body::after {
   margin-bottom: .75rem;
   animation: fade-up .8s var(--ease-out) both;
 }
+/* in the dark the eyebrow sits on the bright hero blobs: full text colour */
+:root[data-theme="dark"] .hero-eyebrow { color: var(--text-col); }
 
 .hero-title {
   font-family: var(--header-font);
@@ -603,7 +610,7 @@ body::after {
 .pagination .page-item .page-link:focus {
   color: #fff;
   border-color: transparent;
-  background: var(--accent);
+  background: var(--accent-solid);
 }
 .pagination .page-item .page-link .icon { transition: transform .3s var(--ease-out); }
 .pagination .page-item.previous .page-link:hover .icon { transform: translateX(-4px); }
@@ -675,7 +682,7 @@ table tr td, table tr th { border-color: var(--border); }
 .post-eyebrow:hover {
   text-decoration: none;
   color: #fff;
-  background: color-mix(in oklab, var(--accent-1) 85%, #000);
+  background: var(--accent-solid);
 }
 
 .post-meta-row {
@@ -944,7 +951,7 @@ html.lightbox-lock { overflow: hidden; }
 .blog-tags-label { margin-right: .35rem; color: var(--mid-col); }
 .blog-tags > a { margin: 0 .25rem .4rem 0; }
 
-#social-share-section .btn-social-icon { border-radius: 50%; }
+#social-share-section { display: flex; gap: .55rem; margin-top: 1.5rem; }
 
 /* Previous / next cards */
 .post-nav {
@@ -1061,7 +1068,7 @@ html.lightbox-lock { overflow: hidden; }
 .post-row + .post-row { border-top: 1px solid var(--border); }
 .post-row-link {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: baseline;
   gap: .35rem 1.1rem;
   padding: .9rem 1rem;
@@ -1071,7 +1078,9 @@ html.lightbox-lock { overflow: hidden; }
 }
 .post-row-link:hover,
 .post-row-link:focus-visible { text-decoration: none; color: var(--text-col); background: var(--surface-2); }
-.post-row-main { grid-column: 2; display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
+/* a numbered row (the BDAI series) adds a column in front */
+.post-row-link.has-num { grid-template-columns: auto minmax(0, 1fr) auto; }
+.post-row-main { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
 .post-row-title {
   font-weight: 700;
   font-size: 1.05rem;
@@ -1092,7 +1101,6 @@ html.lightbox-lock { overflow: hidden; }
   overflow: hidden;
 }
 .post-row-date {
-  grid-column: 3;
   font-size: .8rem;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -1100,7 +1108,6 @@ html.lightbox-lock { overflow: hidden; }
 }
 /* a series number in front ("3주차") */
 .post-row-num {
-  grid-column: 1;
   align-self: center;
   padding: .2rem .6rem;
   border-radius: 999px;
@@ -1110,11 +1117,12 @@ html.lightbox-lock { overflow: hidden; }
   color: var(--hover-col);
   background: color-mix(in srgb, var(--accent-1) 12%, transparent);
 }
-.post-rows-series .post-row:last-child .post-row-num { color: #fff; background: color-mix(in oklab, var(--accent-1) 85%, #000); }
+.post-rows-series .post-row:last-child .post-row-num { color: #fff; background: var(--accent-solid); }
 @media (max-width: 575px) {
   .post-rows { padding: .35rem; border-radius: 1.4rem; }
-  .post-row-link { grid-template-columns: auto minmax(0, 1fr); padding: .85rem .8rem; }
-  .post-row-date { grid-column: 2; }
+  .post-row-link { grid-template-columns: minmax(0, 1fr); padding: .85rem .8rem; }
+  .post-row-link.has-num { grid-template-columns: auto minmax(0, 1fr); }
+  .post-row-link.has-num .post-row-date { grid-column: 2; }
   .post-row-desc { -webkit-line-clamp: 2; }
 }
 
@@ -1201,7 +1209,7 @@ html.lightbox-lock { overflow: hidden; }
   color: var(--hover-col);
   background: color-mix(in srgb, var(--accent-1) 12%, transparent);
 }
-.series-step.is-latest .series-step-num { color: #fff; background: color-mix(in oklab, var(--accent-1) 85%, #000); }
+.series-step.is-latest .series-step-num { color: #fff; background: var(--accent-solid); }
 .series-step-label { font-weight: 700; }
 .series-step-topic {
   font-size: .85rem;
@@ -1680,11 +1688,11 @@ footer {
   font-weight: 700;
   font-size: .95rem;
   color: #fff;
-  background: var(--accent-1);
+  background: var(--accent-solid);
   box-shadow: var(--shadow-sm);
 }
 .profile-btn:hover,
-.profile-btn:focus { color: #fff; text-decoration: none; box-shadow: var(--shadow-lg); background: var(--hover-col); }
+.profile-btn:focus { color: #fff; text-decoration: none; box-shadow: var(--shadow-lg); background: color-mix(in oklab, var(--accent-solid) 85%, #000); }
 .profile-icon {
   width: 2.6rem;
   height: 2.6rem;
@@ -1811,7 +1819,7 @@ html.js .about-card.reveal:not(.is-visible) .lang-bar span { width: 0; }
   font-family: var(--mono-font);
   font-size: .75rem;
   font-weight: 600;
-  color: var(--accent-1);
+  color: var(--hover-col);
   background: color-mix(in srgb, var(--accent-1) 12%, transparent);
 }
 :root[data-theme="dark"] .year-badge,
@@ -1955,8 +1963,8 @@ html.js .posts-list .post-preview.reveal.is-visible:active { transform: translat
   cursor: pointer;
   transition: background-color .2s ease, color .2s ease, border-color .2s ease;
 }
-.btn-solid { color: #fff; background: var(--accent-1); border: 1px solid transparent; }
-.btn-solid:hover { color: #fff; text-decoration: none; background: var(--hover-col); }
+.btn-solid { color: #fff; background: var(--accent-solid); border: 1px solid transparent; }
+.btn-solid:hover { color: #fff; text-decoration: none; background: color-mix(in oklab, var(--accent-solid) 85%, #000); }
 .btn-ghost { color: var(--text-col); background: var(--surface); border: 1px solid var(--border); }
 .btn-ghost:hover { color: var(--hover-col); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
 .not-found-recent { text-align: left; }
@@ -2068,6 +2076,9 @@ html.js .posts-list .post-preview.reveal.is-visible:active { transform: translat
   --accent: var(--accent-1);
   --link-col: color-mix(in oklab, var(--accent-1) 78%, #000);
   --hover-col: color-mix(in oklab, var(--accent-1) 58%, #000);
+  /* a solid accent that carries white text in any palette and theme (sunset or forest are too
+     pale on their own); refined below to the accent with its lightness capped */
+  --accent-solid: color-mix(in oklab, var(--accent-1) 72%, #000);
   --footer-hover-col: var(--link-col);
   --spot: color-mix(in srgb, var(--accent-1) 12%, transparent);
   --page-col: color-mix(in oklab, var(--accent-1) 6%, #F3F4F9);
@@ -2099,6 +2110,9 @@ html.js .posts-list .post-preview.reveal.is-visible:active { transform: translat
   --rim-lo: rgba(255, 255, 255, 0.22);
   --glass-inset: var(--lg-inner);
   --glass-drop-hover: var(--lg-drop-hover);
+}
+@supports (color: oklch(from red l c h)) {
+  :root { --accent-solid: oklch(from var(--accent-1) min(l, 0.5) c h); }
 }
 :root[data-theme="dark"] {
   --accent: color-mix(in oklab, var(--accent-1) 70%, #fff);
@@ -2411,12 +2425,12 @@ footer {
 /* Lit accent buttons */
 .btn-solid,
 .profile-btn {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-1) 78%, #fff), var(--accent-1));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent-solid) 92%, #fff), var(--accent-solid));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 10px 26px -10px var(--accent-1);
 }
 .btn-solid:hover,
 .profile-btn:hover,
-.profile-btn:focus { background: linear-gradient(180deg, var(--accent-1), color-mix(in oklab, var(--accent-1) 75%, #000)); }
+.profile-btn:focus { background: linear-gradient(180deg, var(--accent-solid), color-mix(in oklab, var(--accent-solid) 82%, #000)); }
 
 /* --- Settings panel: theme, palette, glass (opened by the navbar's 보기 설정) --- */
 
@@ -2436,7 +2450,8 @@ footer {
   transform-origin: top right;
   transition: opacity .25s ease, transform .45s var(--spring), visibility .25s;
 }
-.settings-panel.is-open { opacity: 1; visibility: visible; transform: none; }
+/* opening shows it at once (so focus can move in); closing keeps it visible while it fades */
+.settings-panel.is-open { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .45s var(--spring), visibility 0s; }
 /* 시스템 / 라이트 / 다크: a segmented control across the panel (the lens comes from custom.js) */
 .theme-seg { position: relative; display: flex; gap: .2rem; margin: 0 0 1rem; padding: 3px; border-radius: 999px; background: var(--track); }
 .theme-seg-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: .35rem; }
@@ -2622,7 +2637,8 @@ footer {
   gap: .6rem;
   padding: .8rem 1.15rem;
   font-weight: 700;
-  color: color-mix(in oklab, var(--c) 75%, var(--heading-col));
+  /* half heading colour: a pale callout colour (cyan, yellow) alone is too light for text */
+  color: color-mix(in oklab, var(--c) 50%, var(--heading-col));
   list-style: none;
 }
 .callout-title::-webkit-details-marker { display: none; }
@@ -2668,7 +2684,7 @@ details.callout[open] .callout-body { animation: fade-up .35s var(--ease-out); }
 .blog-post .heading-anchor { color: var(--mid-col); text-decoration: none; }
 .blog-post :is(h1, h2, h3, h4):hover .heading-anchor,
 .heading-anchor:focus-visible { opacity: 1; transform: none; }
-.blog-post .heading-anchor:hover { color: #fff; background-color: var(--accent-1); }
+.blog-post .heading-anchor:hover { color: #fff; background-color: var(--accent-solid); }
 @media (hover: none) { .heading-anchor { opacity: .55; transform: none; } }
 
 /* --- Mermaid -------------------------------------------------------------- */
@@ -2918,7 +2934,7 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.45); z-index: 1; positio
   padding: .15rem .55rem;
   border-radius: 999px;
   --k: var(--accent-1);
-  color: color-mix(in oklab, var(--k) 70%, var(--heading-col));
+  color: color-mix(in oklab, var(--k) 40%, var(--heading-col));
   background: color-mix(in srgb, var(--k) 14%, transparent);
 }
 .archive-kind.kind-a { --k: var(--accent-3); }
@@ -2966,7 +2982,7 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.45); z-index: 1; positio
   transition: color .2s ease, background-color .2s ease, transform .3s var(--ease-out), opacity .2s ease;
 }
 .cal-nav { padding: 0; }
-.cal-nav:hover:not([aria-disabled="true"]), .cal-today:hover { color: #fff; background: var(--accent-1); transform: scale(1.06); }
+.cal-nav:hover:not([aria-disabled="true"]), .cal-today:hover { color: #fff; background: var(--accent-solid); transform: scale(1.06); }
 .cal-nav:active:not([aria-disabled="true"]), .cal-today:active { transform: scale(.94); }
 .cal-nav[aria-disabled="true"] { opacity: .35; cursor: default; }
 
@@ -3002,7 +3018,7 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.45); z-index: 1; positio
   margin: -.3rem 0 0 -.3rem;
   border-radius: 50%;
   color: #fff;
-  background: var(--accent-1);
+  background: var(--accent-solid);
   box-shadow: 0 6px 14px -6px var(--accent-1);
 }
 
@@ -3071,7 +3087,7 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.45); z-index: 1; positio
   transition: transform .3s var(--ease-out);
 }
 .cal-preview-card:hover { text-decoration: none; transform: translateY(-2px); }
-.cal-preview-date { font-size: .75rem; font-weight: 700; color: var(--accent-1); }
+.cal-preview-date { font-size: .75rem; font-weight: 700; color: var(--hover-col); }
 .cal-preview-title { font-size: 1.05rem; color: var(--heading-col); word-break: keep-all; }
 .cal-preview-text { font-size: .88rem; color: var(--mid-col); }
 .cal-preview-more { font-size: .8rem; font-weight: 700; color: var(--link-col); }
@@ -3137,7 +3153,7 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.45); z-index: 1; positio
   padding: .6rem 1.1rem;
   font-size: .9rem;
   color: #fff;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-1) 78%, #fff), var(--accent-1));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent-solid) 92%, #fff), var(--accent-solid));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 10px 22px -10px var(--accent-1);
 }
 .resume-go:hover { transform: scale(1.04); }

@@ -35,8 +35,10 @@
     {%- for part in parts -%}
       {{- part -}}
       {%- unless forloop.last -%}
-        {%- assign source_host = part | split: 'href="' | last | split: "//" | last | split: "/" | first | remove_first: "www." -%}
-        ">{{ source_host }}</a>
+        {%- assign source_url = part | split: 'href="' | last | split: '"' | first -%}
+        {%- assign source_host = source_url | remove_first: "https://" | remove_first: "http://" | split: "/" | first
+          | split: "?" | first | split: "#" | first | split: ":" | first | remove_first: "www." -%}
+        ">{{ source_host | default: "원문 보기" }}</a>
       {%- endunless -%}
     {%- endfor -%}
   {%- endcapture -%}

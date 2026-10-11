@@ -1,17 +1,21 @@
 # The site's sections, one name and one address each. The navbar, the phone tab bar, post
 # headers, search results and the archive all read their labels from here.
+# kind: the letter the archive heatmap and its badges use for a section's posts.
 articles:
   name: 아티클
   url: /articles/
   icon: code
+  kind: a
 news:
   name: 뉴스레터
   url: /newsletters/
   icon: newspaper
+  kind: n
 bdai:
   name: BDAI
   url: /bdai/
   icon: layer-group
+  kind: b
 archive:
   name: 아카이브
   url: /archive/

@@ -499,22 +499,29 @@
       sync();
       panel.classList.add("is-open");
       btn.setAttribute("aria-expanded", "true");
+      // the panel sits at the end of <body>: take keyboard focus to it, on the theme that is on
+      const first = panel.querySelector('.theme-seg-btn[aria-pressed="true"]') || panel.querySelector("button");
+      requestAnimationFrame(function () { first.focus(); });
     }
-    function close() {
+    function close(returnFocus) {
+      if (!panel.classList.contains("is-open")) return;
       panel.classList.remove("is-open");
       btn.setAttribute("aria-expanded", "false");
+      // back to the button, or to the menu button when the phone menu has folded it away
+      if (returnFocus) (btn.offsetParent ? btn : document.querySelector(".navbar-toggler") || btn).focus();
     }
 
     btn.addEventListener("click", function (e) {
       e.stopPropagation();
-      panel.classList.contains("is-open") ? close() : open();
+      panel.classList.contains("is-open") ? close(false) : open();
     });
-    panel.querySelector(".palette-close").addEventListener("click", close);
+    panel.querySelector(".palette-close").addEventListener("click", function () { close(true); });
     document.addEventListener("click", function (e) {
-      if (panel.classList.contains("is-open") && !panel.contains(e.target) && !btn.contains(e.target)) close();
+      if (panel.classList.contains("is-open") && !panel.contains(e.target) && !btn.contains(e.target)) close(false);
     });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") close();
+      if (e.key !== "Escape" || !panel.classList.contains("is-open")) return;
+      close(panel.contains(document.activeElement) || document.activeElement === document.body);
     });
 
     panel.querySelectorAll(".theme-seg-btn").forEach(function (b) {

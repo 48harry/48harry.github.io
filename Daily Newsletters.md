@@ -9,7 +9,7 @@ permalink: /newsletters/
   initNewsCalendar in custom.js builds the month calendar from #news-data and
   adds the 달력/목록 switch; without JS the list below is all there is.
   Excerpts in #news-data are plain text from excerpt.html (entities already decoded);
-  custom.js escapes the text itself.
+  custom.js escapes the text itself. "</" is written as "<\/" so text can never close the script block.
 {%- endcomment -%}
 
 <div class="nl-view" data-view="list">
@@ -42,6 +42,6 @@ permalink: /newsletters/
 <script type="application/json" id="news-data">
 [{%- for p in site.categories.News -%}
   {%- capture news_excerpt -%}{% include excerpt.html post=p length=140 %}{%- endcapture -%}
-  {"d":{{ p.date | date: "%Y-%m-%d" | jsonify }},"t":{{ p.title | strip_html | jsonify }},"u":{{ p.url | relative_url | jsonify }},"e":{{ news_excerpt | jsonify }}}{% unless forloop.last %},{% endunless %}
+  {"d":{{ p.date | date: "%Y-%m-%d" | jsonify }},"t":{{ p.title | strip_html | jsonify }},"u":{{ p.url | relative_url | jsonify }},"e":{{ news_excerpt | jsonify | replace: "</", "<\/" }}}{% unless forloop.last %},{% endunless %}
 {%- endfor -%}]
 </script>
