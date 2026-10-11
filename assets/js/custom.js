@@ -986,12 +986,14 @@
       first.innerHTML = first.innerHTML.slice(m[0].length);
       if (!first.innerHTML.trim()) first.remove();
 
+      // a newsletter's "> [!tip] 엔지니어의 시선" looks like the insights initInsights converts
+      const insight = type === "tip" && /엔지니어의 시선/.test(m[3]);
       const box = document.createElement(fold ? "details" : "div");
-      box.className = "callout callout-" + type;
+      box.className = "callout callout-" + type + (insight ? " callout-insight" : "");
       if (fold === "+") box.open = true;
       const head = document.createElement(fold ? "summary" : "div");
       head.className = "callout-title";
-      head.innerHTML = icon(CALLOUT_TYPES[type], "callout-icon") + "<span>" +
+      head.innerHTML = icon(insight ? "lightbulb" : CALLOUT_TYPES[type], "callout-icon") + "<span>" +
         (m[3] || name.charAt(0).toUpperCase() + name.slice(1)) + "</span>" +
         (fold ? icon("chevron-down", "callout-fold") : "");
       box.appendChild(head);
