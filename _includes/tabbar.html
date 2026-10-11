@@ -1,20 +1,19 @@
 {%- comment -%}
-  Phone navigation: a floating tab bar plus a round search button, in the
-  manner of iOS 26. Shown below 768px only (custom.css); custom.js tucks it in
-  while scrolling down. Posts light up their section's tab.
+  Phone navigation: a floating tab bar plus a round search button, in the manner of iOS 26.
+  Shown below 768px only (custom.css); custom.js tucks it in while scrolling down. A post lights
+  up its section's tab; BDAI and 소개 live in the menu.
 {%- endcomment -%}
-{%- assign tab = "" -%}
-{%- if page.url == "/" -%}{%- assign tab = "home" -%}
-{%- elsif page.url == "/articles/" -%}{%- assign tab = "articles" -%}
-{%- elsif page.url == "/newsletters/" -%}{%- assign tab = "news" -%}
-{%- elsif page.url == "/archive/" -%}{%- assign tab = "archive" -%}
-{%- elsif page.categories contains "News" -%}{%- assign tab = "news" -%}
-{%- elsif page.collection == "posts" -%}{%- unless page.tags contains "bdai" -%}{%- assign tab = "articles" -%}{%- endunless -%}
-{%- endif -%}
-<nav class="tabbar" aria-label="주요 메뉴">
-  <a class="tab{% if tab == 'home' %} is-active{% endif %}" href="{{ '/' | relative_url }}"{% if tab == 'home' %} aria-current="page"{% endif %}><i class="fas fa-house" aria-hidden="true"></i><span>홈</span></a>
-  <a class="tab{% if tab == 'articles' %} is-active{% endif %}" href="{{ '/articles/' | relative_url }}"{% if tab == 'articles' %} aria-current="page"{% endif %}><i class="fas fa-code" aria-hidden="true"></i><span>아티클</span></a>
-  <a class="tab{% if tab == 'news' %} is-active{% endif %}" href="{{ '/newsletters/' | relative_url }}"{% if tab == 'news' %} aria-current="page"{% endif %}><i class="fas fa-newspaper" aria-hidden="true"></i><span>뉴스레터</span></a>
-  <a class="tab{% if tab == 'archive' %} is-active{% endif %}" href="{{ '/archive/' | relative_url }}"{% if tab == 'archive' %} aria-current="page"{% endif %}><i class="fas fa-box-archive" aria-hidden="true"></i><span>아카이브</span></a>
+{%- include post-section.html -%}
+{%- assign tab = section_key -%}
+{%- if page.url == "/" -%}{%- assign tab = "home" -%}{%- endif -%}
+{%- assign tab_state = "page" -%}
+{%- if page.collection == "posts" -%}{%- assign tab_state = "true" -%}{%- endif -%}
+<nav class="tabbar" aria-label="빠른 이동">
+  <a class="tab{% if tab == 'home' %} is-active{% endif %}" href="{{ '/' | relative_url }}"{% if tab == 'home' %} aria-current="page"{% endif %}>{% include icon.html name="house" %}<span>홈</span></a>
+  {%- for key in site.navbar-sections -%}
+    {%- unless key == "articles" or key == "news" or key == "archive" -%}{%- continue -%}{%- endunless -%}
+    {%- assign s = site.data.sections[key] %}
+  <a class="tab{% if tab == key %} is-active{% endif %}" href="{{ s.url | relative_url }}"{% if tab == key %} aria-current="{{ tab_state }}"{% endif %}>{% include icon.html name=s.icon %}<span>{{ s.name }}</span></a>
+  {%- endfor %}
 </nav>
-<button type="button" class="tab-search" data-open-search aria-label="검색"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></button>
+<button type="button" class="tab-search" data-open-search aria-label="검색">{% include icon.html name="magnifying-glass" %}</button>

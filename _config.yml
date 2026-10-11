@@ -19,19 +19,16 @@ author: Geunyeong Cho
 # --- List of links in the navigation bar --- #
 ###############################################
 
-navbar-links:
-  Posts:
-    - Tech Articles : "articles"
-    - Daily Newsletter : "newsletters"
-    - BDAI : "bdai"
-    - Archive : "archive"
-  About Me: "aboutme"
-  Resources:
-    - GitHub: "https://github.com/48harry"
-    - Youtube: "https://www.youtube.com/@Geunyeong_Cho"
-    - Naver Blog: "https://blog.naver.com/48harry"
+# Sections shown in the navigation bar, in order. Their names and addresses are in
+# _data/sections.yml; GitHub, YouTube and the Naver blog are linked from the footer and About.
+navbar-sections: [articles, news, bdai, archive, about]
 
-  
+# Language of the pages (the <html lang> attribute)
+language: ko
+
+# Tags that only sort posts into sections (newsletter, article, BDAI). They stay in front matter
+# but are left out of the tags page, tag chips and related posts, which show topics only.
+system-tags: [Hacker News, Tech Trend, article, bdai]
 
 ################
 # --- Logo --- #
@@ -64,6 +61,7 @@ social-network-links:
   github: 48harry
   linkedin: geunyeong-cho-929a6239a
   youtube: "@Geunyeong_Cho"
+  naver: 48harry  # Naver blog id (blog.naver.com/…)
   rss: true  # remove this line if you don't want to show an RSS link at the bottom
   # facebook: deanattali
   # patreon: DeanAttali
@@ -129,7 +127,7 @@ feed_show_tags: true
 post_search: true
 
 # Add a button in the footer to edit the current page. Only works if your website is hosted on GitHub
-edit_page_button: true
+edit_page_button: false
 
 # Allow sub-menu items (second-level navigation menu items) to be longer than the top-level menu
 # If this setting is off, then long sub-menu words might get cut off
@@ -206,7 +204,7 @@ site-js:
 ################
 
 # Ruby Date Format to show dates of posts
-date_format: "%B %-d, %Y"
+date_format: "%Y.%m.%d"
 
 # Facebook App ID
 #fb_app_id: ""

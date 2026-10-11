@@ -2,9 +2,10 @@
 layout: post
 title: Things that arent doing the thing
 subtitle:
+description: "준비하고 계획하는 것은 실제로 하는 것이 아니라는 짧은 에세이를 옮겨 소개"
 # gh-repo: daattali/beautiful-jekyll
 # gh-badge: [star, fork, follow]
-tags: []
+tags: [개발 문화]
 mathjax: false
 author: Geunyeong Cho
 published : true

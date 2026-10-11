@@ -10,14 +10,14 @@ permalink: /404.html
   <p class="not-found-text">주소가 바뀌었거나 삭제된 글일 수 있어요. 검색하거나 최근 글에서 찾아보세요.</p>
 
   <div class="not-found-actions">
-    <a class="btn-solid" href="{{ '/' | relative_url }}"><i class="fas fa-house" aria-hidden="true"></i> 홈으로</a>
+    <a class="btn-solid" href="{{ '/' | relative_url }}">{% include icon.html name="house" %} 홈으로</a>
     {% if site.post_search %}
-    <button type="button" class="btn-ghost" data-open-search><i class="fas fa-magnifying-glass" aria-hidden="true"></i> 검색하기</button>
+    <button type="button" class="btn-ghost" data-open-search>{% include icon.html name="magnifying-glass" %} 검색하기</button>
     {% endif %}
   </div>
 
   <div class="not-found-recent">
-    <p class="section-eyebrow">Recent posts</p>
+    <h2 class="not-found-recent-title">최근 글</h2>
     <ul class="tag-post-list">
       {% for post in site.posts limit: 5 %}
       <li>

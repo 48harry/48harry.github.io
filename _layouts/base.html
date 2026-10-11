@@ -1,11 +1,9 @@
 ---
 common-css:
-  - "/assets/css/bootstrap-social.css"
   - "/assets/css/beautifuljekyll.css"
 common-ext-css:
   - href: "https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
     sri: "sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-  - "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
   - "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
   - "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
 common-ext-js:
@@ -25,6 +23,7 @@ common-js:
 {% include head.html %}
 
 <body>
+  <a class="skip-link" href="#main">본문으로 건너뛰기</a>
   <div class="ambient" aria-hidden="true">
     <span class="orb orb-1"></span>
     <span class="orb orb-2"></span>

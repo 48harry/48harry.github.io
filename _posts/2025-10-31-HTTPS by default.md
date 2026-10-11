@@ -2,7 +2,8 @@
 layout: post
 title: HTTPS by default
 subtitle: 
-tags: [article]
+description: "Chrome 154부터 HTTPS 우선 연결이 기본값이 되는 변화와 그 영향을 정리"
+tags: [article, 보안, 웹]
 mathjax: false
 author: Geunyeong Cho
 published : true

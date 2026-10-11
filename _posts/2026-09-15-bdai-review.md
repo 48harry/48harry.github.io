@@ -1,9 +1,11 @@
 ---
 layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 3주차 Review (13기)
-subtitle: BDAI
+subtitle: "시간순 분할과 Cold-start 처리"
 tags:
   - bdai
+  - 추천 시스템
+  - 데이터
 mathjax: false
 author: Geunyeong Cho
 published: true

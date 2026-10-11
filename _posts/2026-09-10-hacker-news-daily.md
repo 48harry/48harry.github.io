@@ -3,7 +3,7 @@ layout: post
 title: "미래 디바이스, 시뮬레이션, 그리고 개발 생산성: AI 시대의 테크 트렌드 엿보기"
 date: 2026-09-10 12:22:30 +0900
 categories: [Tech, News]
-tags: [Hacker News, Tech Trend]
+tags: [Hacker News, Tech Trend, 웹, 하드웨어, 오픈소스]
 ---
 
 이번 주 Hacker News와 테크 블로그에서 눈길을 사로잡은 소식들을 모아봤습니다. 애플의 잠재적인 미래 디바이스가 보여줄 온디바이스 AI의 진화, 웹에서 상대성 이론을 체험하는 놀라운 시뮬레이션, 그리고 프론트엔드 생태계를 뒤흔든 Tailwind CSS의 Shopify 합류 소식까지. 이 모든 트렌드가 데이터, MLOps, AI 시스템 아키텍처 관점에서 어떤 의미를 가지는지 함께 깊이 탐구해 보시죠.

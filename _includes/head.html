@@ -57,11 +57,13 @@
   {% capture description %}
     {%- if page.share-description -%}
       {{ page.share-description | strip_html | xml_escape }}
-    {%- elsif page.subtitle -%}
+    {%- elsif page.description -%}
+      {{ page.description | strip_html | xml_escape }}
+    {%- elsif page.subtitle and page.collection != "posts" -%}
       {{ page.subtitle | strip_html | xml_escape }}
     {%- else -%}
-      {%- assign excerpt_length = site.excerpt_length | default: 50 -%}
-      {{ page.content | strip_html | xml_escape | truncatewords: excerpt_length | strip }}
+      {%- capture page_excerpt -%}{% include excerpt.html post=page length=160 %}{%- endcapture -%}
+      {{ page_excerpt | xml_escape }}
     {%- endif -%}
   {% endcapture %}
 

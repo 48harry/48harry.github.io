@@ -2,9 +2,10 @@
 layout: post
 title: AGI fantasy is a blocker to actual engineering
 subtitle:
+description: "AGI 환상이 실용적 엔지니어링을 가로막고 환경과 노동 비용을 키운다는 주장을 요약"
 # gh-repo: daattali/beautiful-jekyll
 # gh-badge: [star, fork, follow]
-tags: [article]
+tags: [article, AI, 개발 문화, 정책]
 mathjax: false
 author: Geunyeong Cho
 published : true

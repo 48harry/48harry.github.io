@@ -1,0 +1,21 @@
+{%- comment -%}
+  One post as a compact row of a .post-rows list: title, one line of description, date.
+  Lists use rows; the big card (post-card.html) is kept for a single featured post.
+    num=     a label in front, e.g. "3주차" in the BDAI series
+    title=   replaces the title (the BDAI series shows each week's topic)
+    nodesc=  true leaves out the description line
+{%- endcomment -%}
+{%- assign _rp = include.post -%}
+<li class="post-row">
+  <a class="post-row-link" href="{{ _rp.url | relative_url }}">
+    {%- if include.num %}<span class="post-row-num">{{ include.num }}</span>{% endif %}
+    <span class="post-row-main">
+      <span class="post-row-title">{{ include.title | default: _rp.title | strip_html }}</span>
+      {%- unless include.nodesc -%}
+        {%- capture _row_desc -%}{% include excerpt.html post=_rp length=120 %}{%- endcapture %}
+      <span class="post-row-desc">{{ _row_desc | escape }}</span>
+      {%- endunless %}
+    </span>
+    <time class="post-row-date" datetime="{{ _rp.date | date_to_xmlschema }}">{{ _rp.date | date: "%Y.%m.%d" }}</time>
+  </a>
+</li>

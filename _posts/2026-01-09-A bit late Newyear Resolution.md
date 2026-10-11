@@ -2,9 +2,10 @@
 layout: post
 title: A bit late Newyear Resolution
 subtitle: 21 Lessons From 14 Years at Google
+description: "구글 14년 차 엔지니어가 정리한 21가지 교훈을 주제별로 요약"
 # gh-repo: daattali/beautiful-jekyll
 # gh-badge: [star, fork, follow]
-tags: [article]
+tags: [article, 개발 문화]
 mathjax: false
 author: Geunyeong Cho
 published : true

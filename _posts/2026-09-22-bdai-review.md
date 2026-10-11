@@ -1,9 +1,11 @@
 ---
 layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 4주차 Review (13기)
-subtitle: BDAI
+subtitle: "상호작용 행렬분해와 유사도"
 tags:
   - bdai
+  - 추천 시스템
+  - 데이터
 mathjax: false
 author: Geunyeong Cho
 published: true

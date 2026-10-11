@@ -1,5 +1,6 @@
 {%- comment -%}
   Series box for posts that belong to a tag-based series (currently the BDAI reviews).
+  Each entry reads "N주차 · topic", the topic being that post's subtitle.
   To add another series, extend the case below with its tag and label.
 {%- endcomment -%}
 {%- assign series_tag = nil -%}
@@ -16,20 +17,20 @@
   {%- assign series_pct = series_idx | times: 100 | divided_by: series_posts.size -%}
   <details class="series-box">
     <summary>
-      <span class="series-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+      <span class="series-icon" aria-hidden="true">{% include icon.html name="layer-group" %}</span>
       <span class="series-head">
         <span class="series-label">{{ series_label }}</span>
         <span class="series-count">{{ series_idx }} / {{ series_posts.size }}편</span>
       </span>
-      <i class="fas fa-chevron-down series-caret" aria-hidden="true"></i>
+      {% include icon.html name="chevron-down" class="series-caret" %}
     </summary>
     <div class="series-progress"><span style="width: {{ series_pct }}%"></span></div>
     <ol class="series-list">
       {%- for p in series_posts -%}
         <li{% if p.url == page.url %} class="is-current" aria-current="page"{% endif %}>
           <a href="{{ p.url | relative_url }}">
-            <span class="series-num">{{ forloop.index }}</span>
-            <span class="series-title">{{ p.title | strip_html }}</span>
+            <span class="series-num">{{ forloop.index }}주차</span>
+            <span class="series-title">{% if p.subtitle and p.subtitle != "" %}{{ p.subtitle | strip_html }}{% else %}{{ p.title | strip_html }}{% endif %}</span>
           </a>
         </li>
       {%- endfor -%}

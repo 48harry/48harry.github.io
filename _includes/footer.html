@@ -1,47 +1,37 @@
-<footer>
-  <div class="container-md beautiful-jekyll-footer">
-    <div class="row">
-      <div class="col-xl-8 offset-xl-2 col-lg-10 offset-lg-1">
-      {% include social-networks-links.html %}
-      {% if page.footer-extra %}
-        <div class="footer-custom-content">
-          {% for file in page.footer-extra %}
-            {% include {{ file }} %}
-          {% endfor %}
-        </div>
-      {% endif %}
-      <p class="copyright text-muted">
-      {% if site.author %}
-        {{ site.author }}
-        &nbsp;&bull;&nbsp;
-      {% endif %}
-      {{ site.time | date: '%Y' }}
-
-      {% if site.url-pretty %}
-        &nbsp;&bull;&nbsp;
-        <span class="author-site">
-          <a href="{% if site.url-canonical %}{{ site.url-canonical }}{% else %}{{ '/' | absolute_url }}{% endif %}">{{ site.url-pretty }}</a>
-        </span>
-      {% endif %}
-
-      {% if site.matomo %}
-        {% if site.matomo.opt-out %}
-          &nbsp;&bull;&nbsp;
-          <a href="http://{{- site.matomo.uri -}}/index.php?module=CoreAdminHome&action=optOut" target="_blank" class="text_muted">Do-not-Track</a>
-        {% endif %}
-      {% endif%}
-
-      {% if site.edit_page_button and site.github.repository_url %}
-        &nbsp;&bull;&nbsp;
-        <a title="Edit this page on GitHub" href="{{ site.github.repository_url }}/edit/{{ site.github.source.branch }}/{{ page.path }}" class="text_muted">Edit page</a>
-       {% endif%}
-
-      </p>
-      {% unless site.remove-ads %}<p class="theme-by text-muted">
-        Powered by
-        <a href="https://beautifuljekyll.com">Beautiful Jekyll</a>
-      </p>{% endunless %}
+{%- comment -%}
+  Glass shelf at the bottom: the links from site.social-network-links (the same round glass
+  buttons as on About) and a copyright line.
+{%- endcomment -%}
+{%- assign social = site.social-network-links -%}
+<footer class="site-footer">
+  <div class="container-md">
+    <nav class="footer-links" aria-label="연락처와 다른 채널">
+      {%- if social.email %}
+      <a class="profile-icon" href="mailto:{{ social.email }}" title="이메일" aria-label="이메일">{% include icon.html name="envelope" %}</a>
+      {%- endif %}
+      {%- if social.github %}
+      <a class="profile-icon" href="https://github.com/{{ social.github }}" title="GitHub" aria-label="GitHub">{% include icon.html name="github" %}</a>
+      {%- endif %}
+      {%- if social.linkedin %}
+      <a class="profile-icon" href="https://www.linkedin.com/in/{{ social.linkedin }}" title="LinkedIn" aria-label="LinkedIn">{% include icon.html name="linkedin-in" %}</a>
+      {%- endif %}
+      {%- if social.youtube %}
+      <a class="profile-icon" href="https://www.youtube.com/{{ social.youtube }}" title="YouTube" aria-label="YouTube">{% include icon.html name="youtube" %}</a>
+      {%- endif %}
+      {%- if social.naver %}
+      <a class="profile-icon" href="https://blog.naver.com/{{ social.naver }}" title="네이버 블로그" aria-label="네이버 블로그">{% include icon.html name="n" %}</a>
+      {%- endif %}
+      {%- if social.rss %}
+      <a class="profile-icon" href="{{ '/feed.xml' | relative_url }}" title="RSS 피드" aria-label="RSS 피드">{% include icon.html name="rss" %}</a>
+      {%- endif %}
+    </nav>
+    {% if page.footer-extra %}
+      <div class="footer-custom-content">
+        {% for file in page.footer-extra %}
+          {% include {{ file }} %}
+        {% endfor %}
       </div>
-    </div>
+    {% endif %}
+    <p class="footer-copy">© {{ site.time | date: '%Y' }} {{ site.author }}</p>
   </div>
 </footer>
