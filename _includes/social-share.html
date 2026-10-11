@@ -12,7 +12,7 @@
 
   {% if site.share-links-active.twitter %}
     <a href="https://twitter.com/intent/tweet?text={{ page.title | strip_html | url_encode }}&url={{ page.url | absolute_url | url_encode }}"
-      class="btn btn-social-icon btn-twitter" title="Share on X (Twitter)">
+      class="profile-icon" title="Share on X (Twitter)">
       {% include icon.html name="x-twitter" %}
       <span class="sr-only">X (Twitter)</span>
     </a>
@@ -20,7 +20,7 @@
 
   {% if site.share-links-active.facebook %}
     <a href="https://www.facebook.com/sharer/sharer.php?u={{ page.url | absolute_url | url_encode }}"
-      class="btn btn-social-icon btn-facebook" title="Share on Facebook">
+      class="profile-icon" title="Share on Facebook">
       {% include icon.html name="facebook" %}
       <span class="sr-only">Facebook</span>
     </a>
@@ -28,7 +28,7 @@
 
   {% if site.share-links-active.linkedin %}
     <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ page.url | absolute_url | url_encode }}"
-      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      class="profile-icon" title="Share on LinkedIn">
       {% include icon.html name="linkedin" %}
       <span class="sr-only">LinkedIn</span>
     </a>
@@ -36,7 +36,7 @@
 
   {% if site.share-links-active.vk %}
     <a href="https://vk.com/share.php?url={{ page.url | absolute_url | url_encode }}"
-      class="btn btn-social-icon btn-vk" title="Share on VK">
+      class="profile-icon" title="Share on VK">
       {% include icon.html name="vk" %}
       <span class="sr-only">VK</span>
     </a>
@@ -44,7 +44,7 @@
 
   {% if site.share-links-active.reddit %}
     <a href="https://www.reddit.com/submit?url={{ page.url | absolute_url | url_encode }}"
-      class="btn btn-social-icon btn-reddit" title="Share on Reddit">
+      class="profile-icon" title="Share on Reddit">
       {% include icon.html name="reddit" %}
       <span class="sr-only">Reddit</span>
     </a>

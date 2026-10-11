@@ -7,9 +7,8 @@ permalink: /articles/
 
 {%- assign article_posts = "" | split: "" -%}
 {%- for post in site.posts -%}
-  {%- unless post.categories contains "News" or post.tags contains "bdai" -%}
-    {%- assign article_posts = article_posts | push: post -%}
-  {%- endunless -%}
+  {%- include post-section.html post=post -%}
+  {%- if section_key == "articles" -%}{%- assign article_posts = article_posts | push: post -%}{%- endif -%}
 {%- endfor -%}
 
 <div class="posts-list">

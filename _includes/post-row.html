@@ -7,7 +7,7 @@
 {%- endcomment -%}
 {%- assign _rp = include.post -%}
 <li class="post-row">
-  <a class="post-row-link" href="{{ _rp.url | relative_url }}">
+  <a class="post-row-link{% if include.num %} has-num{% endif %}" href="{{ _rp.url | relative_url }}">
     {%- if include.num %}<span class="post-row-num">{{ include.num }}</span>{% endif %}
     <span class="post-row-main">
       <span class="post-row-title">{{ include.title | default: _rp.title | strip_html }}</span>

@@ -37,10 +37,9 @@ permalink: /archive/
 
 <script type="application/json" id="archive-data">
 [{%- for p in site.posts -%}
-  {%- if p.categories contains "News" -%}{%- assign kind = "n" -%}
-  {%- elsif p.tags contains "bdai" -%}{%- assign kind = "b" -%}
-  {%- else -%}{%- assign kind = "a" -%}{%- endif -%}
-  {"d":{{ p.date | date: "%Y-%m-%d" | jsonify }},"t":{{ p.title | strip_html | jsonify }},"u":{{ p.url | relative_url | jsonify }},"k":"{{ kind }}"}{% unless forloop.last %},{% endunless %}
+  {%- include post-section.html post=p -%}
+  {%- assign kind = site.data.sections[section_key].kind -%}
+  {"d":{{ p.date | date: "%Y-%m-%d" | jsonify }},"t":{{ p.title | strip_html | jsonify | replace: "</", "<\/" }},"u":{{ p.url | relative_url | jsonify }},"k":"{{ kind }}"}{% unless forloop.last %},{% endunless %}
 {%- endfor -%}]
 </script>
 
@@ -55,9 +54,8 @@ permalink: /archive/
       <h3 class="archive-month-title">{{ m.name | plus: 0 }}월 <span class="archive-month-count">{{ m.size }}</span></h3>
       <ul class="archive-list">
         {%- for p in m.items -%}
-          {%- if p.categories contains "News" -%}{%- assign kind = "n" -%}{%- assign kind_label = site.data.sections.news.name -%}
-          {%- elsif p.tags contains "bdai" -%}{%- assign kind = "b" -%}{%- assign kind_label = site.data.sections.bdai.name -%}
-          {%- else -%}{%- assign kind = "a" -%}{%- assign kind_label = site.data.sections.articles.name -%}{%- endif %}
+          {%- include post-section.html post=p -%}
+          {%- assign kind = section.kind -%}{%- assign kind_label = section.name %}
         <li>
           <a href="{{ p.url | relative_url }}" data-date="{{ p.date | date: '%Y-%m-%d' }}">
             <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%m.%d" }}</time>

@@ -1,6 +1,7 @@
 ---
 layout: page
 title: 소개
+description: "Geunyeong Cho 소개: 아주대학교 산업공학·인공지능융합 전공, 데이터·ML·자동화 분야의 학력, 기술 스택, 자격증과 활동"
 hide-title: true
 ---
 
