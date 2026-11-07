@@ -35,26 +35,29 @@ redirect_from:
 3. 위험도 (cat)
 4. 테마 (cat)
 
-categorical은 문자 자체로 처리할 수 없기에 Encoding을 진행함
+- categorical은 문자 자체로 처리할 수 없기에 Encoding을 진행함
 
-- One-hot Encoding
-다중범주 컬럼에서 n가지 범주가 있다면 n가지 피처를 만들고 '값이 포함되면 1, 아니면 0을 적는것'
+##### One-hot Encoding
+
+- 다중범주 컬럼에서 n가지 범주가 있다면 n가지 피처를 만들고 '값이 포함되면 1, 아니면 0을 적는것'
 
 장점 : 글자를 int로 바꿔 계산가능
 단점 : dataset이 sparse해질 수 있음
 
-- FM(Factorization Machine) vs MLP(Multy Layer Perceptron)
+##### FM(Factorization Machine) vs MLP(Multy Layer Perceptron)
 
 1. FM : 항목을 둘씩 짝찌어 계산 (onehot encoding이 적용되어있어야함)
-
-상호작용으로 고려된 내용을 추천해야 '보편적인 추천'과 구분될 수 있음 (진정한 추천의 의미를 지킬 수 있음)
+	상호작용으로 고려된 내용을 추천해야 '보편적인 추천'과 구분될 수 있음 (진정한 추천의 의미를 지킬 수 있음)
 
 2. MLP : 층을 쌓아 항목끼리 함께 작용하는 방식을 데이터분석으로 찾음
+	parameter setting에 따라 overfitting이 발생할 수 있음
 
-parameter setting에 따라 overfitting이 발생할 수 있음
+##### 비교분석
 
-- 실험세팅
 1. 4주차 행렬분해 - 상품정보없는 FM
+
+
+
 2. 상품정보없는 FM - 상품정보있는 FM
 
 근데 FM을 도입했더니 4주차보다 낮아졌고, 상품정보를 넣었을때는 더 떨어짐
@@ -69,7 +72,7 @@ parameter setting에 따라 overfitting이 발생할 수 있음
 
 후처리필터링은 explainable하기에 '꼭 지킬 규칙'을 이 방식으로 진행하는게 좋음
 실제로 점수는 아주살짝 내려갔으나 성향에 맞지않는 추천을 하지 않았다는 점에서 유의미한 진보가 있었음
-	단순히 기준을 만족하는가/아닌가 binary flag로 관리 가능
+순위 기준을 만족하는가 / 아닌가 binary flag로 관리 가능
 
 # 2. 블챌
 
