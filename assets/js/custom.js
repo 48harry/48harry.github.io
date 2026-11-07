@@ -1328,6 +1328,36 @@
     render(0);
   }
 
+  /* --- Title morph: the title you click becomes the post's title ----------- */
+
+  // Cross-document view transitions are on in custom.css; this names the clicked title so it
+  // morphs into the post's h1 (also named post-title) instead of just cross-fading. Only one
+  // element per page may carry the name, so it is set at the moment of the click.
+  function initTitleMorph() {
+    if (!window.CSS || !CSS.supports("view-transition-name: a")) return;
+    const TITLE = ".post-row-title, .feed-title, .series-step-topic, .posts-list .post-title, .related-post-title";
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest && e.target.closest("a[href]");
+      if (!a || a.origin !== location.origin || a.target === "_blank") return;
+      const t = a.querySelector(TITLE);
+      if (!t) return;
+      document.querySelectorAll(".is-morphing").forEach(function (el) {
+        el.classList.remove("is-morphing");
+        el.style.viewTransitionName = "";
+      });
+      t.classList.add("is-morphing");
+      t.style.viewTransitionName = "post-title";
+    });
+    // back from a post (bfcache): don't leave the name on, or the next click would find two
+    window.addEventListener("pageshow", function () {
+      document.querySelectorAll(".is-morphing").forEach(function (el) {
+        el.classList.remove("is-morphing");
+        el.style.viewTransitionName = "";
+      });
+    });
+  }
+
   function init() {
     initTheme();
     initSettings();
@@ -1349,6 +1379,7 @@
     initHeatmap();
     initNewsCalendar();
     initSegments();
+    initTitleMorph();
   }
 
   if (document.readyState === "loading") {

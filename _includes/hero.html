@@ -1,10 +1,34 @@
 {%- comment -%}
-  Home intro: the wordmark and one line on whose site this is and what is in it. Kept short so the
-  lists are on the first screen; the section links live in the navbar and the phone tab bar.
+  Home hero, a poster: the latest headlines fill the screen as a wall of text, and
+  the wordmark sits across the bottom, edge to edge. hero.js builds the wall from the JSON below and
+  adds the editor's "show invisibles" lens (spaces drawn as ␣ wherever the pointer is), the opening
+  ripple, the space bar and the scroll that pulls the two words apart. Without JS it is the wordmark
+  and the line on the plain canvas.
+  Corpus: the 90 newest posts (about two screens of text; the wall only ever shows the top of it).
+  Newsletter issues give their Hacker News headlines (the ### headings), other posts their title.
 {%- endcomment -%}
 <div class="hero" id="hero">
+  <div class="hero-wall" aria-hidden="true"></div>
   <div class="hero-inner">
+    <p class="hero-sub">A human and a cron job.</p>
     <h1 class="hero-title" aria-label="{{ site.title }}">{% include wordmark.html %}</h1>
-    <p class="hero-sub"><a href="{{ site.data.sections.about.url | relative_url }}">{{ site.author }}</a>가 쓴 기술 아티클과 BDAI 학회 기록, 그리고 매일 올라오는 테크 뉴스레터를 모아 둡니다.</p>
   </div>
 </div>
+{%- assign _sep = "" %}
+<script type="application/json" id="hero-corpus">[
+{%- for post in site.posts limit: 90 -%}
+  {%- include post-section.html post=post -%}
+  {%- assign _heads = "" | split: "" -%}
+  {%- if section_key == "news" -%}
+    {%- assign _parts = post.content | split: "<h3" -%}
+    {%- for _p in _parts offset: 1 -%}
+      {%- assign _h = _p | split: "</h3>" | first | prepend: "<h3" | strip_html | strip -%}
+      {%- if _h != "" -%}{%- assign _heads = _heads | push: _h -%}{%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+  {%- if _heads.size == 0 -%}{%- assign _t = post.title | strip_html | strip -%}{%- assign _heads = _heads | push: _t -%}{%- endif -%}
+  {{ _sep }}{"d":"{{ post.date | date: '%m.%d' }}","k":"{{ section.kind | default: 'a' }}","u":{{ post.url | relative_url | jsonify }},"h":{{ _heads | jsonify }}}
+  {%- assign _sep = "," -%}
+{%- endfor -%}
+]</script>
+<script src="{{ '/assets/js/hero.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>

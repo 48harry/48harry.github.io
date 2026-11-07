@@ -167,6 +167,16 @@ body {
 @view-transition { navigation: auto; }
 ::view-transition-old(root),
 ::view-transition-new(root) { animation-duration: .2s; }
+/* a title clicked in a list grows into the post's title (custom.js names it at the click) */
+.post-heading h1 { view-transition-name: post-title; }
+::view-transition-group(post-title) { animation-duration: .42s; animation-timing-function: var(--ease-out); }
+::view-transition-old(post-title),
+::view-transition-new(post-title) { height: 100%; width: auto; object-fit: none; object-position: left top; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
 
 ::selection { background: color-mix(in srgb, var(--accent-1) 22%, transparent); color: inherit; }
 
@@ -244,9 +254,30 @@ hr { border-color: var(--border); }
   border: .075em solid var(--accent);
   border-top: 0;
 }
-/* the one moment on load: the space blinks like a caret, then rests */
+/* on load the space blinks like a caret, then rests */
 .hero .wordmark-space::after { animation: caret-blink 1.06s steps(1, end) .45s 3; }
 @keyframes caret-blink { 50% { opacity: 0; } }
+
+/* Show invisibles: a space drawn as ␣ in --inv, painted as three backgrounds of the space's own box
+   (the bar just under the baseline, two short arms). A space that collapses at the end of a line
+   has no box, so it draws nothing. Titles in lists (spaced.html) show theirs on hover. */
+@property --inv {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+.sp {
+  --inv-w: max(1.5px, .085em);
+  font-style: normal;
+  background:
+    linear-gradient(var(--inv), var(--inv)) left .05em bottom .14em / calc(100% - .1em) var(--inv-w) no-repeat,
+    linear-gradient(var(--inv), var(--inv)) left .05em bottom .14em / var(--inv-w) .28em no-repeat,
+    linear-gradient(var(--inv), var(--inv)) right .05em bottom .14em / var(--inv-w) .28em no-repeat;
+}
+/* a hair wider than a plain space, so the mark has room */
+.sp { word-spacing: .06em; transition: --inv .18s ease; }
+a:hover .sp,
+a:focus-visible .sp { --inv: var(--accent); }
 
 /* --- Navigation: a floating Liquid Glass capsule -------------------------------
    The glass is on ::before (fill and blur) and ::after (the lit rim), see Glass below. */
@@ -457,42 +488,162 @@ body::after {
   word-break: keep-all;
 }
 
-/* --- Home hero: the wordmark and one line ---------------------------------- */
+/* --- Home hero: a poster. The wall of headlines, the wordmark edge to edge ----------
+   hero.js builds the wall (three identical layers: dim words, ␣ marks, full ink in the lens) and
+   drives the lens, the opening ripple, the space bar and the scroll that splits the wordmark. */
 
 .intro-header.hero-header { margin: 0; }
-.hero { padding: 8.75rem 0 3rem; }
-/* as wide as the home page below, and the text at the same inset as the lists */
-.hero-inner {
-  max-width: calc(70rem + 30px);
-  margin: 0 auto;
-  padding: 0 calc(15px + var(--inset));
+.hero {
+  --hero-pad: clamp(1rem, 3.2vw, 3rem);
+  --wall-dim: color-mix(in srgb, var(--heading-col) 23%, var(--page-col));
+  --wall-own: color-mix(in srgb, var(--heading-col) 34%, var(--page-col));
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: max(33rem, 100svh);
+  padding: 7rem 0 clamp(1.1rem, 3vh, 2.5rem);
+  overflow: clip;
+  isolation: isolate;
+  container-type: inline-size;
 }
-.hero-title {
-  margin: 0;
-  font-size: clamp(2.5rem, 10.5vw, 6.75rem);
-  font-weight: 700;
-  line-height: 1.04;
-  letter-spacing: -0.035em;
-  color: var(--heading-col);
+
+.hero-wall {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  opacity: 0;
+  /* the wall gives way to the canvas where the wordmark sits */
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 86%);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent 86%);
+}
+.hero-wall.is-ready { opacity: 1; animation: wall-in .7s ease; }
+@keyframes wall-in { from { opacity: 0; } }
+/* each layer clips to the wall, so a masked one never needs a surface the size of the whole text
+   (phones drop masked layers taller than their GPU allows, which hid the marks there) */
+.wall-layer { position: absolute; inset: 0; overflow: hidden; }
+.wall-text {
+  padding: 5.4rem var(--hero-pad) 0;
+  font-size: clamp(14px, .9vw + 4px, 18px);
+  font-weight: 500;
+  line-height: 1.62;
+  /* a little more room between words (on every layer) so each space can hold a ␣ */
+  word-spacing: .16em;
+  text-align: justify;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  color: var(--wall-dim);
+}
+.hero-wall.is-drifting .wall-text { animation: wall-drift var(--drift-dur, 120s) ease-in-out 1.2s infinite alternate; }
+.hero-wall.is-paused .wall-text { animation-play-state: paused; }
+@keyframes wall-drift { to { transform: translateY(var(--drift, 0px)); } }
+/* what makes a line wider is the same on every layer: weights only, never per layer */
+.w-date { font-weight: 700; font-variant-numeric: tabular-nums; }
+.k-a .w-run, .k-b .w-run { font-weight: 700; }
+.wall-base { pointer-events: auto; }
+.wall-base .w-group { cursor: pointer; }
+.wall-base .k-a .w-run, .wall-base .k-b .w-run { color: var(--wall-own); }
+
+/* ␣ and ¶, the editor's invisibles, in the accent. The wall has thousands of ␣, repainted on every
+   frame of the opening ripple, so they are plain bordered boxes (cheaper to paint than the gradients
+   .sp uses); hero.js marks the spaces that collapsed at a line end (.eol), which draw none */
+.wall-marks .wall-text { color: transparent; }
+.wall-marks .w-pil, .wall-ink .w-pil { color: var(--accent); }
+.wall-marks i, .wall-ink i { position: relative; font-style: normal; }
+.wall-marks i::after, .wall-ink i::after {
+  content: "";
+  position: absolute;
+  left: .03em;
+  right: .03em;
+  bottom: .13em;
+  height: .3em;
+  border: max(1.5px, .085em) solid var(--accent);
+  border-top: 0;
+}
+.wall-marks i.eol::after, .wall-ink i.eol::after { display: none; }
+
+/* the lens: a round window onto the ink layer; hero.js moves the window one way and the ink the
+   other, so the ink stays lined up with the wall. Own posts in their section's colour, the post
+   under the pointer underlined */
+.wall-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+  opacity: 0;
+  transition: opacity .5s ease;
+  will-change: transform;
+}
+.wall-lens .wall-ink { inset: auto; top: 0; left: 0; will-change: transform; }
+.wall-ink .wall-text { color: var(--heading-col); }
+.wall-ink .w-date { color: var(--mid-col); }
+.wall-ink .k-a .w-run { color: var(--kind-a); }
+.wall-ink .k-b .w-run { color: var(--kind-b); }
+.wall-ink .is-hot .w-run, .wall-ink .is-hot .w-date { color: var(--accent); }
+.has-lens .wall-lens { opacity: 1; }
+
+.hero-inner {
+  position: relative;
+  padding: 0 var(--hero-pad);
+  pointer-events: none;
 }
 .hero-sub {
-  max-width: 34rem;
-  margin: 1.1rem 0 0;
-  font-size: clamp(1.05rem, 2.2vw, 1.2rem);
-  line-height: 1.6;
-  color: var(--mid-col);
-  word-break: keep-all;
-}
-.hero-sub a {
+  display: inline-block;
+  margin: 0 0 clamp(.4rem, 1.2cqw, 1.1rem) -.55rem;
+  padding: .3rem .55rem;
+  border-radius: .55rem;
+  font-size: clamp(1.1rem, 1.5cqw + .45rem, 1.9rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
   color: var(--heading-col);
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: .22em;
-  text-decoration-color: var(--rule);
+  background: var(--page-col);
 }
-.hero-sub a:hover { color: var(--link-col); text-decoration-color: currentColor; }
-@media (max-width: 767px) { .hero { padding: 6.5rem 0 1.75rem; } }
+/* the wordmark fills the width: in Pretendard Black at this tracking it is about 6.62em wide */
+.hero-title {
+  margin: 0;
+  font-size: calc((100cqw - 2 * var(--hero-pad)) / 6.7);
+  font-weight: 900;
+  line-height: .84;
+  letter-spacing: -0.058em;
+  color: var(--heading-col);
+  white-space: nowrap;
+}
+.hero-title .wordmark-word {
+  display: inline-block;
+  transform: translateX(calc(var(--split, 0) * var(--dir, 0) * 14cqw));
+}
+.hero-title .wordmark-word:first-child { --dir: -1; }
+.hero-title .wordmark-word:last-child { --dir: 1; }
+.hero-title .wordmark-space { pointer-events: auto; cursor: pointer; transform-origin: bottom; }
+/* scrolling stretches the ␣ across the gap the words leave */
+.hero-title .wordmark-space::after {
+  left: calc(.08em - var(--split, 0) * 14cqw);
+  right: calc(.08em - var(--split, 0) * 14cqw);
+  border-width: .07em;
+  transform-origin: bottom;
+}
+/* the space bar: the ␣ goes down like a key (on the span, so the caret blink is left alone) */
+.hero.is-pressed .wordmark-space { animation: key-press .38s var(--spring); }
+@keyframes key-press { 28% { transform: translateY(.05em) scaleY(.45); } }
+@media (max-width: 767px) {
+  .hero { min-height: max(30rem, 92svh); padding-top: 6rem; }
+  /* a narrow column justifies into gaps: ragged right instead */
+  .wall-text { padding-top: 4.6rem; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-wall .wall-text { animation: none !important; }
+  .hero-title .wordmark-word { transform: none; }
+}
+:root[data-perf="lite"] .hero-wall .wall-text { animation: none; }
 
 /* --- Home: own writing in the wide column, the daily newsletter beside it ----- */
 
@@ -517,9 +668,10 @@ body::after {
 }
 .section-title {
   margin: 0;
-  font-size: 1.375rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 1.4vw + 1rem, 2.25rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.035em;
   color: var(--heading-col);
 }
 .section-more {
