@@ -24,6 +24,8 @@
       json: '{{ site.baseurl }}/assets/data/searchcorpus.json',
       searchResultTemplate: '<li><a class="search-result" href="{url}"><span class="search-result-title">{title}</span><span class="search-result-meta">{date}<span class="search-result-cat">{category}</span></span></a></li>',
       noResultsText: '<li class="search-no-results">검색 결과가 없어요</li>',
+      // an empty field (a page has no section) prints nothing instead of its "{category}" placeholder
+      templateMiddleware: function (prop, value) { return value === "" ? "" : undefined; },
       limit: 12
     });
   </script>

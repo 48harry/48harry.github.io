@@ -2,57 +2,83 @@
 layout: base
 ---
 
-{% include header.html type="post" %}
+{%- comment -%}
+  A post is one sheet of paper: section link, title, meta and body together. Posts with a cover
+  image (or header-extra) keep the theme's big header above the sheet instead.
+{%- endcomment -%}
+{%- assign big_header = false -%}
+{%- if page.cover-img or page.header-extra -%}{%- assign big_header = true -%}{%- endif -%}
+{%- if big_header -%}
+  {% include header.html type="post" %}
+{%- endif -%}
+{%- include post-section.html -%}
+{%- assign read_chars = page.content | strip_html | strip_newlines | size -%}
+{%- assign read_mins = read_chars | divided_by: 500 | plus: 1 -%}
 
-<main id="main" class="{% if page.full-width %} container-fluid {% else %} container-md {% endif %}">
+<main id="main" class="{% if page.full-width %} container-fluid {% else %} container-md {% endif %}{% unless big_header %} post-main{% endunless %}">
   <div class="row">
     <div class="{% if page.full-width %} col {% else %} col-xl-8 offset-xl-2 col-lg-10 offset-lg-1 {% endif %}">
 
-      {% if page.gh-repo %}
-        {% assign gh_split =  page.gh-repo | split:'/'  %}
-        {% assign gh_user =  gh_split[0]  %}
-        {% assign gh_repo =  gh_split[1]  %}
+      <article class="post-sheet">
+        {% unless big_header %}
+        <header class="post-heading">
+          <a class="post-eyebrow" href="{{ section.url | relative_url }}">{{ section.name }}</a>
+          <h1>{{ page.title | strip_html }}</h1>
+          {% if page.subtitle %}<p class="post-subheading">{{ page.subtitle | strip_html }}</p>{% endif %}
+          <p class="post-meta-row">
+            {%- if page.author %}<span class="meta-item">{{ page.author | strip_html }}</span>{% endif %}
+            <span class="meta-item"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time></span>
+            {%- if page.last-updated %}<span class="meta-item">{{ page.last-updated | date: "%Y.%m.%d" }} 수정</span>{% endif %}
+            <span class="meta-item">{{ read_mins }}분 읽기</span>
+          </p>
+        </header>
+        {% endunless %}
 
-        <div id="header-gh-btns">
-          {% if page.gh-badge.size > 0 %}
-            {% for badge in page.gh-badge %}
-              {% case badge %}
-                {% when 'star'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=star&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
-                {% when 'watch'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=watch&v=2&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
-                {% when 'fork'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=fork&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
-                {% when 'follow'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&type=follow&count=true" frameborder="0" scrolling="0" width="220px" height="20px"></iframe>
-              {% endcase %}
+        {% if page.gh-repo %}
+          {% assign gh_split = page.gh-repo | split:'/' %}
+          {% assign gh_user = gh_split[0] %}
+          {% assign gh_repo = gh_split[1] %}
+          <div id="header-gh-btns">
+            {% if page.gh-badge.size > 0 %}
+              {% for badge in page.gh-badge %}
+                {% case badge %}
+                  {% when 'star'%}
+                    <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=star&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                  {% when 'watch'%}
+                    <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=watch&v=2&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                  {% when 'fork'%}
+                    <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=fork&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                  {% when 'follow'%}
+                    <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&type=follow&count=true" frameborder="0" scrolling="0" width="220px" height="20px"></iframe>
+                {% endcase %}
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if page.before-content %}
+          <div class="before-content">
+            {% for file in page.before-content %}
+              {% include {{ file }} %}
             {% endfor %}
-          {% endif %}
+          </div>
+        {% endif %}
+
+        {% include series.html %}
+
+        <div class="blog-post">
+          {% include post-content.html content=content %}
         </div>
-      {% endif %}
+      </article>
 
-      {% if page.before-content %}
-        <div class="before-content">
-          {% for file in page.before-content %}
-            {% include {{ file }} %}
-          {% endfor %}
-        </div>
-      {% endif %}
-
-      {% include series.html %}
-
-      <div class="blog-post">
-        {% include post-content.html content=content %}
-      </div>
-
-      {%- comment -%} Topic tags only: section tags (site.system-tags) are already the eyebrow {%- endcomment -%}
+      {%- comment -%} Topic tags only: section tags (site.system-tags) are already the section link {%- endcomment -%}
       {%- assign topic_tags = "" | split: "" -%}
       {%- for tag in page.tags -%}
         {%- unless site.system-tags contains tag -%}{%- assign topic_tags = topic_tags | push: tag -%}{%- endunless -%}
       {%- endfor -%}
       {% if topic_tags.size > 0 %}
         <div class="blog-tags">
-          <span class="blog-tags-label">{% include icon.html name="tag" %}<span class="sr-only">태그</span></span>
+          <span class="blog-tags-label">태그</span>
           {% for tag in topic_tags %}
             <a href="{{ '/tags/' | relative_url }}#{{- tag | slugify -}}">{% include tag-label.html tag=tag %}</a>
           {% endfor %}
@@ -74,13 +100,13 @@ layout: base
       <nav class="post-nav" aria-label="이전 글과 다음 글">
         {% if page.previous.url %}
         <a class="post-nav-link prev" href="{{ page.previous.url | relative_url }}">
-          <span class="post-nav-label">{% include icon.html name="arrow-left" %} 이전 글</span>
+          <span class="post-nav-label">이전 글</span>
           <span class="post-nav-title">{{ page.previous.title | strip_html }}</span>
         </a>
         {% endif %}
         {% if page.next.url %}
         <a class="post-nav-link next" href="{{ page.next.url | relative_url }}">
-          <span class="post-nav-label">다음 글 {% include icon.html name="arrow-right" %}</span>
+          <span class="post-nav-label">다음 글</span>
           <span class="post-nav-title">{{ page.next.title | strip_html }}</span>
         </a>
         {% endif %}
