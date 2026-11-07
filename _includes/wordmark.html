@@ -1,0 +1,7 @@
+{%- comment -%}
+  The site title as a wordmark: the space between its words is drawn the way a code editor shows
+  whitespace (␣), in the accent colour. Decorative copy of site.title: the element around it gives
+  the accessible name (aria-label or visually hidden text).
+{%- endcomment -%}
+{%- assign _wm = site.title | split: " " -%}
+<span class="wordmark" aria-hidden="true">{{ _wm | first }}{% for _w in _wm offset: 1 %}<span class="wordmark-space"></span>{{ _w }}{% endfor %}</span>

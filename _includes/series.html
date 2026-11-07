@@ -17,7 +17,6 @@
   {%- assign series_pct = series_idx | times: 100 | divided_by: series_posts.size -%}
   <details class="series-box">
     <summary>
-      <span class="series-icon" aria-hidden="true">{% include icon.html name="layer-group" %}</span>
       <span class="series-head">
         <span class="series-label">{{ series_label }}</span>
         <span class="series-count">{{ series_idx }} / {{ series_posts.size }}편</span>

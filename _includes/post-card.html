@@ -1,6 +1,6 @@
 {%- comment -%}
-  The big glass card for a single featured post: the latest newsletter on home, the latest
-  article on 아티클. Lists of posts use post-row.html.
+  The larger item for a single featured post: the latest article on 아티클. Lists of posts use
+  post-row.html.
     level=  heading level of the title (default 2; 3 under a section heading)
 {%- endcomment -%}
 {%- assign p = include.post -%}
@@ -16,9 +16,8 @@
     {% endif %}
   </a>
   <p class="post-entry">{{ card_excerpt | escape }}</p>
-  <div class="card-meta">
-    <span>{% include icon.html name="calendar" %} <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%Y.%m.%d" }}</time></span>
-    <span>{% include icon.html name="clock" %} {{ card_mins }}분 읽기</span>
-    <span class="card-more" aria-hidden="true">읽기 {% include icon.html name="arrow-right" %}</span>
-  </div>
+  <p class="card-meta">
+    <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%Y.%m.%d" }}</time>
+    <span>{{ card_mins }}분 읽기</span>
+  </p>
 </article>

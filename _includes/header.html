@@ -28,7 +28,7 @@
         <div class="{{ include.type }}-heading">
           {% if include.type == "post" %}
             {%- include post-section.html -%}
-            <a class="post-eyebrow" href="{{ section.url | relative_url }}">{% include icon.html name=section.icon %}{{ section.name }}</a>
+            <a class="post-eyebrow" href="{{ section.url | relative_url }}">{{ section.name }}</a>
           {% endif %}
           <h1>{% if page.title %}{{ page.title | strip_html }}{% else %}<br/>{% endif %}</h1>
           {% if page.subtitle %}
@@ -42,16 +42,12 @@
           {% if include.type == "post" %}
             {%- assign read_chars = page.content | strip_html | strip_newlines | size -%}
             {%- assign read_mins = read_chars | divided_by: 500 | plus: 1 -%}
-            <div class="post-meta-row">
-              {% if page.author %}
-                <span class="meta-item">{% include icon.html name="user" %} {{ page.author | strip_html }}</span>
-              {% endif %}
-              <span class="meta-item">{% include icon.html name="calendar" %} <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time></span>
-              {% if page.last-updated %}
-                <span class="meta-item">{% include icon.html name="rotate" %} {{ page.last-updated | date: "%Y.%m.%d" }} 수정</span>
-              {% endif %}
-              <span class="meta-item">{% include icon.html name="clock" %} {{ read_mins }}분 읽기</span>
-            </div>
+            <p class="post-meta-row">
+              {%- if page.author %}<span class="meta-item">{{ page.author | strip_html }}</span>{% endif %}
+              <span class="meta-item"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time></span>
+              {%- if page.last-updated %}<span class="meta-item">{{ page.last-updated | date: "%Y.%m.%d" }} 수정</span>{% endif %}
+              <span class="meta-item">{{ read_mins }}분 읽기</span>
+            </p>
           {% endif %}
         </div>
       </div>
