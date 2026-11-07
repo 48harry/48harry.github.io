@@ -1,0 +1,5 @@
+{%- comment -%}
+  include.text as plain text with each space in a span, so hovering a link can show its spaces as ␣
+  (the .sp rule in custom.css). The words read exactly as before.
+{%- endcomment -%}
+{{- include.text | strip_html | strip | escape_once | replace: " ", '<span class="sp"> </span>' -}}

@@ -44,7 +44,8 @@ full-width: true
           <li>
             <a class="series-step{% if forloop.last %} is-latest{% endif %}" href="{{ post.url | relative_url }}">
               <span class="series-step-label">{{ forloop.index }}주차</span>
-              <span class="series-step-topic">{% if post.subtitle and post.subtitle != "" %}{{ post.subtitle | strip_html }}{% else %}{{ post.title | strip_html }}{% endif %}</span>
+              {%- if post.subtitle and post.subtitle != "" %}{% assign _topic = post.subtitle %}{% else %}{% assign _topic = post.title %}{% endif %}
+              <span class="series-step-topic">{% include spaced.html text=_topic %}</span>
               <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m.%d" }}</time>
             </a>
           </li>
@@ -65,7 +66,7 @@ full-width: true
         <li>
           <a class="feed-item" href="{{ post.url | relative_url }}">
             <time class="feed-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%m.%d" }}<span>{{ "일월화수목금토" | slice: wd }}요일</span></time>
-            <span class="feed-title">{{ post.title | strip_html }}</span>
+            <span class="feed-title">{% include spaced.html text=post.title %}</span>
           </a>
         </li>
       {% endfor %}
