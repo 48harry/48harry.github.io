@@ -1,7 +1,7 @@
 ---
 layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 6주차 Review (13기)
-subtitle:
+subtitle: FM, MLP 도입 비교분석
 tags:
   - bdai
   - 추천 시스템
