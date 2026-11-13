@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2026-11-3-bdai-review.md",
+                "file": "_posts/2026-11-10-bdai-review.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-11-3-bdai-review"
+              "title": "2026-11-10-bdai-review"
             }
           }
         ]
@@ -199,7 +199,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "2611621e44bb1e35",
+  "active": "086248d09cff7f18",
   "lastOpenFiles": [
     "_posts/2026-11-10-bdai-review.md",
     "_posts/2026-11-3-bdai-review.md",
