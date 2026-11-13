@@ -9,7 +9,7 @@ tags:
 mathjax: false
 author: Geunyeong Cho
 published: true
-date: 2026-09-29 23:23:38 +0900
+date: 2026-11-3 23:23:38 +0900
 redirect_from:
   - /2026-09-29-bdai-review.md/
 ---
