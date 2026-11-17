@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "_posts/2026-11-16-retrospective-kea-tech-gpt.md",
+                "file": "_posts/2026-11-16-hacker-news-daily.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-11-16-retrospective-kea-tech-gpt"
+              "title": "2026-11-16-hacker-news-daily"
             }
           }
         ]
@@ -201,11 +201,11 @@
   },
   "active": "2611621e44bb1e35",
   "lastOpenFiles": [
-    "_posts/2026-11-16-retrospective-illegal-ad-detector.md",
+    "_posts/2026-11-14-retrospective-oibc-solar-forecast.md",
     "_posts/2026-11-16-retrospective-kea-tech-gpt.md",
+    "_posts/2026-11-16-retrospective-illegal-ad-detector.md",
     "_posts/2026-11-16-hacker-news-daily.md",
     "_posts/2026-11-15-hacker-news-daily.md",
-    "_posts/2026-11-14-retrospective-oibc-solar-forecast.md",
     "_posts/2026-11-20-retrospective-predictive-maintenance.md",
     "_posts/2025-10-8-F3 The Open-Source Data File Format for the Future.md",
     "_templates/yyyy-mm-dd-example.md",
