@@ -2,8 +2,12 @@
 layout: post
 title: "넉 달 만에 다시 연 특허 AI 에이전트: 평가를 돌렸더니 버그가 나왔다"
 subtitle: KEA Tech-GPT 회고
-description: "7월에 만든 특허 AI 에이전트를 다시 열어 검증 노드의 구멍을 고치고, 평가 세트로 도구 선택 버그를 찾은 회고"
-tags: [회고, LLM, 에이전트, 평가]
+description: 7월에 만든 특허 AI 에이전트를 다시 열어 검증 노드의 구멍을 고치고, 평가 세트로 도구 선택 버그를 찾은 회고
+tags:
+  - 회고
+  - LLM
+  - 에이전트
+  - 평가
 mathjax: false
 author: Geunyeong Cho
 published: false
