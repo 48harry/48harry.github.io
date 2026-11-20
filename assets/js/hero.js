@@ -15,6 +15,18 @@
 (function () {
   "use strict";
 
+  // The navbar's wordmark waits until the hero's has gone (custom.css hides it on the home page
+  // until .hero-passed); "gone" counts from the bottom of the floating bar, so the two swap as the big
+  // one slides under it. First, before anything below can bail out, so it always comes back.
+  const heroTitle = document.querySelector("#hero .hero-title");
+  if (heroTitle && "IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) {
+      document.documentElement.classList.toggle("hero-passed", !entries[0].isIntersecting);
+    }, { rootMargin: "-72px 0px 0px 0px" }).observe(heroTitle);
+  } else {
+    document.documentElement.classList.add("hero-passed");
+  }
+
   const hero = document.getElementById("hero");
   const wall = hero && hero.querySelector(".hero-wall");
   const title = hero && hero.querySelector(".hero-title");

@@ -304,6 +304,35 @@ a:focus-visible .sp { --inv: var(--accent); }
   color: var(--heading-col);
 }
 .navbar-custom .navbar-brand:hover { color: var(--heading-col); }
+/* Home: the hero's wordmark is the title while it is on screen; the bar's small one comes in once
+   it has gone (hero.js sets .hero-passed), like a large title handing over to the bar */
+html.js .nav-on-hero .navbar-brand {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, visibility 0s .3s;
+}
+html.js.hero-passed .nav-on-hero .navbar-brand,
+html.js .nav-on-hero.top-nav-expanded .navbar-brand {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .3s ease;
+}
+/* On a phone the bar holds nothing else, so over the hero it steps back to its menu button, a
+   floating glass circle like the search button below; the capsule returns with the wordmark or
+   when the menu opens */
+@media (max-width: 767px) {
+  .nav-on-hero::before,
+  .nav-on-hero::after,
+  .nav-on-hero .navbar-toggler { transition: opacity .3s ease, background-color .3s ease, box-shadow .3s ease; }
+  html.js:not(.hero-passed) .nav-on-hero:not(.top-nav-expanded)::before,
+  html.js:not(.hero-passed) .nav-on-hero:not(.top-nav-expanded)::after { opacity: 0; }
+  html.js:not(.hero-passed) .nav-on-hero:not(.top-nav-expanded) .navbar-toggler {
+    background: var(--lg-fill);
+    -webkit-backdrop-filter: var(--lg-filter);
+    backdrop-filter: var(--lg-filter);
+    box-shadow: var(--lg-inner), var(--lg-drop);
+  }
+}
 .navbar-custom .navbar-nav .nav-item {
   text-transform: none;
   font-size: .92rem;
@@ -613,6 +642,9 @@ body::after {
 /* the wordmark fills the width: in Pretendard Black at this tracking it is about 6.62em wide */
 .hero-title {
   margin: 0;
+  /* the tight line height leaves the descender of "p" about .14em below the line: room for it, so
+     it never meets the bottom of the screen */
+  padding-bottom: .14em;
   font-size: calc((100cqw - 2 * var(--hero-pad)) / 6.7);
   font-weight: 900;
   line-height: .84;
@@ -638,7 +670,13 @@ body::after {
 .hero.is-pressed .wordmark-space { animation: key-press .38s var(--spring); }
 @keyframes key-press { 28% { transform: translateY(.05em) scaleY(.45); } }
 @media (max-width: 767px) {
-  .hero { min-height: max(30rem, 92svh); padding-top: 6rem; }
+  /* the whole first screen, the wordmark just above the tab bar (4.625rem from the bottom): the next
+     section starts below the fold instead of showing through between the tab bar and search */
+  .hero {
+    min-height: max(30rem, 100svh);
+    padding-top: 6rem;
+    padding-bottom: calc(4.625rem + env(safe-area-inset-bottom) + 1rem);
+  }
   /* a narrow column justifies into gaps: ragged right instead */
   .wall-text { padding-top: 4.6rem; text-align: left; }
 }
@@ -748,7 +786,16 @@ body::after {
   scrollbar-width: thin;
 }
 .series-track li { scroll-snap-align: start; }
+/* the end is a resting point too: custom.js opens the track there, on the newest week */
+.series-track li:last-child { scroll-snap-align: end; }
 .series-track li + li { border-left: 1px solid var(--border); }
+/* the edge with more weeks beyond it fades out (custom.js sets the classes) */
+.series-track.fade-start { -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem); mask-image: linear-gradient(to right, transparent, #000 3rem); }
+.series-track.fade-end { -webkit-mask-image: linear-gradient(to left, transparent, #000 3rem); mask-image: linear-gradient(to left, transparent, #000 3rem); }
+.series-track.fade-start.fade-end {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+}
 .series-step {
   display: flex;
   flex-direction: column;

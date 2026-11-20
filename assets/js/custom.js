@@ -740,6 +740,24 @@
     });
   }
 
+  /* --- Home: the BDAI weeks open at the newest one -------------------------- */
+
+  // When the weeks don't fit side by side, the track starts scrolled to its end (the newest week,
+  // in the accent) and fades at whichever edge has more to scroll to.
+  function initSeriesTrack() {
+    document.querySelectorAll(".series-track").forEach(function (t) {
+      function edges() {
+        const max = t.scrollWidth - t.clientWidth;
+        t.classList.toggle("fade-start", max > 1 && t.scrollLeft > 1);
+        t.classList.toggle("fade-end", max > 1 && t.scrollLeft < max - 1);
+      }
+      t.scrollLeft = t.scrollWidth;
+      edges();
+      t.addEventListener("scroll", edges, { passive: true });
+      window.addEventListener("resize", edges);
+    });
+  }
+
   /* --- Phone tab bar: tucks in while scrolling down, back on the way up ------ */
 
   function initTabbar() {
@@ -1381,6 +1399,7 @@
     initSearchPalette();
     initNavLens();
     initTabbar();
+    initSeriesTrack();
     initReadProgress();
     initResume();
     initInsights();
