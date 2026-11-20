@@ -5,6 +5,11 @@ on:
     # 매일 한국 시간(KST) 오전 8시 00분 실행 (UTC 전날 23:00)
     - cron: '0 23 * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '포스트를 커밋하지 않고 로그로만 출력'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -30,9 +35,11 @@ jobs:
       - name: Generate Blog Post
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: python scripts/daily_newsletter.py
 
       - name: Commit and Push new post to _posts
+        if: ${{ !inputs.dry_run }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -41,5 +48,6 @@ jobs:
             echo "변경된 포스트가 없습니다."
           else
             git commit -m "🤖 chore: daily hacker news update (${{ github.run_number }})"
+            git pull --rebase origin main
             git push
           fi
