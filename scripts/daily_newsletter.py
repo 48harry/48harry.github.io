@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime, timezone, timedelta
 import requests
 from google import genai
@@ -54,9 +55,6 @@ def generate_blog_post(articles, quote):
 [오늘의 명언]
 {quote}
 
-[필수 출력 규칙]
-
-
 [필수 출력 규칙 - 위반 시 에러 발생]
 1. 맨 첫 줄은 무조건 --- 기호로 시작해야 하며, 절대로 백틱(```markdown)으로 감싸지 마.
 2. YAML Front Matter의 각 항목은 반드시 아래와 같이 정확히 줄바꿈(Newline)을 적용해 줘:
@@ -64,7 +62,7 @@ def generate_blog_post(articles, quote):
 ---
 layout: post
 title: "[3개 기사의 핵심을 관통하는 매력적인 테크 제목]"
-date: {{ $now.setZone('Asia/Seoul').toFormat('yyyy-MM-dd HH:mm:ss') }} +0900
+date: {datetime_jekyll}
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
 ---
@@ -92,14 +90,36 @@ tags: [Hacker News, Tech Trend]
         contents=prompt
     ).text.strip()
 
-    if blog_md.startswith("```"):
-        blog_md = "\n".join(blog_md.splitlines()[1:-1]).strip()
+    return normalize_post(blog_md)
 
-    return blog_md
+
+def normalize_post(blog_md):
+    """코드펜스 제거, front matter 검증, date를 실행 시각으로 고정"""
+    lines = blog_md.splitlines()
+    if lines and lines[0].startswith("```"):
+        lines = lines[1:]
+        if lines and lines[-1].strip().startswith("```"):
+            lines = lines[:-1]
+    blog_md = "\n".join(lines).strip()
+
+    match = re.match(r"^---\n(.*?)\n---\n", blog_md, re.DOTALL)
+    if not match or "title:" not in match.group(1):
+        raise ValueError(f"Gemini 응답에 올바른 front matter가 없습니다:\n{blog_md[:500]}")
+
+    front = match.group(1)
+    if re.search(r"^date:", front, re.MULTILINE):
+        front = re.sub(r"^date:.*$", f"date: {datetime_jekyll}", front, flags=re.MULTILINE)
+    else:
+        front += f"\ndate: {datetime_jekyll}"
+    return f"---\n{front}\n---\n" + blog_md[match.end():]
 
 
 def save_blog_post(markdown_content):
-    """Jekyll _posts 폴더에 마크다운 파일 저장"""
+    """Jekyll _posts 폴더에 마크다운 파일 저장 (DRY_RUN이면 출력만)"""
+    if os.environ.get("DRY_RUN") == "true":
+        print(markdown_content)
+        print("DRY_RUN: 파일을 저장하지 않았습니다.")
+        return
     os.makedirs("_posts", exist_ok=True)
     filename = f"_posts/{date_str}-hacker-news-daily.md"
     with open(filename, "w", encoding="utf-8") as f:
