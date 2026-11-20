@@ -3,9 +3,9 @@ layout: null
 ---
 {%- comment -%}
   Search index for SimpleJekyllSearch (search.html), which matches a query against every field.
-  "desc" (the post's summary) and "tags" (its topics) are there to be matched; "date" and
-  "category" (the section) are shown under each result. HTML-escaped because the results
-  template inserts them as HTML.
+  "desc" (the post's summary) and "tags" (its topics) are there to be matched; "sub" (the
+  subtitle, e.g. a BDAI week's topic), "date" and "category" (the section) are shown under each
+  result. HTML-escaped because the results template inserts them as HTML.
 {%- endcomment -%}
 [
 {%- for post in site.posts -%}
@@ -17,6 +17,7 @@ layout: null
   {%- endfor %}
   {
     "title": {{ post.title | strip_html | escape | jsonify }},
+    "sub": {{ post.subtitle | strip_html | strip | escape | jsonify }},
     "desc": {{ search_desc | escape | jsonify }},
     "tags": {{ search_tags | join: ", " | escape | jsonify }},
     "category": {{ section.name | jsonify }},
@@ -31,6 +32,7 @@ layout: null
 {%- for page in search_pages %}
   {
     "title": {{ page.title | strip_html | escape | jsonify }},
+    "sub": "",
     "desc": {{ page.subtitle | default: page.share-description | strip_html | escape | jsonify }},
     "tags": "",
     "category": "",

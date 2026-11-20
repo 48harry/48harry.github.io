@@ -2254,6 +2254,12 @@ footer .footer-links a:focus { color: var(--heading-col); text-decoration: none;
 }
 .search-result-title { font-weight: 600; line-height: 1.45; color: var(--heading-col); }
 .search-result.is-active .search-result-title { color: var(--link-col); }
+/* the words searched for */
+.search-result-title mark { padding: 0 .05em; border-radius: .2em; color: inherit; background: color-mix(in srgb, var(--accent-1) 16%, transparent); }
+:root[data-theme="dark"] .search-result-title mark { background: color-mix(in srgb, var(--accent-1) 34%, transparent); }
+/* the subtitle (a BDAI week's topic) tells otherwise alike titles apart */
+.search-result-sub { font-size: .88rem; line-height: 1.45; color: var(--text-col); }
+.search-result-sub:empty { display: none; }
 .search-result-meta { font-size: .8rem; color: var(--mid-col); }
 .search-result-cat:not(:empty)::before { content: ", "; }
 .search-no-results { padding: 1.5rem; text-align: center; color: var(--mid-col); }

@@ -1,9 +1,13 @@
 {%- comment -%}
   Up to 3 recent posts sharing a topic tag with this one (section tags in site.system-tags
   don't count), topped up from the same section. BDAI posts skip this: the series box already
-  links the whole series.
+  links the whole series. The previous and next posts (nav_prev, nav_next from post.html) are
+  linked just above, so they are left out here.
 {%- endcomment -%}
 {%- unless page.tags contains "bdai" -%}
+{%- assign skip_urls = "" | split: "" | push: page.url -%}
+{%- if nav_prev -%}{%- assign skip_urls = skip_urls | push: nav_prev.url -%}{%- endif -%}
+{%- if nav_next -%}{%- assign skip_urls = skip_urls | push: nav_next.url -%}{%- endif -%}
 {%- assign my_topics = "" | split: "" -%}
 {%- for tag in page.tags -%}
   {%- unless site.system-tags contains tag -%}{%- assign my_topics = my_topics | push: tag -%}{%- endunless -%}
@@ -14,7 +18,7 @@
 {%- assign related = "" | split: "" -%}
 {%- for post in site.posts -%}
   {%- if related.size >= 3 -%}{%- break -%}{%- endif -%}
-  {%- if post.url == page.url -%}{%- continue -%}{%- endif -%}
+  {%- if skip_urls contains post.url -%}{%- continue -%}{%- endif -%}
   {%- for tag in my_topics -%}
     {%- if post.tags contains tag -%}{%- assign related = related | push: post -%}{%- break -%}{%- endif -%}
   {%- endfor -%}
@@ -22,7 +26,7 @@
 {%- if related.size < 3 -%}
   {%- for post in site.posts -%}
     {%- if related.size >= 3 -%}{%- break -%}{%- endif -%}
-    {%- if post.url == page.url or related contains post -%}{%- continue -%}{%- endif -%}
+    {%- if skip_urls contains post.url or related contains post -%}{%- continue -%}{%- endif -%}
     {%- include post-section.html post=post -%}
     {%- if section_key == my_section -%}{%- assign related = related | push: post -%}{%- endif -%}
   {%- endfor -%}

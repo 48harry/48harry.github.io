@@ -97,19 +97,49 @@ layout: base
         {% include social-share.html %}
       {% endif %}
 
+      {%- comment -%}
+        Previous and next stay inside the post's section (Jekyll's page.previous/next cross
+        sections, so an article's "next" was usually a newsletter): newsletters day by day,
+        articles among articles, the BDAI weeks in order and labelled by week with their topic.
+        nav_prev and nav_next are read again by related-posts.html.
+      {%- endcomment -%}
+      {%- case section_key -%}
+        {%- when "news" -%}{%- assign nav_posts = site.categories.News | sort: "date" -%}
+        {%- when "bdai" -%}{%- assign nav_posts = site.tags.bdai | sort: "date" -%}
+        {%- else -%}
+          {%- assign nav_posts = "" | split: "" -%}
+          {%- for p in site.posts reversed -%}
+            {%- include post-section.html post=p -%}
+            {%- if section_key == "articles" -%}{%- assign nav_posts = nav_posts | push: p -%}{%- endif -%}
+          {%- endfor -%}
+          {%- include post-section.html -%}
+      {%- endcase -%}
+      {%- assign nav_prev = nil -%}{%- assign nav_next = nil -%}{%- assign nav_week = 0 -%}
+      {%- for p in nav_posts -%}
+        {%- if p.url == page.url -%}
+          {%- assign nav_week = forloop.index -%}
+          {%- assign i_prev = forloop.index0 | minus: 1 -%}
+          {%- assign i_next = forloop.index -%}
+          {%- if i_prev >= 0 -%}{%- assign nav_prev = nav_posts[i_prev] -%}{%- endif -%}
+          {%- assign nav_next = nav_posts[i_next] -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
       <nav class="post-nav" aria-label="이전 글과 다음 글">
-        {% if page.previous.url %}
-        <a class="post-nav-link prev" href="{{ page.previous.url | relative_url }}">
-          <span class="post-nav-label">이전 글</span>
-          <span class="post-nav-title">{{ page.previous.title | strip_html }}</span>
+        {% for nav in (1..2) %}
+          {%- if forloop.first -%}{%- assign np = nav_prev -%}{%- assign nk = "prev" -%}{%- assign nw = nav_week | minus: 1 -%}{%- assign nl = "이전 글" -%}
+          {%- else -%}{%- assign np = nav_next -%}{%- assign nk = "next" -%}{%- assign nw = nav_week | plus: 1 -%}{%- assign nl = "다음 글" -%}{%- endif -%}
+          {%- unless np -%}{%- continue -%}{%- endunless -%}
+          {%- assign nt = np.title -%}
+          {%- if section_key == "bdai" -%}
+            {%- capture nl -%}{{ nw }}주차{%- endcapture -%}
+            {%- if np.subtitle and np.subtitle != "" -%}{%- assign nt = np.subtitle -%}{%- endif -%}
+          {%- endif %}
+        <a class="post-nav-link {{ nk }}" href="{{ np.url | relative_url }}">
+          <span class="post-nav-label">{{ nl }}</span>
+          <span class="post-nav-title">{{ nt | strip_html }}</span>
         </a>
-        {% endif %}
-        {% if page.next.url %}
-        <a class="post-nav-link next" href="{{ page.next.url | relative_url }}">
-          <span class="post-nav-label">다음 글</span>
-          <span class="post-nav-title">{{ page.next.title | strip_html }}</span>
-        </a>
-        {% endif %}
+        {%- endfor %}
       </nav>
 
       {% include related-posts.html %}
