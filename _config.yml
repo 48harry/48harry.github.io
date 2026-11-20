@@ -249,6 +249,8 @@ exclude:
   - README.md
   - screenshot.png
   - docs/
+  # The daily newsletter generator: GitHub Actions runs it from the repo, the site doesn't serve it
+  - scripts/
 
 plugins:
   - jekyll-paginate
