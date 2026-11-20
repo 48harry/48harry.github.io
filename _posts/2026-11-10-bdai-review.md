@@ -9,9 +9,7 @@ tags:
 mathjax: false
 author: Geunyeong Cho
 published: false
-date: 2026-09-29 23:23:38 +0900
-redirect_from:
-  - /2026-09-29-bdai-review.md/
+date: 2026-11-10 23:23:38 +0900
 ---
 # BDAI학회 (빅데이터 분석 학회, 대학생 학회) 7주차 강의 후기
 
