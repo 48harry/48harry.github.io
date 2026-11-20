@@ -95,14 +95,37 @@ tags: [Hacker News, Tech Trend]
     return normalize_post(blog_md)
 
 
-# 앞 모델이 과부하(503)/한도초과(429)/없음(404)이면 다음 모델로 넘어감
-GEMINI_MODELS = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-flash-lite-latest"]
+# 기본 모델이 과부하(503)/한도초과(429)/없음(404)이면 API가 알려주는 다른 flash 모델로 넘어감
+PRIMARY_MODEL = "gemini-3.8-flash"
 RETRYABLE = {429, 500, 503, 504}
+SKIP_WORDS = ("preview", "exp", "image", "tts", "audio", "live", "embedding", "thinking")
+
+
+def fallback_models(client, limit=3):
+    """이 API 키로 쓸 수 있는 텍스트용 flash 모델을 최신 버전 순으로 반환"""
+    try:
+        names = [
+            m.name.removeprefix("models/")
+            for m in client.models.list()
+            if "generateContent" in (m.supported_actions or [])
+        ]
+    except Exception as e:
+        print(f"      모델 목록 조회 실패: {e}", flush=True)
+        return []
+    flash = sorted(
+        (n for n in names if "flash" in n and n != PRIMARY_MODEL and not any(w in n for w in SKIP_WORDS)),
+        reverse=True,
+    )
+    print(f"      대체 후보: {flash[:limit]}", flush=True)
+    return flash[:limit]
 
 
 def call_gemini(client, prompt, attempts_per_model=3):
     last_error = None
-    for model in GEMINI_MODELS:
+    models = [PRIMARY_MODEL]
+    tried_listing = False
+    while models:
+        model = models.pop(0)
         for attempt in range(1, attempts_per_model + 1):
             try:
                 print(f"      {model} 시도 {attempt}/{attempts_per_model}", flush=True)
@@ -120,6 +143,9 @@ def call_gemini(client, prompt, attempts_per_model=3):
                 print(f"      → {type(e).__name__}: {e}", flush=True)
             if attempt < attempts_per_model:
                 time.sleep(15 * attempt)
+        if not models and not tried_listing:
+            tried_listing = True
+            models = fallback_models(client)
     raise RuntimeError(f"모든 Gemini 모델 실패: {last_error}")
 
 
