@@ -1180,7 +1180,11 @@ pre code { padding: 0; background: none; }
 .is-plain:hover .code-copy-float,
 .code-copy-float:focus-visible,
 .code-copy-float.is-copied { opacity: 1; }
-@media (hover: none) { .code-copy-float { opacity: .75; } }
+@media (hover: none) {
+  .code-copy-float { opacity: .75; }
+  /* on a touch screen the button stays shown, so the code starts below it instead of under it */
+  .blog-post div.highlighter-rouge.is-plain .highlight > pre { padding-top: 2.6rem; }
+}
 .code-copy.is-copied { color: #1E8E3E; }
 :root[data-theme="dark"] .code-copy.is-copied { color: #3FB950; }
 

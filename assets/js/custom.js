@@ -746,15 +746,21 @@
   // in the accent) and fades at whichever edge has more to scroll to.
   function initSeriesTrack() {
     document.querySelectorAll(".series-track").forEach(function (t) {
+      let atEnd = true;
       function edges() {
         const max = t.scrollWidth - t.clientWidth;
+        atEnd = t.scrollLeft >= max - 1;
         t.classList.toggle("fade-start", max > 1 && t.scrollLeft > 1);
-        t.classList.toggle("fade-end", max > 1 && t.scrollLeft < max - 1);
+        t.classList.toggle("fade-end", max > 1 && !atEnd);
       }
       t.scrollLeft = t.scrollWidth;
       edges();
       t.addEventListener("scroll", edges, { passive: true });
-      window.addEventListener("resize", edges);
+      // a rotated tablet or a wider window keeps the newest week in view if it was in view
+      window.addEventListener("resize", function () {
+        if (atEnd) t.scrollLeft = t.scrollWidth;
+        edges();
+      });
     });
   }
 
