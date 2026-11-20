@@ -3,6 +3,7 @@ import re
 from datetime import datetime, timezone, timedelta
 import requests
 from google import genai
+from google.genai import types
 
 GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 
@@ -40,7 +41,8 @@ def fetch_quote():
 
 def generate_blog_post(articles, quote):
     """Gemini API로 블로그용 Jekyll Markdown만 생성"""
-    client = genai.Client(api_key=GEMINI_API_KEY)
+    # timeout은 밀리초 단위: 3분 안에 응답이 없으면 실패 처리
+    client = genai.Client(api_key=GEMINI_API_KEY, http_options=types.HttpOptions(timeout=180_000))
     articles_text = "\n".join(
         [f"- 제목: {a['title']} / URL: {a['url']} / 점수: {a['score']}" for a in articles]
     )
@@ -128,7 +130,13 @@ def save_blog_post(markdown_content):
 
 
 if __name__ == "__main__":
+    print("[1/4] Hacker News 수집 중...", flush=True)
     articles = fetch_hacker_news(top_n=3)
+    print(f"      {len(articles)}개 기사: {[a['title'] for a in articles]}", flush=True)
+    print("[2/4] 명언 수집 중...", flush=True)
     quote = fetch_quote()
+    print("[3/4] Gemini로 포스트 생성 중...", flush=True)
     blog_md = generate_blog_post(articles, quote)
+    print(f"      {len(blog_md)}자 생성 완료", flush=True)
+    print("[4/4] 저장", flush=True)
     save_blog_post(blog_md)
