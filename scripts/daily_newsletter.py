@@ -1,9 +1,10 @@
 import os
 import re
+import time
 from datetime import datetime, timezone, timedelta
 import requests
 from google import genai
-from google.genai import types
+from google.genai import errors, types
 
 GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 
@@ -41,8 +42,11 @@ def fetch_quote():
 
 def generate_blog_post(articles, quote):
     """Gemini API로 블로그용 Jekyll Markdown만 생성"""
-    # timeout은 밀리초 단위: 3분 안에 응답이 없으면 실패 처리
-    client = genai.Client(api_key=GEMINI_API_KEY, http_options=types.HttpOptions(timeout=180_000))
+    # timeout은 밀리초 단위(요청당 2분). SDK 자체 재시도는 끄고 call_gemini에서 직접 재시도
+    client = genai.Client(
+        api_key=GEMINI_API_KEY,
+        http_options=types.HttpOptions(timeout=120_000, retry_options=types.HttpRetryOptions(attempts=1)),
+    )
     articles_text = "\n".join(
         [f"- 제목: {a['title']} / URL: {a['url']} / 점수: {a['score']}" for a in articles]
     )
@@ -87,12 +91,36 @@ tags: [Hacker News, Tech Trend]
 
 6. 자기소개는 생략하고 규칙에 따라서만 작성해줘. 네가 어떤 직군을 가지는지, 직업이 뭔지는 본문이나 제목에 설명할 필요가 없어.
 """
-    blog_md = client.models.generate_content(
-        model="gemini-3.8-flash",
-        contents=prompt
-    ).text.strip()
-
+    blog_md = call_gemini(client, prompt)
     return normalize_post(blog_md)
+
+
+# 앞 모델이 과부하(503)/한도초과(429)/없음(404)이면 다음 모델로 넘어감
+GEMINI_MODELS = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-flash-lite-latest"]
+RETRYABLE = {429, 500, 503, 504}
+
+
+def call_gemini(client, prompt, attempts_per_model=3):
+    last_error = None
+    for model in GEMINI_MODELS:
+        for attempt in range(1, attempts_per_model + 1):
+            try:
+                print(f"      {model} 시도 {attempt}/{attempts_per_model}", flush=True)
+                text = client.models.generate_content(model=model, contents=prompt).text
+                if text and text.strip():
+                    return text.strip()
+                last_error = RuntimeError(f"{model}: 빈 응답")
+            except errors.APIError as e:
+                last_error = e
+                print(f"      → {e.code} {e.status}", flush=True)
+                if e.code not in RETRYABLE:
+                    break  # 404 등은 재시도해도 소용없음 → 다음 모델
+            except Exception as e:  # 타임아웃 등 네트워크 오류
+                last_error = e
+                print(f"      → {type(e).__name__}: {e}", flush=True)
+            if attempt < attempts_per_model:
+                time.sleep(15 * attempt)
+    raise RuntimeError(f"모든 Gemini 모델 실패: {last_error}")
 
 
 def normalize_post(blog_md):
