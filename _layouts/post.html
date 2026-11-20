@@ -137,7 +137,7 @@ layout: base
           {%- endif %}
         <a class="post-nav-link {{ nk }}" href="{{ np.url | relative_url }}">
           <span class="post-nav-label">{{ nl }}</span>
-          <span class="post-nav-title">{{ nt | strip_html }}</span>
+          <span class="post-nav-title">{% include spaced.html text=nt %}</span>
         </a>
         {%- endfor %}
       </nav>
