@@ -43,7 +43,8 @@
             {%- assign read_chars = page.content | strip_html | strip_newlines | size -%}
             {%- assign read_mins = read_chars | divided_by: 500 | plus: 1 -%}
             <p class="post-meta-row">
-              {%- if page.author %}<span class="meta-item">{{ page.author | strip_html }}</span>{% endif %}
+              {%- if section_key == "news" %}<span class="meta-item">cron job</span>
+              {%- elsif page.author %}<span class="meta-item">{{ page.author | strip_html }}</span>{% endif %}
               <span class="meta-item"><time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y.%m.%d" }}</time></span>
               {%- if page.last-updated %}<span class="meta-item">{{ page.last-updated | date: "%Y.%m.%d" }} 수정</span>{% endif %}
               <span class="meta-item">{{ read_mins }}분 읽기</span>
