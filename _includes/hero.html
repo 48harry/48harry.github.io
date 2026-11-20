@@ -6,6 +6,7 @@
   and the line on the plain canvas.
   Corpus: the 90 newest posts (about two screens of text; the wall only ever shows the top of it).
   Newsletter issues give their Hacker News headlines (the ### headings), other posts their title.
+  If hero.js can't load, its onerror hands the navbar its wordmark back (it waits for .hero-passed).
 {%- endcomment -%}
 <div class="hero" id="hero">
   <div class="hero-wall" aria-hidden="true"></div>
@@ -31,4 +32,4 @@
   {%- assign _sep = "," -%}
 {%- endfor -%}
 ]</script>
-<script src="{{ '/assets/js/hero.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
+<script src="{{ '/assets/js/hero.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer onerror="document.documentElement.classList.add('hero-passed')"></script>

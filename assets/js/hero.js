@@ -17,11 +17,13 @@
 
   // The navbar's wordmark waits until the hero's has gone (custom.css hides it on the home page
   // until .hero-passed); "gone" counts from the bottom of the floating bar, so the two swap as the big
-  // one slides under it. First, before anything below can bail out, so it always comes back.
+  // one slides under it. First, before anything below can bail out, so it always comes back. (If this
+  // file can't load at all, the script tag's onerror sets .hero-passed.) A batch of entries is read
+  // from its last one, which is where the title is now.
   const heroTitle = document.querySelector("#hero .hero-title");
   if (heroTitle && "IntersectionObserver" in window) {
     new IntersectionObserver(function (entries) {
-      document.documentElement.classList.toggle("hero-passed", !entries[0].isIntersecting);
+      document.documentElement.classList.toggle("hero-passed", !entries[entries.length - 1].isIntersecting);
     }, { rootMargin: "-72px 0px 0px 0px" }).observe(heroTitle);
   } else {
     document.documentElement.classList.add("hero-passed");
@@ -374,7 +376,7 @@
 
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries) {
-        inView = entries[0].isIntersecting;
+        inView = entries[entries.length - 1].isIntersecting;
         wall.classList.toggle("is-paused", !inView);
         if (inView) kick();
       }).observe(hero);

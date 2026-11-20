@@ -334,6 +334,10 @@ html.js .nav-on-hero.top-nav-expanded .navbar-brand {
     backdrop-filter: var(--lg-filter);
     box-shadow: var(--lg-inner), var(--lg-drop);
   }
+  /* and the search button's lit rim (drawn under "Lit rim" below), fading in and out with the circle */
+  .nav-on-hero .navbar-toggler { position: relative; }
+  .nav-on-hero .navbar-toggler::after { opacity: 0; transition: opacity .3s ease; }
+  html.js:not(.hero-passed) .nav-on-hero:not(.top-nav-expanded) .navbar-toggler::after { opacity: 1; }
 }
 .navbar-custom .navbar-nav .nav-item {
   text-transform: none;
@@ -2128,8 +2132,9 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.35); z-index: 1; positio
 .timeline small { display: block; color: var(--mid-col); }
 
 /* Projects (posts tagged 회고): the project's name, the story's title under it, the month; rows run
-   to the card's edges so a hover fills the card's width */
-.project-list { margin: 0 calc(-1 * var(--inset)) !important; }
+   to the card's edges so a hover fills the card's width (.about-card in the selector outranks the
+   card's own `ul { margin: 0 }`) */
+.about-card .project-list { margin: 0 calc(-1 * var(--inset)); }
 .project-list li + li::before { content: ""; display: block; height: 1px; margin-left: var(--inset); background: var(--border); }
 .project-list a {
   display: grid;
@@ -2644,6 +2649,7 @@ footer .footer-links a:focus { color: var(--heading-col); text-decoration: none;
 .navbar-custom::after,
 .tabbar::after,
 .tab-search::after,
+.nav-on-hero .navbar-toggler::after,
 .toast::after,
 .resume::after,
 .settings-panel::after,

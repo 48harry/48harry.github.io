@@ -25,12 +25,14 @@
       searchResultTemplate: '<li><a class="search-result" href="{url}"><span class="search-result-title">{title}</span><span class="search-result-sub">{sub}</span><span class="search-result-meta">{date}<span class="search-result-cat">{category}</span></span></a></li>',
       noResultsText: '<li class="search-no-results">검색 결과가 없어요</li>',
       // An empty field (a page has no section or subtitle) prints nothing instead of its placeholder.
-      // In titles, the words searched for are marked; the title is already HTML-escaped, so entities
-      // (&amp;) are stepped over and the words are escaped the same way before matching.
+      // In titles, the words searched for are marked. The title arrives HTML-escaped, so marking runs
+      // only between its entities (&amp; and the like): a word with &, <, > or a quote in it is found
+      // but not marked. Longer words go first, so searching "A AI" marks "AI" whole, not "A" + "I".
       templateMiddleware: function (prop, value) {
         if (value === "") return "";
         if (prop !== "title") return undefined;
-        var words = document.getElementById('nav-search-input').value.trim().split(/\s+/).filter(Boolean);
+        var words = document.getElementById('nav-search-input').value.trim().split(/\s+/).filter(Boolean)
+          .sort(function (a, b) { return b.length - a.length; });
         if (!words.length) return undefined;
         var esc = function (s) {
           return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")

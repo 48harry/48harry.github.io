@@ -37,7 +37,12 @@ hide-title: true
     <h2 class="about-title">Projects</h2>
     <ul class="project-list">
       {%- for p in project_posts %}
-      {%- assign project_name = p.subtitle | default: p.title | strip_html | remove: " 회고" | strip %}
+      {%- assign project_name = p.subtitle | default: p.title | strip_html | strip %}
+      {%- assign name_end = project_name | slice: -3, 3 %}
+      {%- if name_end == " 회고" %}
+        {%- assign name_len = project_name.size | minus: 3 %}
+        {%- assign project_name = project_name | slice: 0, name_len | strip %}
+      {%- endif %}
       <li>
         <a href="{{ p.url | relative_url }}">
           <span class="project-name">{{ project_name }}</span>
