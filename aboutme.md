@@ -27,6 +27,29 @@ hide-title: true
 
 <div class="about-grid">
 
+  {%- comment -%}
+    Projects: every post tagged 회고, newest first, named by its subtitle (the project, without the
+    trailing "회고"). Hidden until one is published.
+  {%- endcomment -%}
+  {%- assign project_posts = site.tags["회고"] -%}
+  {%- if project_posts and project_posts.size > 0 %}
+  <section class="about-card about-wide about-projects">
+    <h2 class="about-title">Projects</h2>
+    <ul class="project-list">
+      {%- for p in project_posts %}
+      {%- assign project_name = p.subtitle | default: p.title | strip_html | remove: " 회고" | strip %}
+      <li>
+        <a href="{{ p.url | relative_url }}">
+          <span class="project-name">{{ project_name }}</span>
+          <span class="project-story">{{ p.title | strip_html }}</span>
+          <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%Y.%m" }}</time>
+        </a>
+      </li>
+      {%- endfor %}
+    </ul>
+  </section>
+  {%- endif %}
+
   <section class="about-card">
     <h2 class="about-title">Education</h2>
     <div class="edu">
