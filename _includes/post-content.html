@@ -80,6 +80,16 @@
 {%- for _i in (1..3) -%}
   {%- assign html = html | replace: '<br /></p>', '</p>' | replace: '<br /></h', '</h' -%}
 {%- endfor -%}
+{%- comment -%}
+  The same habit at the end of a line (from before line breaks showed) no longer doubles the break
+  that hard_wrap now makes there: "line<br/>⏎" breaks once, as it always did; "<br/><br/>⏎" still
+  leaves a blank line.
+{%- endcomment -%}
+{%- capture _br_nl %}<br />
+{% endcapture -%}
+{%- capture _br_br_nl %}<br /><br />
+{% endcapture -%}
+{%- assign html = html | replace: _br_br_nl, _br_nl -%}
 
 {%- assign src_abs = 'src="' | append: img_dir -%}
 {%- assign src_pasted = src_abs | append: "Pasted%20image" -%}
