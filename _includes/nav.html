@@ -6,7 +6,7 @@
 {%- endcomment -%}
 {%- include post-section.html -%}
 {%- assign current_section = section_key -%}
-<nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom {% if page.nav-short %}top-nav-short-permanent{% else %}top-nav-regular{% endif %}" aria-label="주요 메뉴">
+<nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom {% if page.nav-short %}top-nav-short-permanent{% else %}top-nav-regular{% endif %}{% if page.hero %} nav-on-hero{% endif %}" aria-label="주요 메뉴">
 
   {%- if site.title-img -%}
     <a class="navbar-brand navbar-brand-logo" href="{{ '/' | absolute_url }}"><img alt="{{ site.title }} Logo" src="{{ site.title-img | relative_url}}"/></a>
