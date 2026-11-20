@@ -1370,7 +1370,8 @@
   // element per page may carry the name, so it is set at the moment of the click.
   function initTitleMorph() {
     if (!window.CSS || !CSS.supports("view-transition-name: a")) return;
-    const TITLE = ".post-row-title, .feed-title, .series-step-topic, .posts-list .post-title, .related-post-title";
+    const TITLE = ".post-row-title, .feed-title, .series-step-topic, .posts-list .post-title, .related-post-title, " +
+      ".post-nav-title, .archive-title, .tag-post-title, .search-result-title, .cal-preview-title";
     document.addEventListener("click", function (e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = e.target.closest && e.target.closest("a[href]");

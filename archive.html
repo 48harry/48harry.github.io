@@ -59,7 +59,7 @@ permalink: /archive/
         <li>
           <a href="{{ p.url | relative_url }}" data-date="{{ p.date | date: '%Y-%m-%d' }}">
             <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%m.%d" }}</time>
-            <span class="archive-title">{{ p.title | strip_html }}</span>
+            <span class="archive-title">{% include spaced.html text=p.title %}</span>
             <span class="archive-kind kind-{{ kind }}">{{ kind_label }}</span>
           </a>
         </li>

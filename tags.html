@@ -39,7 +39,7 @@ permalink: /tags/
         {%- for post in tag_posts -%}
           <li>
             <a href="{{ post.url | relative_url }}">
-              <span class="tag-post-title">{{ post.title | strip_html }}</span>
+              <span class="tag-post-title">{% include spaced.html text=post.title %}</span>
               <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y.%m.%d" }}</time>
             </a>
           </li>

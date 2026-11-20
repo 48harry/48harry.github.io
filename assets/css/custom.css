@@ -270,17 +270,19 @@ hr { border-color: var(--border); }
   initial-value: transparent;
 }
 .sp {
-  --inv-w: max(1.5px, .085em);
+  --inv-w: max(1px, .07em);
   font-style: normal;
   background:
-    linear-gradient(var(--inv), var(--inv)) left .05em bottom .14em / calc(100% - .1em) var(--inv-w) no-repeat,
-    linear-gradient(var(--inv), var(--inv)) left .05em bottom .14em / var(--inv-w) .28em no-repeat,
-    linear-gradient(var(--inv), var(--inv)) right .05em bottom .14em / var(--inv-w) .28em no-repeat;
+    linear-gradient(var(--inv), var(--inv)) left .06em bottom .14em / calc(100% - .12em) var(--inv-w) no-repeat,
+    linear-gradient(var(--inv), var(--inv)) left .06em bottom .14em / var(--inv-w) .2em no-repeat,
+    linear-gradient(var(--inv), var(--inv)) right .06em bottom .14em / var(--inv-w) .2em no-repeat;
 }
 /* a hair wider than a plain space, so the mark has room */
 .sp { word-spacing: .06em; transition: --inv .18s ease; }
+/* only on the one title under the pointer or the keyboard, and light: a long title shows its spaces
+   without turning into a row of bars */
 a:hover .sp,
-a:focus-visible .sp { --inv: var(--accent); }
+a:focus-visible .sp { --inv: color-mix(in srgb, var(--accent) 55%, transparent); }
 
 /* --- Navigation: a floating Liquid Glass capsule -------------------------------
    The glass is on ::before (fill and blur) and ::after (the lit rim), see Glass below. */
@@ -727,7 +729,7 @@ body::after {
 .feed {
   list-style: none;
   margin: 0;
-  padding: .3rem 0;
+  padding: 0;
   border-radius: var(--r-md);
   background: var(--surface);
 }
@@ -840,7 +842,7 @@ body::after {
 .post-rows {
   list-style: none;
   margin: 0 0 2rem;
-  padding: .3rem 0;
+  padding: 0;
   border-radius: var(--r-md);
   background: var(--surface);
 }
@@ -864,6 +866,18 @@ body::after {
 .post-row:first-child .post-row-link { border-radius: var(--r-md) var(--r-md) 0 0; }
 .post-row:last-child .post-row-link { border-radius: 0 0 var(--r-md) var(--r-md); }
 .post-row:only-child .post-row-link { border-radius: var(--r-md); }
+/* Lists on a sheet keep the room above their first row and below their last as a transparent border
+   on those rows, not as padding on the list: a row's hover then fills the sheet to its rounded edge
+   instead of stopping short of it */
+.post-row:first-child .post-row-link,
+.feed li:first-child .feed-item,
+.related-list li:first-child a,
+.not-found-recent .tag-post-list li:first-child a { border-top: .3rem solid transparent; }
+.post-row:last-child .post-row-link,
+.feed li:last-child .feed-item,
+.related-list li:last-child a,
+.not-found-recent .tag-post-list li:last-child a { border-bottom: .3rem solid transparent; }
+.archive-list li:last-child a { border-bottom: .35rem solid transparent; }
 /* a numbered row (the BDAI series) adds a column in front */
 .post-row-link.has-num { grid-template-columns: auto minmax(0, 1fr) auto; }
 .post-row-main { display: flex; flex-direction: column; gap: .2rem; min-width: 0; }
@@ -1350,7 +1364,7 @@ html.lightbox-lock { overflow: hidden; }
 .related-list {
   list-style: none;
   margin: 0;
-  padding: .3rem 0;
+  padding: 0;
   border-radius: var(--r-md);
   background: var(--surface);
 }
@@ -1798,7 +1812,7 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.35); z-index: 1; positio
 .archive-year-title .tag-count { font-size: .9rem; }
 .archive-month {
   margin: 0 0 .9rem;
-  padding: .9rem 0 .35rem;
+  padding: .9rem 0 0;
   border-radius: var(--r-md);
   background: var(--surface);
   scroll-margin-top: 5.5rem;
@@ -1922,7 +1936,8 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.35); z-index: 1; positio
 .cal-day.has-post:hover, .cal-day.has-post:focus-visible { background: color-mix(in srgb, var(--accent-1) 17%, var(--surface)); }
 :root[data-theme="dark"] .cal-day.has-post { background: color-mix(in srgb, var(--accent-1) 22%, var(--surface)); }
 :root[data-theme="dark"] .cal-day.has-post:hover { background: color-mix(in srgb, var(--accent-1) 32%, var(--surface)); }
-.cal-day.has-post .cal-num { color: var(--link-col); }
+/* the tint says there is a post; the number stays plain, so blue only ever means Saturday */
+.cal-day.has-post .cal-num { color: var(--heading-col); }
 /* Korean calendars: Sunday red, Saturday blue, with or without a post */
 .cal-week span:first-child, .cal-day.is-sun .cal-num { color: var(--sun); }
 .cal-week span:last-child, .cal-day.is-sat .cal-num { color: var(--sat); }
@@ -2150,7 +2165,9 @@ a.cell:hover, a.cell:focus-visible { transform: scale(1.35); z-index: 1; positio
 .not-found-text { color: var(--mid-col); word-break: keep-all; }
 .not-found-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.5rem 0 2.75rem; }
 .not-found-recent-title { margin: 0 0 .6rem; font-size: 1rem; font-weight: 700; color: var(--heading-col); }
-.not-found-recent .tag-post-list { padding: .3rem 0; border-radius: var(--r-md); background: var(--surface); }
+.not-found-recent .tag-post-list { padding: 0; border-radius: var(--r-md); background: var(--surface); }
+.not-found-recent .tag-post-list li:first-child a { border-radius: var(--r-md) var(--r-md) 0 0; }
+.not-found-recent .tag-post-list li:last-child a { border-radius: 0 0 var(--r-md) var(--r-md); }
 
 .btn-solid,
 .btn-ghost {
