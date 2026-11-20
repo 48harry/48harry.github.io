@@ -204,21 +204,28 @@
       const pre = block.querySelector("pre.highlight");
       if (!pre) return;
       const m = block.className.match(/language-([\w+#-]+)/);
-      const lang = m && m[1] !== "plaintext" ? m[1] : "text";
+      const lang = m && m[1] !== "plaintext" ? m[1] : "";
 
-      const bar = document.createElement("div");
-      bar.className = "code-bar";
-      const label = document.createElement("span");
-      label.className = "code-lang";
-      label.textContent = lang;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "code-copy";
       btn.setAttribute("aria-label", "코드 복사");
       btn.innerHTML = icon("copy") + "<span>복사</span>";
-      bar.appendChild(label);
-      bar.appendChild(btn);
-      block.insertBefore(bar, block.firstChild);
+      if (lang) {
+        const bar = document.createElement("div");
+        bar.className = "code-bar";
+        const label = document.createElement("span");
+        label.className = "code-lang";
+        label.textContent = lang;
+        bar.appendChild(label);
+        bar.appendChild(btn);
+        block.insertBefore(bar, block.firstChild);
+      } else {
+        // no language (a formula, a sketch): no label bar, the button waits in the corner
+        block.classList.add("is-plain");
+        btn.classList.add("code-copy-float");
+        block.appendChild(btn);
+      }
 
       let timer = null;
       btn.addEventListener("click", function () {
@@ -820,6 +827,13 @@
     });
   }
 
+  // A <details> written in a post gets the folds' chevron (custom.css styles the rest)
+  function initDetails() {
+    document.querySelectorAll(".blog-post details:not(.callout) > summary").forEach(function (s) {
+      if (!s.querySelector(".callout-fold")) s.insertAdjacentHTML("beforeend", icon("chevron-down", "callout-fold"));
+    });
+  }
+
   /* --- Newsletter insights: the "💡 데이터/AI 엔지니어의 시선" item becomes a tip callout --
      The n8n posts end each story's list with the author's own take; set apart, it reads as the
      point of the story instead of a fourth bullet. Only a plain last item is moved. */
@@ -840,6 +854,9 @@
       body.className = "callout-body";
       const p = document.createElement("p");
       while (li.firstChild) p.appendChild(li.firstChild);
+      // a take written on the line under its label arrives as <br> + text (kramdown's hard_wrap)
+      while (p.firstChild && (p.firstChild.nodeName === "BR" ||
+        p.firstChild.nodeType === Node.TEXT_NODE && !p.firstChild.textContent.trim())) p.firstChild.remove();
       if (p.firstChild && p.firstChild.nodeType === Node.TEXT_NODE) {
         p.firstChild.textContent = p.firstChild.textContent.replace(/^\s+/, "");
       }
@@ -1368,6 +1385,7 @@
     initResume();
     initInsights();
     initCallouts();
+    initDetails();
     initToc();
     initHeadingAnchors();
     initMermaid();

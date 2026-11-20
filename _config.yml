@@ -221,6 +221,8 @@ permalink: /:year-:month-:day-:title/
 
 kramdown:
   input: GFM
+  # A single line break shows as a line break, the way Obsidian (where posts are written) shows it
+  hard_wrap: true
 
 # Default YAML values (more information on Jekyll's site)
 defaults:

@@ -157,6 +157,9 @@ html {
 body {
   background-color: var(--page-col);
   color: var(--text-col);
+  /* Korean wraps between words, never inside one ("비용", not "비/용"); a run too long for its line still breaks */
+  word-break: keep-all;
+  overflow-wrap: break-word;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -1101,6 +1104,22 @@ pre code { padding: 0; background: none; }
   transition: color .15s ease, background-color .15s ease;
 }
 .code-copy:hover { color: var(--heading-col); background: var(--surface-3); }
+/* a block with no language (often a formula or a sketch): no label bar, the copy button waits in the corner */
+.blog-post div.highlighter-rouge.is-plain { position: relative; }
+.code-copy-float {
+  position: absolute;
+  top: .45rem;
+  right: .45rem;
+  font-family: var(--body-font);
+  font-size: .75rem;
+  line-height: 1.6;
+  background: var(--code-bg);
+  opacity: 0;
+}
+.is-plain:hover .code-copy-float,
+.code-copy-float:focus-visible,
+.code-copy-float.is-copied { opacity: 1; }
+@media (hover: none) { .code-copy-float { opacity: .75; } }
 .code-copy.is-copied { color: #1E8E3E; }
 :root[data-theme="dark"] .code-copy.is-copied { color: #3FB950; }
 
@@ -1113,6 +1132,8 @@ pre code { padding: 0; background: none; }
   font-family: var(--body-font);
   font-size: .93rem;
   line-height: 1.6;
+  /* figures line up down a column */
+  font-variant-numeric: tabular-nums;
   display: block;
   overflow-x: auto;
 }
@@ -1442,6 +1463,33 @@ details.callout[open] .callout-fold { transform: rotate(180deg); }
 .callout-body { padding: .2rem 1.15rem 1rem 2.65rem; font-size: 1rem; }
 .callout-body > :last-child { margin-bottom: 0; }
 @media (max-width: 575px) { .callout-body { padding-left: 1.15rem; } }
+
+/* A <details> written in a post folds like the callouts: a well, the summary in Pretendard, a chevron (custom.js) */
+.blog-post details:not(.callout) {
+  margin: 1.75rem 0;
+  padding: 0 1.15rem;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.blog-post details:not(.callout)[open] { padding-bottom: 1rem; }
+.blog-post details:not(.callout) > summary {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin: 0 -1.15rem;
+  padding: .85rem 1.15rem;
+  font-family: var(--body-font);
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--heading-col);
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+.blog-post details:not(.callout) > summary::-webkit-details-marker { display: none; }
+.blog-post details:not(.callout)[open] > summary { margin-bottom: .2rem; padding-bottom: .4rem; }
+.blog-post details:not(.callout)[open] > summary .callout-fold { transform: rotate(180deg); }
+.blog-post details:not(.callout) > :last-child { margin-bottom: 0; }
 
 /* --- Heading anchors -------------------------------------------------------------- */
 
