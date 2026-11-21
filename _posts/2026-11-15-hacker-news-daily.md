@@ -4,6 +4,7 @@ title: "우주 로켓부터 노코드 AI, 레트로 컴퓨팅까지: 이번 주 
 date: 2026-11-15 12:26:52 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, SpaceX, AI, Retrocomputing]
+keywords: ["SpaceX", "Starship", "Lovable", "Retrocomputing"]
 ---
 
 가끔은 전혀 연관 없어 보이는 기술들의 교차점에서 가장 놀라운 인사이트가 떠오르곤 합니다. 오늘은 우주를 향하는 스타십의 비행부터, 개발자의 허를 찌르는 노코드 AI, 그리고 낭만이 가득한 레트로 컴퓨팅의 세계까지 흥미진진한 기술 소식을 데이터와 엔지니어링의 시선으로 짚어봅니다.

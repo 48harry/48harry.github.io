@@ -4,6 +4,7 @@ title: "야망 넘치는 프로젝트부터 1조 파라미터 배포, 그리고 
 date: 2026-10-25 16:20:48 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Ambitious Projects", "trillion-parameter", "Cerebras", "licasa", "self-hosted"]
 ---
 
 개발자의 영원한 숙제인 '야망의 크기'부터 하드웨어 가속을 통한 거대 모델 서빙의 극한, 그리고 내 손으로 만드는 홈 클라우드까지, 엔지니어의 심장을 뛰게 할 최신 기술 트렌드를 짚어봅니다.

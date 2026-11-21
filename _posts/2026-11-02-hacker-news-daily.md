@@ -4,6 +4,7 @@ title: "AI가 데이터베이스 출시를 지연시키고, 오픈소스 역사�
 date: 2026-11-02 14:13:13 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Hacker Books", "BSD Unix", "Postgres 19"]
 ---
 
 AI 시대의 막중한 컴퓨팅 부하가 데이터베이스 릴리즈 일정까지 흔들고 있습니다. 오늘은 AI가 야기한 인프라 지연 소식부터 오픈소스 유닉스의 뿌리, 그리고 개발자들의 영원한 지식 창고까지 알차게 짚어봅니다.

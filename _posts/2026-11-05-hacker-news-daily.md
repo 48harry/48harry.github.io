@@ -4,6 +4,7 @@ title: "화이트하우스 네트워크 프록시부터 OpenAI의 최신 이미�
 date: 2026-11-05 12:00:48 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, AI, Cybersecurity]
+keywords: ["주거용 프록시", "White House", "Images 2.6", "권한 상승"]
 ---
 
 AI 인프라의 최전선과 보안의 세계는 오늘도 쉴 새 없이 움직이고 있습니다. 오늘은 백엔드 네트워크 인프라의 허점부터 최신 생성형 AI 모델, 그리고 견고한 시스템 보안을 위한 커널 업데이트까지, 엔지니어가 놓치지 말아야 할 세 가지 핵심 소식을 깊이 있게 파헤쳐 보겠습니다.

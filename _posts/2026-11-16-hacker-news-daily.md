@@ -4,6 +4,7 @@ title: "UBO 취약점부터 Qwen4-Max, 그리고 버거킹 트윗 해킹 사태�
 date: 2026-11-16 14:47:26 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["UBO", "UXSS", "Qwen4-Max", "Burger King", "Link Hijack"]
 ---
 
 개발자들의 무릎을 탁 치게 만드는 보안 홀부터 초거대 AI 모델의 진화, 그리고 마케팅팀을 식은땀 흘리게 만든 소셜 미디어 해킹 사건까지, 최근 핫하게 떠오른 3가지 테크 이슈를 시니어 엔지니어의 날카로운 시선으로 싹 뜯어봅니다. 커피 한 잔 들고 스크롤을 내려보세요!

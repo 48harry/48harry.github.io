@@ -4,6 +4,7 @@ title: "OpenAI의 학계 협력부터 추론 모델 구축의 비밀까지: AI �
 date: 2026-10-27 12:27:47 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, OpenAI, MLOps, AI]
+keywords: ["OpenAI", "학술 커뮤니티", "지수 시간 가정", "추론 모델"]
 ---
 
 AI와 테크 생드박스에서 오늘날 가장 뜨겁게 달궈지고 있는 학술적 협력, 수학적 가설의 반증, 그리고 추론 모델의 아키텍처적 비밀을 파헤쳐 봅니다. 엔지니어의 관점에서 이 변화들이 무엇을 의미하는지 지금 확인해 보시죠!

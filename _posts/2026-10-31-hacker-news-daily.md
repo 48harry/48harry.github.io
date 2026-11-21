@@ -4,6 +4,7 @@ title: "웹 브라우저로 즐기는 TNG, 터미널 격파기 cfsolve, 그리�
 date: 2026-10-31 14:36:03 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, Retro, DevTools]
+keywords: ["TNG", "Episodle", "cfsolve", "PowerMac", "Nintendo Wii"]
 ---
 
 이번 포스트에서는 웹의 한계를 시험하는 인터랙티브 프로젝트부터 고난도 터미널 문제를 해결해 주는 유용한 개발 툴, 그리고 레트로 감성을 자극하는 독특한 하드웨어 해킹 사례까지 흥미로운 테크 소식 3가지를 시니어 엔지니어의 시선으로 짚어봅니다. 주말 커피 한 잔과 함께 가볍게 읽기 좋은 기술 트렌드, 지금 바로 시작합니다!

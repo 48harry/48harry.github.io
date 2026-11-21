@@ -4,6 +4,7 @@ title: "머신러닝 이론부터 오픈소스 하드웨어, 그리고 AI의 뜻
 date: 2026-11-08 12:17:43 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["John Langford", "Machine Learning", "OpenStick", "Game Controller", "grey-list"]
 ---
 
 이번 주 Hacker News를 뜨겁게 달군 흥미로운 기술 소식들을 모았습니다. 머신러닝 이론의 깊은 탐구부터 오픈소스 하드웨어 프로젝트, 그리고 AI가 필터링하는 언어의 경계까지, 시니어 엔지니어의 시선으로 날카롭게 해부해 봅니다.

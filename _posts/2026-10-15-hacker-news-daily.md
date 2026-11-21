@@ -4,6 +4,7 @@ title: "오픈소스 하드웨어부터 탈중앙화 소셜, 그리고 인생의
 date: 2026-10-15 22:34:01 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, Open Source]
+keywords: ["Libreboot", "펌웨어", "Unfenced", "탈중앙화", "투병"]
 ---
 
 이번 주 Hacker News 트렌드 리스트에는 시스템의 뿌리를 뒤흔드는 자유 소프트웨어부터 새로운 디지털 공간, 그리고 엔지니어가 인생의 거대한 예외 상황(Exception)을 마주했을 때의 기록까지 깊이 있는 통찰을 주는 글들이 올라왔습니다. 개발자의 시선으로 하나씩 뜯어보겠습니다.

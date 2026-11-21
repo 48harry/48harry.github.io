@@ -4,6 +4,7 @@ title: "AI 가이드라인의 숨겨진 비밀부터 OpenBSD 8.0과 매력적인
 date: 2026-10-20 16:34:19 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Nordwand Mono", "폰트", "OpenBSD 8.0", "WhatsApp", "숨겨진 프롬프트"]
 ---
 
 개발자의 눈을 사로잡을 흥미진진한 테크 소식들이 모였다. WhatsApp의 숨겨진 AI 프롬프트부터 철저한 보안의 OpenBSD 새 버전, 그리고 코딩 효율을 극대화해 줄 모노스페이스 폰트까지 알차게 뜯어보자.

@@ -4,6 +4,7 @@ title: "웹 브라우저로 3D 농담하기부터 차량 원격 해킹, 그리�
 date: 2026-11-09 16:58:23 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Ketchup3D", "웹 브라우저", "자동차", "보안 취약점", "Spatio-Temporal AI"]
 ---
 
 이번 포스트에서는 최근 개발자 커뮤니티와 연구실을 뜨겁게 달군 흥미로운 세 가지 토픽을 엄선했습니다. 브라우저 기반의 가벼운 3D 렌더링부터 IoT 보안의 허점, 그리고 세상을 물리적으로 이해하려는 최신 AI 연구까지 함께 살펴보시죠!

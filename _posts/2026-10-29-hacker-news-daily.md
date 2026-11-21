@@ -4,6 +4,7 @@ title: "Qwenputer부터 생체무기 지문인식, 그리고 GitLab 보안 사�
 date: 2026-10-29 14:23:55 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, AI, Security]
+keywords: ["Qwenputer", "Bioweapons", "GitLab", "CVE-2026-97229"]
 ---
 
 이번 주 기술 생태계는 대형 언어 모델의 기묘한 진화부터 바이오 시큐리티의 윤리적 딜레마, 그리고 인프라 보안의 허를 찌르는 취약점까지 뜨거운 이슈들로 가득합니다. 시니어 엔지니어의 날카로운 시선으로 이번 주 핵심 토픽들을 파헤쳐 보겠습니다.

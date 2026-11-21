@@ -4,6 +4,7 @@ title: "Tech의 새 지평: 코드의 진정성, 효율적인 버전 관리, 그
 date: 2026-11-20 17:31:05 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, AI, Version Control, Open Source, Engineering Culture, MLOps, Data Engineering]
+keywords: ["인간미", "jj", "Jujutsu", "OpenSSL", "기본 브랜치"]
 ---
 
 오늘 우리는 기술 트렌드의 흥미로운 교차점을 탐색합니다. 인공지능이 생성한 텍스트의 미묘한 '인간성' 감별법부터 Git의 대안으로 떠오르는 Jujutsu의 혁신적인 워크플로우, 그리고 오픈소스 생태계의 포용성을 높이는 작은 변화까지, 개발자로서 우리가 주목해야 할 핵심 인사이트들을 심도 있게 다뤄보겠습니다.

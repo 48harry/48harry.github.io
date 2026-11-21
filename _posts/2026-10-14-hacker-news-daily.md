@@ -4,6 +4,7 @@ title: "스위스의 오픈소스 AI 주권부터 고성능 폰트와 벡터 서
 date: 2026-10-14 22:37:45 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Switzerland", "open-source AI", "Iosevka", "pg_vectorsearch", "PostgreSQL"]
 ---
 
 이번 포스트에서는 최근 개발자 커뮤니티를 뜨겁게 달군 3가지 흥미로운 소식을 준비했습니다. 국가 차원의 오픈소스 AI 전략부터, 시각적 즐거움을 주는 코딩 폰트, 그리고 PostgreSQL을 완벽한 벡터 DB로 만들어주는 도구까지 알차게 짚어봅니다.

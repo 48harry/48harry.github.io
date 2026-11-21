@@ -4,6 +4,7 @@ title: "NVIDIA의 메가스피드 전략부터 아프리카의 태양광 혁신,
 date: 2026-11-13 12:20:53 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["NVIDIA", "MegaSpeed", "Solar Revolution", "Rust 1.100.0"]
 ---
 
 AI 인프라의 거대한 지각변동부터 전력망의 패러다임 전환, 그리고 시스템 프로그래밍의 성지인 Rust의 기념비적인 마일스톤까지, 오늘 데스크를 뜨겁게 달군 3가지 핵심 테크 소식을 시니어 엔지니어의 시선으로 날카롭게 짚어봅니다.

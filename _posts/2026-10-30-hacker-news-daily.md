@@ -4,6 +4,7 @@ title: "AI 버블 구제금융 반대부터 인프라 보안과 레트로 웹까
 date: 2026-10-30 23:30:22 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, AI Bubble, Cybersecurity]
+keywords: ["Bubble Bailout", "Big Tech", "One Root Cause", "Elect Horse"]
 ---
 
 AI 거품론과 빅테크 구제금융 논란부터 근본적인 루트(Root) 원인 분석, 그리고 클래식 웹의 감성을 자아내는 이색적인 프로젝트까지, 최근 개발자 커뮤니티를 뜨겁게 달군 흥미로운 소식들을 시니어 엔지니어의 시선으로 짚어봅니다.

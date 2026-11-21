@@ -4,6 +4,7 @@ title: "아마존의 비용 절감 비결부터 신규 클로드 모델, 그리�
 date: 2026-11-10 15:55:15 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Amazon", "Strands Decider", "Claude Fable", "Mythos 5.2", "USPS"]
 ---
 
 AI 인프라 비용 절감부터 최신 LLM의 등장, 그리고 실물 물류 시스템의 디지털 전환까지 흥미로운 테크 소식을 모았습니다. 오늘 하루 개발자 커를 뜨겁게 달군 핵심 기술 트렌드를 시니어 엔지니어의 시선으로 짚어봅니다.

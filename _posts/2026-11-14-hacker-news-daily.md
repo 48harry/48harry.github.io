@@ -4,6 +4,7 @@ title: "GGML v1.0, NVIDIA의 GPU 생태계 빌드업, 그리고 CLI 테이블의
 date: 2026-11-14 17:04:25 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["GGML", "NVIDIA", "Scarcity", "Terminal Tables"]
 ---
 
 AI 인프라의 최전선부터 터미널 환경의 소소한 가독성까지, 오늘 개발자 커뮤니티를 뜨겁게 달군 3가지 기술적 이슈를 시니어 엔지니어의 시선으로 날카롭게 짚어봅니다.
