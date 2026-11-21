@@ -1,11 +1,13 @@
 {%- comment -%}
-  Home hero, a poster: the latest headlines fill the screen as a wall of text, and
-  the wordmark sits across the bottom, edge to edge. hero.js builds the wall from the JSON below and
-  adds the editor's "show invisibles" lens (spaces drawn as ␣ wherever the pointer is), the opening
-  ripple, the space bar and the scroll that pulls the two words apart. Without JS it is the wordmark
-  and the line on the plain canvas.
-  Corpus: the 90 newest posts (about two screens of text; the wall only ever shows the top of it).
-  Newsletter issues give their Hacker News headlines (the ### headings), other posts their title.
+  Home hero, a poster: the newsletter's keywords, day by day, fill the screen as a wall, and the
+  wordmark sits across the bottom, edge to edge. hero.js builds the wall from the JSON below: a lens
+  that brings the words to full ink and lights the one under the pointer, a ring of ink that goes out
+  from the wordmark's ␣ on load and with the space bar, and the scroll that pulls the two words apart.
+  Without JS it is the wordmark and the line on the plain canvas.
+  Corpus: the 90 newest posts. Newsletter issues give their `keywords` (front matter), each with the
+  id of the first item (### heading and what follows it) that mentions it, so a keyword links
+  straight to that item; an issue without keywords gives the start of each item's heading. Other
+  posts give their title.
   If hero.js can't load, its onerror hands the navbar its wordmark back (it waits for .hero-passed).
 {%- endcomment -%}
 <div class="hero" id="hero">
@@ -20,15 +22,42 @@
 {%- for post in site.posts limit: 90 -%}
   {%- include post-section.html post=post -%}
   {%- assign _heads = "" | split: "" -%}
+  {%- assign _anchors = "" | split: "" -%}
   {%- if section_key == "news" -%}
+    {%- comment -%} the items: each one's text (to look keywords up in) and its heading's id {%- endcomment -%}
+    {%- assign _texts = "" | split: "" -%}
+    {%- assign _ids = "" | split: "" -%}
+    {%- assign _starts = "" | split: "" -%}
     {%- assign _parts = post.content | split: "<h3" -%}
     {%- for _p in _parts offset: 1 -%}
-      {%- assign _h = _p | split: "</h3>" | first | prepend: "<h3" | strip_html | strip -%}
-      {%- if _h != "" -%}{%- assign _heads = _heads | push: _h -%}{%- endif -%}
+      {%- assign _text = _p | prepend: "<h3" | strip_html -%}
+      {%- assign _tag = _p | split: ">" | first -%}
+      {%- assign _id = "" -%}
+      {%- if _tag contains 'id="' -%}{%- assign _id = _tag | split: 'id="' | last | split: '"' | first -%}{%- endif -%}
+      {%- assign _start = _p | split: "</h3>" | first | prepend: "<h3" | strip_html | remove: "[" | remove: "]" | split: ":" | first | strip | truncatewords: 4, "" -%}
+      {%- assign _texts = _texts | push: _text -%}
+      {%- assign _ids = _ids | push: _id -%}
+      {%- assign _starts = _starts | push: _start -%}
+    {%- endfor -%}
+    {%- assign _kws = post.keywords -%}
+    {%- if _kws == nil or _kws.size == 0 -%}{%- assign _kws = _starts -%}{%- endif -%}
+    {%- for _k in _kws -%}
+      {%- assign _kw = _k | strip -%}
+      {%- if _kw == "" -%}{%- continue -%}{%- endif -%}
+      {%- assign _anchor = "" -%}
+      {%- for _text in _texts -%}
+        {%- if _text contains _kw -%}{%- assign _anchor = _ids[forloop.index0] -%}{%- break -%}{%- endif -%}
+      {%- endfor -%}
+      {%- assign _heads = _heads | push: _kw -%}
+      {%- assign _anchors = _anchors | push: _anchor -%}
     {%- endfor -%}
   {%- endif -%}
-  {%- if _heads.size == 0 -%}{%- assign _t = post.title | strip_html | strip -%}{%- assign _heads = _heads | push: _t -%}{%- endif -%}
-  {{ _sep }}{"d":"{{ post.date | date: '%m.%d' }}","k":"{{ section.kind | default: 'a' }}","u":{{ post.url | relative_url | jsonify }},"h":{{ _heads | jsonify }}}
+  {%- if _heads.size == 0 -%}
+    {%- assign _t = post.title | strip_html | strip -%}
+    {%- assign _heads = _heads | push: _t -%}
+    {%- assign _anchors = _anchors | push: "" -%}
+  {%- endif -%}
+  {{ _sep }}{"d":"{{ post.date | date: '%m.%d' }}","k":"{{ section.kind | default: 'a' }}","u":{{ post.url | relative_url | jsonify }},"h":{{ _heads | jsonify }},"a":{{ _anchors | jsonify }}}
   {%- assign _sep = "," -%}
 {%- endfor -%}
 ]</script>

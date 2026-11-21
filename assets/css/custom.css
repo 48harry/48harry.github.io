@@ -261,29 +261,6 @@ hr { border-color: var(--border); }
 .hero .wordmark-space::after { animation: caret-blink 1.06s steps(1, end) .45s 3; }
 @keyframes caret-blink { 50% { opacity: 0; } }
 
-/* Show invisibles: a space drawn as ␣ in --inv, painted as three backgrounds of the space's own box
-   (the bar just under the baseline, two short arms). A space that collapses at the end of a line
-   has no box, so it draws nothing. Titles in lists (spaced.html) show theirs on hover. */
-@property --inv {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: transparent;
-}
-.sp {
-  --inv-w: max(1px, .07em);
-  font-style: normal;
-  background:
-    linear-gradient(var(--inv), var(--inv)) left .06em bottom .14em / calc(100% - .12em) var(--inv-w) no-repeat,
-    linear-gradient(var(--inv), var(--inv)) left .06em bottom .14em / var(--inv-w) .2em no-repeat,
-    linear-gradient(var(--inv), var(--inv)) right .06em bottom .14em / var(--inv-w) .2em no-repeat;
-}
-/* a hair wider than a plain space, so the mark has room */
-.sp { word-spacing: .06em; transition: --inv .18s ease; }
-/* only on the one title under the pointer or the keyboard, and light: a long title shows its spaces
-   without turning into a row of bars */
-a:hover .sp,
-a:focus-visible .sp { --inv: color-mix(in srgb, var(--accent) 55%, transparent); }
-
 /* --- Navigation: a floating Liquid Glass capsule -------------------------------
    The glass is on ::before (fill and blur) and ::after (the lit rim), see Glass below. */
 
@@ -526,9 +503,10 @@ body::after {
   word-break: keep-all;
 }
 
-/* --- Home hero: a poster. The wall of headlines, the wordmark edge to edge ----------
-   hero.js builds the wall (three identical layers: dim words, ␣ marks, full ink in the lens) and
-   drives the lens, the opening ripple, the space bar and the scroll that splits the wordmark. */
+/* --- Home hero: a poster. The newsletter's keywords as a wall, the wordmark edge to edge ----------
+   hero.js builds the wall (three identical layers: dim words with the links, the ring's ink, the
+   lens's ink) and drives the lens, the ring of ink from the ␣, the space bar and the scroll that
+   splits the wordmark. */
 
 .intro-header.hero-header { margin: 0; }
 .hero {
@@ -564,13 +542,13 @@ body::after {
 /* each layer clips to the wall, so a masked one never needs a surface the size of the whole text
    (phones drop masked layers taller than their GPU allows, which hid the marks there) */
 .wall-layer { position: absolute; inset: 0; overflow: hidden; }
+/* keywords are short, so the wall sets them large: about two screens of them, and each one big
+   enough to point at */
 .wall-text {
   padding: 5.4rem var(--hero-pad) 0;
-  font-size: clamp(14px, .9vw + 4px, 18px);
-  font-weight: 500;
-  line-height: 1.62;
-  /* a little more room between words (on every layer) so each space can hold a ␣ */
-  word-spacing: .16em;
+  font-size: clamp(17px, 1.2vw + 8px, 30px);
+  font-weight: 600;
+  line-height: 1.5;
   text-align: justify;
   word-break: keep-all;
   overflow-wrap: anywhere;
@@ -580,33 +558,23 @@ body::after {
 .hero-wall.is-paused .wall-text { animation-play-state: paused; }
 @keyframes wall-drift { to { transform: translateY(var(--drift, 0px)); } }
 /* what makes a line wider is the same on every layer: weights only, never per layer */
-.w-date { font-weight: 700; font-variant-numeric: tabular-nums; }
+.w-date { font-weight: 800; font-variant-numeric: tabular-nums; }
 .k-a .w-run, .k-b .w-run { font-weight: 700; }
 .wall-base { pointer-events: auto; }
-.wall-base .w-group { cursor: pointer; }
+/* the dates and keywords on the base layer are links to the issue and the item: no link colour (the
+   lens shows the one under the pointer) */
+.wall-base a,
+.wall-base a:hover,
+.wall-base a:focus { color: inherit; text-decoration: none; }
 .wall-base .k-a .w-run, .wall-base .k-b .w-run { color: var(--wall-own); }
 
-/* ␣ and ¶, the editor's invisibles, in the accent. The wall has thousands of ␣, repainted on every
-   frame of the opening ripple, so they are plain bordered boxes (cheaper to paint than the gradients
-   .sp uses); hero.js marks the spaces that collapsed at a line end (.eol), which draw none */
-.wall-marks .wall-text { color: transparent; }
-.wall-marks .w-pil, .wall-ink .w-pil { color: var(--accent); }
-.wall-marks i, .wall-ink i { position: relative; font-style: normal; }
-.wall-marks i::after, .wall-ink i::after {
-  content: "";
-  position: absolute;
-  left: .03em;
-  right: .03em;
-  bottom: .13em;
-  height: .3em;
-  border: max(1.5px, .085em) solid var(--accent);
-  border-top: 0;
-}
-.wall-marks i.eol::after, .wall-ink i.eol::after { display: none; }
+/* the ring: the wall in full ink, seen only inside the ring hero.js sends out from the ␣ (a mask
+   it redraws each frame); laid out with the others but not painted until then */
+.wall-ring { visibility: hidden; }
 
 /* the lens: a round window onto the ink layer; hero.js moves the window one way and the ink the
-   other, so the ink stays lined up with the wall. Own posts in their section's colour, the post
-   under the pointer underlined */
+   other, so the ink stays lined up with the wall. Own posts in their section's colour, the word
+   under the pointer in the accent */
 .wall-lens {
   position: absolute;
   top: 0;
@@ -621,18 +589,22 @@ body::after {
   will-change: transform;
 }
 .wall-lens .wall-ink { inset: auto; top: 0; left: 0; will-change: transform; }
-.wall-ink .wall-text { color: var(--heading-col); }
-.wall-ink .w-date { color: var(--mid-col); }
-.wall-ink .k-a .w-run { color: var(--kind-a); }
-.wall-ink .k-b .w-run { color: var(--kind-b); }
-.wall-ink .is-hot .w-run, .wall-ink .is-hot .w-date { color: var(--accent); }
+.wall-ring .wall-text, .wall-ink .wall-text { color: var(--heading-col); }
+.wall-ring .w-date, .wall-ink .w-date,
+.wall-ring .w-sep, .wall-ink .w-sep { color: var(--mid-col); }
+.wall-ring .k-a .w-run, .wall-ink .k-a .w-run { color: var(--kind-a); }
+.wall-ring .k-b .w-run, .wall-ink .k-b .w-run { color: var(--kind-b); }
+.wall-ink .w-group .is-hot { color: var(--accent); }
 .has-lens .wall-lens { opacity: 1; }
 
+/* the space around the line and the wordmark passes the pointer to the wall; the two themselves
+   take it, so the keywords faded out behind them can't be clicked unseen */
 .hero-inner {
   position: relative;
   padding: 0 var(--hero-pad);
   pointer-events: none;
 }
+.hero-sub, .hero-title { pointer-events: auto; cursor: default; }
 .hero-sub {
   display: inline-block;
   margin: 0 0 clamp(.4rem, 1.2cqw, 1.1rem) -.55rem;
@@ -1068,6 +1040,10 @@ body::after {
   color: var(--heading-col);
   scroll-margin-top: 5.5rem;
 }
+/* a keyword on the home wall links to one item of a newsletter issue: its heading lights up as the
+   page opens there, so it is clear which one */
+.blog-post :is(h2, h3, h4):target { animation: target-flash 2.4s ease-out; }
+@keyframes target-flash { from, 35% { color: var(--accent); } }
 /* post-content.html shifts heading levels so the body starts at h2 under the title's h1 */
 .blog-post h1, .blog-post h2 { font-size: 1.45rem; margin: 3rem 0 1rem; }
 .blog-post h3 { font-size: 1.2rem; margin: 2.4rem 0 .85rem; }
