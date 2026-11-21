@@ -2,14 +2,25 @@ name: Daily Tech Blog Auto Post
 
 on:
   schedule:
-    # 매일 한국 시간(KST) 오전 8시 00분 실행 (UTC 전날 23:00)
-    - cron: '0 23 * * *'
+    # GitHub 예약 실행은 정각에 몰리면 늦어지거나 아예 빠지기도 해서, 정각을 피해 세 번 걸어둠.
+    # 오늘 글이 이미 있으면 스크립트가 바로 끝나므로 먼저 성공한 한 번만 글을 올림.
+    - cron: '17 22 * * *'   # KST 07:17
+    - cron: '43 23 * * *'   # KST 08:43
+    - cron: '23 2 * * *'    # KST 11:23
   workflow_dispatch:
     inputs:
       dry_run:
         description: '포스트를 커밋하지 않고 로그로만 출력'
         type: boolean
         default: false
+      force:
+        description: '오늘 글이 이미 있어도 새로 생성해서 덮어쓰기'
+        type: boolean
+        default: false
+
+concurrency:
+  group: daily-post
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -37,6 +48,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           DRY_RUN: ${{ inputs.dry_run }}
+          FORCE: ${{ inputs.force }}
         run: python scripts/daily_newsletter.py
 
       - name: Commit and Push new post to _posts
