@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 소개
-description: "Geunyeong Cho 소개: 아주대학교 산업공학·인공지능융합 전공, 데이터·ML·자동화 분야의 학력, 기술 스택, 자격증과 활동"
+description: "Geunyeong Cho 소개: 아주대학교 산업공학·인공지능융합 전공, 데이터·ML·자동화 분야의 학력, 기술 스택, 자격증"
 hide-title: true
 ---
 
@@ -99,24 +99,6 @@ hide-title: true
       <li><span class="cert-name">빅데이터 분석기사 <small>Bigdata Analysis Engineer</small></span><span class="cert-org">Korea Data Agency</span><span class="year-badge">2026</span></li>
       <li><span class="cert-name">정보처리기사 <small>Engineer Information Processing</small></span><span class="cert-org">HRD Korea</span><span class="year-badge">2026</span></li>
       <li><span class="cert-name">Google AI Professional Certificate</span><span class="cert-org">Google</span><span class="year-badge">2026</span></li>
-    </ul>
-  </section>
-
-  <section class="about-card">
-    <h2 class="about-title">Activities</h2>
-    <ol class="timeline">
-      <li><span class="timeline-year">2026</span><p>BDAI</p></li>
-      <li><span class="timeline-year">2024</span><p>KONICOF Nuclear Global R&amp;D Mentoring <small>Nuclear ML/AI, KAIST</small></p></li>
-      <li><span class="timeline-year">2024</span><p>CJ OliveNetworks ‘Youth Digital Problem Solving’ Educational Volunteer</p></li>
-    </ol>
-  </section>
-
-  <section class="about-card">
-    <h2 class="about-title">Campus &amp; Community</h2>
-    <ul class="plain-list">
-      <li>아주대학교 산업공학과 42대 학생회 ‘We로’ / 43대 학생회 ‘산뜻’</li>
-      <li>AJOU POPS Orchestra Principal Double Bass</li>
-      <li>팔달노인복지관 사회복무요원 (2025.2 – 2026.11)</li>
     </ul>
   </section>
 
