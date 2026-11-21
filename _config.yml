@@ -38,8 +38,9 @@ system-tags: [Hacker News, Tech Trend, article, bdai]
 # Remove this parameter if you don't want an image in the navbar
 avatar: "/assets/img/personal_image.jpg"
 
-# Default link-preview image (KakaoTalk, Slack, X...) for pages without their own image
-share-img: "/assets/img/og-default.png"
+# Default link-preview image (KakaoTalk, Slack, X...) for pages without their own image: the home hero
+# as a poster. Raise ?v= when the image changes, so link previews fetch the new one
+share-img: "/assets/img/og-default.png?v=2"
 
 # By default, the image is cut into a circle. You can disable this behaviour by setting 'round-avatar: false'
 round-avatar: true
