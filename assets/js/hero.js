@@ -1,14 +1,14 @@
-// Home hero (markup in _includes/hero.html): a wall of the site's latest headlines, with a
-// code editor's "show invisibles" as the way to look at it. Wherever the pointer is, a lens brings
-// the words to full ink and draws each space as ␣. On load every space on the wall shows for a
-// moment and they ripple away from the wordmark's own ␣; the space bar (or a click on that ␣) does it
-// again. Scrolling pulls "Generic" and "Space" apart. Clicking a headline opens the post it is from.
+// Home hero (markup in _includes/hero.html): the newsletter's keywords, day by day, fill the screen
+// as a wall, with the site's own posts among them by title. Wherever the pointer is, a lens brings
+// the words to full ink and lights the one under it in the accent; every keyword is a link to the item
+// it came from. On load a ring of ink goes out from the wordmark's ␣ across the wall, and the space
+// bar (or a click on that ␣) sends another. Scrolling pulls "Generic" and "Space" apart.
 //
 // The wall is three copies of the same text laid out identically, so they line up to the pixel:
-//   base   dim words; the only layer that takes the pointer
-//   marks  nothing but the ␣ and ¶ marks (the opening ripple masks it away)
-//   ink    full-colour words and marks, seen through the lens: a round window that moves while the
-//          ink inside moves the other way, so the lens costs two transforms a frame and no repaint
+//   base  dim words, the links; the only layer that takes the pointer
+//   ring  the words in full ink, seen only inside the ring as it goes out
+//   ink   the words in full ink and colour, seen through the lens: a round window that moves while
+//         the ink inside moves the other way, so the lens costs two transforms a frame and no repaint
 // Motion is off with prefers-reduced-motion and in 가벼운 모드 (data-perf="lite"), except the lens
 // following the pointer, which only ever moves when the reader does.
 
@@ -43,81 +43,79 @@
   try { corpus = JSON.parse(dataEl.textContent); } catch (e) { return; }
   if (!corpus.length) return;
 
-  // headlines come from rendered HTML, so they may hold entities (&amp;, &#8217;)
+  // titles come from rendered HTML, so they may hold entities (&amp;, &#8217;)
   const decoder = document.createElement("textarea");
   function decode(s) { decoder.innerHTML = s; return decoder.value; }
-  corpus.forEach(function (post) { post.h = post.h.map(decode); });
+  corpus.forEach(function (post) {
+    post.h = post.h.map(decode);
+    post.a = post.a || [];
+  });
 
   /* --- Build the three layers ------------------------------------------------ */
 
-  // a space: plain text on the base layer, an <i> that draws ␣ on the others (same width either way)
-  function space(marked) {
-    if (!marked) return document.createTextNode(" ");
-    const i = document.createElement("i");
-    i.textContent = " ";
-    return i;
+  // On the base layer the date and each keyword are links (kept out of the tab order: the wall is a
+  // picture for the eye, and the lists below the hero hold the same posts); on the other two, spans.
+  // Every one carries its place (data-r), so the lens can find the twin of the one under the pointer.
+  function piece(links, cls, text, href, r) {
+    const el = document.createElement(links ? "a" : "span");
+    el.className = cls;
+    el.textContent = text;
+    el.dataset.r = r;
+    if (links) {
+      el.href = href;
+      el.tabIndex = -1;
+    }
+    return el;
   }
-  function words(parent, text, marked) {
-    text.split(/\s+/).filter(Boolean).forEach(function (w, n) {
-      if (n) parent.appendChild(space(marked));
-      parent.appendChild(document.createTextNode(w));
-    });
-  }
-  // `count` posts in order, each its date, then each headline followed by a pilcrow (as an editor
-  // marks line ends); past the end of the corpus it starts again from the newest
-  function buildText(marked, count) {
+  // `count` posts in order, each its date, then its keywords; past the end of the corpus it starts
+  // again from the newest
+  function buildText(links, count) {
     const text = document.createElement("div");
     text.className = "wall-text";
+    let r = 0;
     for (let k = 0; k < count; k++) {
-      const idx = k % corpus.length, post = corpus[idx];
+      const post = corpus[k % corpus.length];
       const g = document.createElement("span");
       g.className = "w-group k-" + post.k;
-      g.dataset.i = idx;
-      g.dataset.k = k;
-      const d = document.createElement("b");
-      d.className = "w-date";
-      d.textContent = post.d;
-      g.appendChild(d);
-      post.h.forEach(function (h) {
-        g.appendChild(space(marked));
-        const run = document.createElement("span");
-        run.className = "w-run";
-        words(run, h, marked);
-        g.appendChild(run);
-        g.appendChild(space(marked));
-        const pil = document.createElement("span");
-        pil.className = "w-pil";
-        pil.textContent = "¶";
-        g.appendChild(pil);
+      g.appendChild(piece(links, "w-date", post.d, post.u, r++));
+      post.h.forEach(function (h, n) {
+        g.appendChild(document.createTextNode(" "));
+        const id = post.a[n];
+        g.appendChild(piece(links, "w-run", h, post.u + (id ? "#" + encodeURIComponent(id) : ""), r++));
+        if (n < post.h.length - 1) {
+          const sep = document.createElement("span");
+          sep.className = "w-sep";
+          sep.textContent = ",";
+          g.appendChild(sep);
+        }
       });
       text.appendChild(g);
-      text.appendChild(space(marked));
+      text.appendChild(document.createTextNode(" "));
     }
     return text;
   }
 
   const layers = {};
-  let lens = null, inkGroups = [], count = 0, eolFlags = [];
+  let lens = null, inkPieces = [], count = 0;
   function layer(name, count) {
     const el = document.createElement("div");
     el.className = "wall-layer wall-" + name;
-    el.appendChild(buildText(name !== "base", count));
+    el.appendChild(buildText(name === "base", count));
     layers[name] = el;
     return el;
   }
   // The base layer first, with every post; once it is laid out, keep only what fills about two
-  // screens (the drift never shows more) and build the marks to match. Less text is less to lay out
-  // and paint, which matters most on a phone, where the corpus runs to 4-5 screens. The lens's ink
-  // comes a moment later (ensureInk), so the first paint has two layers rather than three.
+  // screens (the drift never shows more), or repeat the corpus if it is short of one, and build the
+  // ring to match. The lens's ink comes a moment later (ensureInk), so the first paint has two layers.
   function build() {
     wall.textContent = "";
     wall.appendChild(layer("base", corpus.length));
   }
   function fit() {
-    const text = layers.base.firstChild, want = wall.clientHeight * 1.9;
+    const text = layers.base.firstChild, H0 = wall.clientHeight, want = H0 * 1.9;
     count = corpus.length;
-    if (text.scrollHeight < want) {
-      count = Math.min(Math.ceil(corpus.length * want / Math.max(text.scrollHeight, 1)), corpus.length * 4);
+    if (text.scrollHeight < H0 * 1.2) {
+      count = Math.min(Math.ceil(corpus.length * H0 * 1.2 / Math.max(text.scrollHeight, 1)), corpus.length * 4);
     } else {
       const groups = text.children;
       for (let k = 0; k < groups.length; k++) {
@@ -125,7 +123,7 @@
       }
     }
     if (count !== corpus.length) { const old = layers.base; wall.replaceChild(layer("base", count), old); }
-    wall.appendChild(layer("marks", count));
+    wall.appendChild(layer("ring", count));
     lens = document.createElement("div");
     lens.className = "wall-lens";
     wall.appendChild(lens);
@@ -133,9 +131,9 @@
   function ensureInk() {
     if (layers.ink) return;
     lens.appendChild(layer("ink", count));
-    inkGroups = layers.ink.querySelectorAll(".w-group");
+    inkPieces = layers.ink.querySelectorAll("[data-r]");
     sizeInk();
-    applyEol(layers.ink);
+    if (hotR !== null) setHot(hotR);
   }
   // the ink inside the lens is laid out at the wall's size, like the other layers
   function sizeInk() {
@@ -150,7 +148,7 @@
   function measure() {
     W = wall.clientWidth;
     H = wall.clientHeight;
-    R = Math.round(Math.min(Math.max(W * 0.105, 84), 168));
+    R = Math.round(Math.min(Math.max(W * 0.11, 88), 180));
     lens.style.width = lens.style.height = 2 * R + "px";
     sizeInk();
     const overflow = layers.base.firstChild.scrollHeight - H;
@@ -158,24 +156,6 @@
     // about 9px a second, so it reads as a slow feed rather than a scroll
     wall.style.setProperty("--drift-dur", Math.max(overflow / 9, 30).toFixed(0) + "s");
     wall.classList.toggle("is-drifting", overflow > 40);
-  }
-
-  // a space that ends a line collapses to nothing, and its mark would hang in the margin
-  // (the ink is laid out exactly like the marks, so it takes the same flags)
-  function hideLineEnds() {
-    const ms = layers.marks.querySelectorAll("i");
-    // read every box first, then write: toggling as we go would re-lay out the wall each time
-    eolFlags = [];
-    for (let n = 0; n < ms.length; n++) {
-      const rects = ms[n].getClientRects();
-      eolFlags.push(rects.length !== 1 || rects[0].width < 1);
-    }
-    applyEol(layers.marks);
-    if (layers.ink) applyEol(layers.ink);
-  }
-  function applyEol(el) {
-    const is = el.querySelectorAll("i");
-    for (let n = 0; n < is.length; n++) is[n].classList.toggle("eol", !!eolFlags[n]);
   }
 
   /* --- The lens --------------------------------------------------------------- */
@@ -206,7 +186,7 @@
   function frame(now) {
     raf = 0;
     if (!inView || document.hidden) return;
-    if (rippling) return;
+    if (ringing) return;
     const idle = !mouseIn && now - touchAt > IDLE_MS;
     if (idle) {
       if (calm()) { showLens(false); return; }
@@ -234,45 +214,52 @@
     kick();
   }
 
-  // the post under the pointer: underline its headlines inside the lens
-  let hot = null;
-  function setHot(el) {
-    const g = el && el.closest ? el.closest(".wall-base .w-group") : null;
-    const next = g ? inkGroups[+g.dataset.k] || null : null;
+  // the keyword (or date, or title) under the pointer: its twin inside the lens takes the accent
+  let hot = null, hotR = null;
+  function setHot(r) {
+    hotR = r;
+    const next = r !== null ? inkPieces[r] || null : null;
     if (next === hot) return;
     if (hot) hot.classList.remove("is-hot");
     hot = next;
     if (hot) hot.classList.add("is-hot");
   }
+  function hotFrom(target) {
+    const el = target && target.closest ? target.closest(".wall-base [data-r]") : null;
+    setHot(el ? +el.dataset.r : null);
+  }
 
-  /* --- The ripple: every space shows, then they go, from the wordmark's ␣ out ---- */
+  /* --- The ring: ink goes out from the wordmark's ␣ across the wall -------------- */
 
   function origin() {
     const sp = title.querySelector(".wordmark-space");
     const a = sp.getBoundingClientRect(), b = wall.getBoundingClientRect();
     return [a.left + a.width / 2 - b.left, a.bottom - b.top];
   }
-  let rippleRaf = 0, rippling = false;
-  function ripple(hold) {
-    const marks = layers.marks;
-    if (calm() || !inView) { marks.style.display = "none"; return; }
-    cancelAnimationFrame(rippleRaf);
+  let ringRaf = 0, ringing = false;
+  const BAND = 150;
+  function ring(hold) {
+    const el = layers.ring;
+    if (calm() || !inView) return;
+    cancelAnimationFrame(ringRaf);
     const o = origin();
-    const far = Math.hypot(Math.max(o[0], W - o[0]), Math.max(o[1], H - o[1])) + 220;
-    const t0 = performance.now() + (hold || 0), dur = 1600;
-    marks.style.display = "";
-    rippling = true;
+    const far = Math.hypot(Math.max(o[0], W - o[0]), Math.max(o[1], H - o[1])) + BAND;
+    const t0 = performance.now() + (hold || 0), dur = 1900;
+    const at = o[0].toFixed(0) + "px " + o[1].toFixed(0) + "px";
+    ringing = true;
     showLens(false);
     function step(now) {
       const p = Math.min(Math.max((now - t0) / dur, 0), 1);
-      // ease in-out: the wipe gathers speed, then settles at the edges
-      const r = (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2) * far;
-      const m = "radial-gradient(circle at " + o[0].toFixed(0) + "px " + o[1].toFixed(0) + "px, transparent " +
-        r.toFixed(0) + "px, #000 " + (r + 200).toFixed(0) + "px)";
-      marks.style.webkitMaskImage = m;
-      marks.style.maskImage = m;
-      if (p < 1) rippleRaf = requestAnimationFrame(step);
-      else { marks.style.display = "none"; rippling = false; kick(); }
+      // spreads at a nearly even pace (a wave, not a flash), easing off at the far corners and fading
+      const r = (1 - Math.pow(1 - p, 1.7)) * far;
+      const m = "radial-gradient(circle at " + at + ", transparent " + (r - BAND).toFixed(0) + "px, #000 " +
+        r.toFixed(0) + "px, transparent " + (r + BAND * 0.45).toFixed(0) + "px)";
+      el.style.webkitMaskImage = m;
+      el.style.maskImage = m;
+      el.style.opacity = (1 - p * p).toFixed(3);
+      el.style.visibility = p < 1 ? "visible" : "";
+      if (p < 1) ringRaf = requestAnimationFrame(step);
+      else { ringing = false; kick(); }
     }
     step(performance.now());
   }
@@ -285,7 +272,7 @@
     hero.classList.add("is-pressed");
     clearTimeout(pressT);
     pressT = setTimeout(function () { hero.classList.remove("is-pressed"); }, 400);
-    ripple();
+    ring();
   }
 
   /* --- Scroll: the two words move apart as the hero leaves -------------------- */
@@ -311,12 +298,10 @@
     fonts.then(function () {
       fit();
       measure();
-      hideLineEnds();
       wall.classList.add("is-ready");
       onScroll();
-      if (calm()) layers.marks.style.display = "none";
-      else ripple(900);
-      // the ink, once the wall has painted: the hold before the ripple is still, so it costs nothing seen
+      ring(500);
+      // the ink, once the wall has painted: the hold before the ring is still, so it costs nothing seen
       requestAnimationFrame(function () { setTimeout(ensureInk, 60); });
       lx = wander(performance.now())[0];
       ly = wander(performance.now())[1];
@@ -327,7 +312,7 @@
       if (e.pointerType === "touch") return;
       mouseIn = true;
       pointTo(e.clientX, e.clientY);
-      setHot(e.target);
+      hotFrom(e.target);
     });
     hero.addEventListener("pointerleave", function (e) {
       if (e.pointerType === "touch") return;
@@ -346,14 +331,6 @@
     hero.addEventListener("touchmove", onTouch, { passive: true });
     hero.addEventListener("touchend", function () { touchAt = performance.now(); kick(); }, { passive: true });
 
-    wall.addEventListener("click", function (e) {
-      const g = e.target.closest(".w-group");
-      if (!g) return;
-      const url = corpus[+g.dataset.i].u;
-      if (e.metaKey || e.ctrlKey || e.shiftKey) window.open(url, "_blank", "noopener");
-      else window.location.href = url;
-    });
-
     title.querySelector(".wordmark-space").addEventListener("click", press);
     document.addEventListener("keydown", function (e) {
       if (e.key !== " " || e.repeat || e.ctrlKey || e.metaKey || e.altKey || !inView) return;
@@ -369,7 +346,6 @@
       resizeT = setTimeout(function () {
         if (!wall.classList.contains("is-ready")) return;
         measure();
-        hideLineEnds();
         onScroll();
       }, 150);
     });
