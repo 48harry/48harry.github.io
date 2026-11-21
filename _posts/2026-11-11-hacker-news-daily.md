@@ -4,6 +4,7 @@ title: "Secure Enclave부터 홈 오토메이션, 그리고 가벼운 리눅스�
 date: 2026-11-11 17:48:47 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Secure Enclave", "SSH Keys", "ginux", "Home Automation"]
 ---
 
 이번 주말, 개발자의 호기심을 자극할 만한 흥미로운 기술 아티클 세 편을 모았습니다. 보안부터 커스텀 OS, 그리고 실생활을 바꾼 홈 오토메이션 프로젝트까지, 시니어 엔지니어의 시선으로 깊이 있게 뜯어봅니다.

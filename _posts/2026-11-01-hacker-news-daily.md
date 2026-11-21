@@ -4,6 +4,7 @@ title: "안드레이 카파시의 AI 비디오 파이프라인부터 프롬프�
 date: 2026-11-01 14:16:34 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, AI, Security]
+keywords: ["Hacker Tube", "Unknown Seed", "Prompt Injection", "Brazilian Court"]
 ---
 
 AI 거물 안드레이 카파시의 개인 프로젝트부터 보안 엔지니어들을 긴장시키는 법원 판례까지, 이번 주 테크 세상은 그야말로 다채로운 이슈로 들썩이고 있습니다. 데이터와 AI의 최전선에서 벌어지고 있는 흥미로운 소식들을 시니어 엔지니어의 시선으로 낱낱이 파헤쳐 봅니다.

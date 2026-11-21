@@ -4,6 +4,7 @@ title: "미국 법령의 Git 관리부터 딥마인드 Genie 2, 그리고 Ghostt
 date: 2026-10-28 16:14:12 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Git", "US Code", "Genie 2", "world simulation", "Ghostty"]
 ---
 
 개발자들의 영원한 놀이터이자 지식의 최전선인 Hacker News를 뜨겁게 달군 세 가지 흥미로운 소식을 모았습니다. 법률 코드 버전 관리부터 차세대 월드 시뮬레이션, 그리고 터미널 에뮬레이터의 새로운 기준까지 함께 살펴보시죠!

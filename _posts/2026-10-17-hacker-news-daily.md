@@ -4,6 +4,7 @@ title: "소프트웨어 장인정신부터 AI 하드웨어와 슈퍼카까지: �
 date: 2026-10-17 14:56:42 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Paper Instruments", "Ultramarine", "Tesla Roadster", "PS5LM"]
 ---
 
 이번 포스트에서는 웹 인프라의 새로운 지평을 여는 프로젝트부터, 개발자들의 감성을 자극하는 독특한 시뮬레이션, 그리고 엔지니어링의 한계를 시험하는 혁신적인 모빌리티 소식까지 알차게 엮어보았습니다. 시니어 엔지니어의 날카로운 시선으로 각 기술의 본질을 파헤쳐 봅니다.

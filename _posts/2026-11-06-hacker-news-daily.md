@@ -4,6 +4,7 @@ title: "AI 코딩 에이전트의 역습부터 SSH 보안과 CVE 취약점까지
 date: 2026-11-06 16:09:48 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Claude Code", "sshhole", "CVE-2026-83844"]
 ---
 
 AI 코딩 도구의 예기치 않은 동작부터 개발자의 발등을 찍는 보안 이슈까지, 프로덕션 환경을 지키기 위해 반드시 주목해야 할 기술 동향을 시니어 엔지니어의 시선으로 파헤쳐 봅니다.

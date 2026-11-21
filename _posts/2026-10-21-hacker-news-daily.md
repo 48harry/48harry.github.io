@@ -4,6 +4,7 @@ title: "AI 추론 최적화부터 랜섬웨어 협상가 검거, 그리고 개�
 date: 2026-10-21 09:17:32 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, DeepSeek, Cybersecurity]
+keywords: ["Permit", "ShinyHunters", "Ransom", "DeepSeek", "DeepInfer"]
 ---
 
 오늘의 테크 브리핑에서는 AI 모델의 추론 성능을 극한으로 끌어올리는 오픈소스 프로젝트부터, 국제 공조로 체포된 악명 높은 랜섬웨어 조직의 민낯, 그리고 데이터 프라이버시를 지키는 새로운 접근까지 개발자와 엔지니어가 주목해야 할 흥미로운 소식들을 짚어봅니다.

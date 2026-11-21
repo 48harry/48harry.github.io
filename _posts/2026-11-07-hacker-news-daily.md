@@ -4,6 +4,7 @@ title: "아사히 리눅스 진전, 고스티(Ghostty) 코어 공개, 그리고 
 date: 2026-11-07 15:53:56 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Asahi Linux", "libghostty", "Ancient DNA", "Barbarian Tribe"]
 ---
 
 이번 주 테크 트렌드와 과학계 소식들을 데이터와 시스템 아키텍처, 그리고 인류학적 관점에서 흥미롭게 엮어 보았습니다. 애플 실리콘 리눅스의 최전선부터 초고속 터미널 에뮬레이터의 내부 코어, 그리고 고대 DNA가 증명한 신화까지, 엔지니어의 호기심을 자극할 만한 알짜배기 소식들을 확인해 보세요.

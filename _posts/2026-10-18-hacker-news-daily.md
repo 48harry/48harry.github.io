@@ -4,6 +4,7 @@ title: "개발자를 위한 웹 기술 인사이트: 무제한 CDN의 비밀부�
 date: 2026-10-18 15:46:40 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Sphinx", "Cloudflare", "CDN", "Elizabeth Holmes"]
 ---
 
 오늘도 전 세계 개발자 커뮤니티를 뜨겁게 달군 흥미로운 기술 및 엔지니어링 이슈들을 모아왔습니다. 인프라 아키텍처의 비밀부터 최신 개발 도구, 그리고 시대를 뒤흔든 인물의 이야기까지 시니어 엔지니어의 시선으로 날카롭게 해부해 보겠습니다.

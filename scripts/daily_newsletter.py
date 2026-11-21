@@ -71,6 +71,7 @@ title: "[3개 기사의 핵심을 관통하는 매력적인 테크 제목]"
 date: {datetime_jekyll}
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["키워드1", "키워드2", "키워드3", "키워드4"]
 ---
 
 3. 본문 작성 및 기사 요약 규칙:
@@ -90,6 +91,11 @@ tags: [Hacker News, Tech Trend]
 5. 약간의 위트를 추가해도 좋아.
 
 6. 자기소개는 생략하고 규칙에 따라서만 작성해줘. 네가 어떤 직군을 가지는지, 직업이 뭔지는 본문이나 제목에 설명할 필요가 없어.
+
+7. keywords에는 블로그 홈 화면에서 이 글의 각 기사로 바로 찾아 들어가는 짧은 키워드를 4~5개 넣을 것.
+   - 기사마다 1개 이상, 제품·프로젝트·회사 이름(예: OpenDLSS, Gemini 4)이나 짧은 주제어(예: 오픈소스, 업스케일링)로.
+   - 각 키워드는 본문에서 그 기사의 ### 제목이나 요약에 쓴 표기 그대로(대소문자, 띄어쓰기까지) 쓸 것.
+   - 키워드마다 큰따옴표로 감싸고, 키워드 안에는 따옴표, 쉼표, 콜론, &를 쓰지 말 것.
 """
     blog_md = call_gemini(client, prompt)
     return normalize_post(blog_md)

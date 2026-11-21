@@ -4,6 +4,7 @@ title: "도서관의 디지털 혁신부터 레트로 하드웨어 해킹까지:
 date: 2026-10-26 12:00:26 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["Imagination Library", "GDX-3DS", "Postmortem", "Overgrown Extension"]
 ---
 
 이번 주 테크 트렌드에서는 영유아 독서 장려 프로그램의 웹 플랫폼 확장부터 신비로운 3DS/GameCube 그래픽 포스트모템, 그리고 브라우저 익스텐션 관리의 늪까지 개발자의 호기심을 자극하는 흥미로운 소식들이 찾아왔습니다. 세상을 바꾸는 따뜻한 기술부터 깊은 하드웨어 디버깅까지 함께 살펴보시죠!

@@ -4,6 +4,7 @@ title: "mitmproxy 보안 패치부터 Railway 보안 공시, 그리고 봇 트�
 date: 2026-10-22 10:00:28 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend]
+keywords: ["mitmproxy", "Railway", "Security Disclosure", "No Exploit"]
 ---
 
 개발자라면 짚고 넘어가야 할 최근의 보안 및 시스템 관련 주요 소식들을 모았습니다. 인프라 보안부터 오픈소스 패치, 그리고 웹 트래픽 분석까지 엔지니어의 시각에서 날카롭게 짚어봅니다.

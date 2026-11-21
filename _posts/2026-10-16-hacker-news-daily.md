@@ -4,6 +4,7 @@ title: "Meta의 멀티모달 오픈 소스부터 RPKI 인터넷 보안, 그리�
 date: 2026-10-16 10:39:23 +0900
 categories: [Tech, News]
 tags: [Hacker News, Tech Trend, AI, MLOps, Networking]
+keywords: ["Muse-Spark", "멀티모달", "RPKI", "라우팅 보안", "Self-Host"]
 ---
 
 안녕하세요! 오늘은 최근 해커뉴스에서 뜨거운 반응을 얻고 있는 흥미로운 세 가지 기술 트렌드를 짚어봅니다. 대규모 멀티모달 AI 모델의 오픈 소스화 소식부터 인터넷 라우팅 보안의 현주소, 그리고 엔지니어의 '진정한 통제권'을 향한 셀프 호스팅 셋업까지, 개발자의 시선을 사로잡을 알짜배기 소식들을 모았습니다. 자, 그럼 딥다이브해 볼까요?
