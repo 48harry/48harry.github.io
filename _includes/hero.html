@@ -57,7 +57,7 @@
     {%- assign _heads = _heads | push: _t -%}
     {%- assign _anchors = _anchors | push: "" -%}
   {%- endif -%}
-  {{ _sep }}{"d":"{{ post.date | date: '%m.%d' }}","k":"{{ section.kind | default: 'a' }}","u":{{ post.url | relative_url | jsonify }},"h":{{ _heads | jsonify }},"a":{{ _anchors | jsonify }}}
+  {{ _sep }}{"k":"{{ section.kind | default: 'a' }}","u":{{ post.url | relative_url | jsonify }},"h":{{ _heads | jsonify }},"a":{{ _anchors | jsonify }}}
   {%- assign _sep = "," -%}
 {%- endfor -%}
 ]</script>

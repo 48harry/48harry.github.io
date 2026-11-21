@@ -53,8 +53,8 @@
 
   /* --- Build the three layers ------------------------------------------------ */
 
-  // On the base layer the date and each keyword are links (kept out of the tab order: the wall is a
-  // picture for the eye, and the lists below the hero hold the same posts); on the other two, spans.
+  // On the base layer each keyword is a link (kept out of the tab order: the wall is a picture for the
+  // eye, and the lists below the hero hold the same posts); on the other two, spans.
   // Every one carries its place (data-r), so the lens can find the twin of the one under the pointer.
   function piece(links, cls, text, href, r) {
     const el = document.createElement(links ? "a" : "span");
@@ -67,8 +67,8 @@
     }
     return el;
   }
-  // `count` posts in order, each its date, then its keywords; past the end of the corpus it starts
-  // again from the newest
+  // `count` posts in order, their keywords one comma-separated run (no dates: the words are the
+  // picture); past the end of the corpus it starts again from the newest
   function buildText(links, count) {
     const text = document.createElement("div");
     text.className = "wall-text";
@@ -77,17 +77,14 @@
       const post = corpus[k % corpus.length];
       const g = document.createElement("span");
       g.className = "w-group k-" + post.k;
-      g.appendChild(piece(links, "w-date", post.d, post.u, r++));
       post.h.forEach(function (h, n) {
-        g.appendChild(document.createTextNode(" "));
+        if (n) g.appendChild(document.createTextNode(" "));
         const id = post.a[n];
         g.appendChild(piece(links, "w-run", h, post.u + (id ? "#" + encodeURIComponent(id) : ""), r++));
-        if (n < post.h.length - 1) {
-          const sep = document.createElement("span");
-          sep.className = "w-sep";
-          sep.textContent = ",";
-          g.appendChild(sep);
-        }
+        const sep = document.createElement("span");
+        sep.className = "w-sep";
+        sep.textContent = ",";
+        g.appendChild(sep);
       });
       text.appendChild(g);
       text.appendChild(document.createTextNode(" "));
@@ -214,7 +211,7 @@
     kick();
   }
 
-  // the keyword (or date, or title) under the pointer: its twin inside the lens takes the accent
+  // the keyword (or title) under the pointer: its twin inside the lens takes the accent
   let hot = null, hotR = null;
   function setHot(r) {
     hotR = r;

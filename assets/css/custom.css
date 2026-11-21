@@ -546,7 +546,7 @@ body::after {
    enough to point at */
 .wall-text {
   padding: 5.4rem var(--hero-pad) 0;
-  font-size: clamp(17px, 1.2vw + 8px, 30px);
+  font-size: clamp(15px, 1vw + 7px, 26px);
   font-weight: 600;
   line-height: 1.5;
   text-align: justify;
@@ -558,11 +558,10 @@ body::after {
 .hero-wall.is-paused .wall-text { animation-play-state: paused; }
 @keyframes wall-drift { to { transform: translateY(var(--drift, 0px)); } }
 /* what makes a line wider is the same on every layer: weights only, never per layer */
-.w-date { font-weight: 800; font-variant-numeric: tabular-nums; }
 .k-a .w-run, .k-b .w-run { font-weight: 700; }
 .wall-base { pointer-events: auto; }
-/* the dates and keywords on the base layer are links to the issue and the item: no link colour (the
-   lens shows the one under the pointer) */
+/* the keywords on the base layer are links to their items: no link colour (the lens shows the one
+   under the pointer) */
 .wall-base a,
 .wall-base a:hover,
 .wall-base a:focus { color: inherit; text-decoration: none; }
@@ -590,7 +589,6 @@ body::after {
 }
 .wall-lens .wall-ink { inset: auto; top: 0; left: 0; will-change: transform; }
 .wall-ring .wall-text, .wall-ink .wall-text { color: var(--heading-col); }
-.wall-ring .w-date, .wall-ink .w-date,
 .wall-ring .w-sep, .wall-ink .w-sep { color: var(--mid-col); }
 .wall-ring .k-a .w-run, .wall-ink .k-a .w-run { color: var(--kind-a); }
 .wall-ring .k-b .w-run, .wall-ink .k-b .w-run { color: var(--kind-b); }
