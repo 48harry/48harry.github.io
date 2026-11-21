@@ -184,6 +184,11 @@ def save_blog_post(markdown_content):
 
 
 if __name__ == "__main__":
+    post_path = f"_posts/{date_str}-hacker-news-daily.md"
+    dry_run = os.environ.get("DRY_RUN") == "true"
+    if os.path.exists(post_path) and os.environ.get("FORCE") != "true" and not dry_run:
+        print(f"{post_path} 이미 있음 → 건너뜀 (덮어쓰려면 force로 수동 실행)", flush=True)
+        raise SystemExit(0)
     print("[1/4] Hacker News 수집 중...", flush=True)
     articles = fetch_hacker_news(top_n=3)
     print(f"      {len(articles)}개 기사: {[a['title'] for a in articles]}", flush=True)
