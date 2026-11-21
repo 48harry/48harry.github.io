@@ -202,9 +202,11 @@
 
   {% include matomo.html %}
 
-  <link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="32x32">
-  <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="{{ '/assets/img/apple-touch-icon.png' | relative_url }}">
+  {%- comment -%} The wordmark's ␣ on paper. ?v= changes with the drawing, so browsers drop the icon they
+  cached (they keep one for a long time); custom.js recolours the SVG for an accent picked in 보기 설정 {%- endcomment %}
+  <link rel="icon" href="{{ '/favicon.ico' | relative_url }}?v=2" sizes="32x32">
+  <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}?v=2" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{ '/assets/img/apple-touch-icon.png' | relative_url }}?v=2">
 
   {% if page.head-extra %}
     {% for file in page.head-extra %}

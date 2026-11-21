@@ -364,6 +364,28 @@
     if (id === "custom" && color) root.style.setProperty("--accent-1", color);
     if (id === "aurora") root.removeAttribute("data-palette");
     else root.setAttribute("data-palette", id);
+    syncFavicon();
+  }
+
+  // The tab's icon is the wordmark's ␣ in the accent. favicon.svg draws the default blue; for any other
+  // accent the same drawing is made here (keep the two alike), its dark shade mixed as custom.css mixes
+  // --accent. The paper follows the browser's own light or dark, which is what the tab strip follows.
+  const favicon = document.querySelector('link[rel="icon"][type="image/svg+xml"]');
+  const faviconHref = favicon && favicon.getAttribute("href");
+  function faviconSvg(c) {
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><style>' +
+      ".paper{fill:#FFFFFF}.edge{fill:none;stroke:#000000;stroke-opacity:.1}.space{fill:" + c + "}" +
+      "@media (prefers-color-scheme: dark){.paper{fill:#1C1C1E}.edge{stroke:#FFFFFF;stroke-opacity:.14}" +
+      ".space{fill:color-mix(in oklab, " + c + " 78%, #fff)}}</style>" +
+      '<rect class="paper" width="32" height="32" rx="7"/>' +
+      '<rect class="edge" x=".5" y=".5" width="31" height="31" rx="6.5"/>' +
+      '<path class="space" d="M6 10h4v8h12v-8h4v12H6z"/></svg>';
+  }
+  function syncFavicon() {
+    if (!favicon) return;
+    const c = root.hasAttribute("data-palette") ? getComputedStyle(root).getPropertyValue("--accent-1").trim() : "";
+    const href = /^#[0-9a-f]{3,8}$/i.test(c) ? "data:image/svg+xml," + encodeURIComponent(faviconSvg(c)) : faviconHref;
+    if (favicon.getAttribute("href") !== href) favicon.setAttribute("href", href);
   }
 
   // One "보기 설정" button opens this panel: theme, accent colour, lite mode
@@ -1403,6 +1425,7 @@
   function init() {
     initTheme();
     initSettings();
+    syncFavicon();
     initSearchPalette();
     initNavLens();
     initTabbar();
