@@ -40,7 +40,7 @@ avatar: "/assets/img/personal_image.jpg"
 
 # Default link-preview image (KakaoTalk, Slack, X...) for pages without their own image: the home hero
 # as a poster. Raise ?v= when the image changes, so link previews fetch the new one
-share-img: "/assets/img/og-default.png?v=2"
+share-img: "/assets/img/og-default.png?v=3"
 
 # By default, the image is cut into a circle. You can disable this behaviour by setting 'round-avatar: false'
 round-avatar: true
