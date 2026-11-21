@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 소개
-description: "Geunyeong Cho 소개: 아주대학교 산업공학·인공지능융합 전공, 데이터·ML·자동화 분야의 학력, 기술 스택, 자격증과 활동"
+description: "Geunyeong Cho 소개: 아주대학교 산업공학·인공지능융합 전공, 데이터·ML·자동화 분야의 학력, 기술 스택, 자격증"
 hide-title: true
 ---
 
@@ -99,19 +99,6 @@ hide-title: true
       <li><span class="cert-name">빅데이터 분석기사 <small>Bigdata Analysis Engineer</small></span><span class="cert-org">Korea Data Agency</span><span class="year-badge">2026</span></li>
       <li><span class="cert-name">정보처리기사 <small>Engineer Information Processing</small></span><span class="cert-org">HRD Korea</span><span class="year-badge">2026</span></li>
       <li><span class="cert-name">Google AI Professional Certificate</span><span class="cert-org">Google</span><span class="year-badge">2026</span></li>
-    </ul>
-  </section>
-
-  <section class="about-card">
-    <h2 class="about-title">Activities</h2>
-    <ol class="timeline">
-      <li><span class="timeline-year">2026</span><p>BDAI</p></li>
-    </ol>
-  </section>
-
-  <section class="about-card">
-    <h2 class="about-title">Campus &amp; Community</h2>
-    <ul class="plain-list">
     </ul>
   </section>
 
