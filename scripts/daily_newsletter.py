@@ -11,7 +11,9 @@ GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
 KST = timezone(timedelta(hours=9))
 now_kst = datetime.now(KST)
 date_str = now_kst.strftime("%Y-%m-%d")
-datetime_jekyll = now_kst.strftime("%Y-%m-%d %H:%M:%S +0900")
+# 글 시각은 매일 09:00으로 통일. 9시 전에 수동 실행하면 미래 시각이 되어 글이 숨겨지므로 실제 시각을 씀
+post_time = min(now_kst, now_kst.replace(hour=9, minute=0, second=0, microsecond=0))
+datetime_jekyll = post_time.strftime("%Y-%m-%d %H:%M:%S +0900")
 
 
 def fetch_hacker_news(top_n=3):
