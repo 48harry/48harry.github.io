@@ -13,3 +13,7 @@ desktop.ini
 Gemfile.lock
 
 beautiful-jekyll-theme-*.gem
+
+# Obsidian UI state (open tabs, recently opened files): personal, changes constantly
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
