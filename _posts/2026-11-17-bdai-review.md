@@ -62,8 +62,6 @@ https://localhost:7000/recommend/U001?k=3
 
 Swagger UI를 활용해서 API health check나 GET 메서드가 정상적으로 작동하는지 확인할 수 있음
 
-
-
 # 2. BDAI 패스트트랙
 
 💼 BDAI 패스트트랙이란?  
