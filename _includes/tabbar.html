@@ -1,10 +1,10 @@
 {%- comment -%}
   Phone navigation: a floating tab bar plus a round search button, in the manner of iOS 26.
   Shown below 768px only (custom.css); custom.js tucks it in while scrolling down. A post lights
-  up its section's tab; BDAI and 소개 live in the menu.
+  up its section's tab (a BDAI post lights 아티클, its parent); 소개 lives in the menu.
 {%- endcomment -%}
 {%- include post-section.html -%}
-{%- assign tab = section_key -%}
+{%- assign tab = section.parent | default: section_key -%}
 {%- if page.url == "/" -%}{%- assign tab = "home" -%}{%- endif -%}
 {%- assign tab_state = "page" -%}
 {%- if page.collection == "posts" -%}{%- assign tab_state = "true" -%}{%- endif -%}

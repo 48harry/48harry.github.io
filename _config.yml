@@ -21,7 +21,7 @@ author: Geunyeong Cho
 
 # Sections shown in the navigation bar, in order. Their names and addresses are in
 # _data/sections.yml; GitHub, YouTube and the Naver blog are linked from the footer and About.
-navbar-sections: [articles, news, bdai, archive, about]
+navbar-sections: [articles, news, archive, about]
 
 # Language of the pages (the <html lang> attribute)
 language: ko
@@ -91,7 +91,7 @@ social-network-links:
 
 # If you want your website to generate an RSS feed, provide a description
 # The URL for the feed will be https://<your_website>/feed.xml
-rss-description: Geunyeong Cho의 기술 아티클, 데일리 테크 뉴스레터, BDAI 학회 기록
+rss-description: Geunyeong Cho의 기술 아티클과 데일리 테크 뉴스레터
 
 ###########################
 # --- General options --- #

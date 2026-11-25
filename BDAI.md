@@ -1,7 +1,7 @@
 ---
 layout: page
 title: BDAI
-subtitle: 데이터 분석 실전반 추천 시스템 구현 회고 (13기)
+subtitle: 아티클 › 데이터 분석 실전반 추천 시스템 구현 회고 (13기)
 permalink: /bdai/
 ---
 

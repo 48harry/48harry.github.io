@@ -5,7 +5,7 @@
   (tabbar.html) carries the main sections.
 {%- endcomment -%}
 {%- include post-section.html -%}
-{%- assign current_section = section_key -%}
+{%- assign current_section = section.parent | default: section_key -%}
 <nav class="navbar navbar-expand-md navbar-light fixed-top navbar-custom {% if page.nav-short %}top-nav-short-permanent{% else %}top-nav-regular{% endif %}{% if page.hero %} nav-on-hero{% endif %}" aria-label="주요 메뉴">
 
   {%- if site.title-img -%}

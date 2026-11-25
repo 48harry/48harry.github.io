@@ -21,6 +21,8 @@
 <script type="application/json" id="hero-corpus">[
 {%- for post in site.posts limit: 90 -%}
   {%- include post-section.html post=post -%}
+  {%- comment -%} sub-categories (BDAI) stay off the home page {%- endcomment -%}
+  {%- if section.parent -%}{%- continue -%}{%- endif -%}
   {%- assign _heads = "" | split: "" -%}
   {%- assign _anchors = "" | split: "" -%}
   {%- if section_key == "news" -%}

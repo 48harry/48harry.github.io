@@ -1,6 +1,8 @@
 # The site's sections, one name and one address each. The navbar, the phone tab bar, post
 # headers, search results and the archive all read their labels from here.
 # kind: the letter the archive heatmap and its badges use for a section's posts.
+# parent: a sub-category. It stays out of the navbar and the home page, is listed on its
+#   parent's page, and lights up the parent in the navbar and tab bar.
 articles:
   name: 아티클
   url: /articles/
@@ -16,6 +18,7 @@ bdai:
   url: /bdai/
   icon: layer-group
   kind: b
+  parent: articles
 archive:
   name: 아카이브
   url: /archive/

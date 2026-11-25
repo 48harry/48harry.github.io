@@ -762,30 +762,6 @@
     });
   }
 
-  /* --- Home: the BDAI weeks open at the newest one -------------------------- */
-
-  // When the weeks don't fit side by side, the track starts scrolled to its end (the newest week,
-  // in the accent) and fades at whichever edge has more to scroll to.
-  function initSeriesTrack() {
-    document.querySelectorAll(".series-track").forEach(function (t) {
-      let atEnd = true;
-      function edges() {
-        const max = t.scrollWidth - t.clientWidth;
-        atEnd = t.scrollLeft >= max - 1;
-        t.classList.toggle("fade-start", max > 1 && t.scrollLeft > 1);
-        t.classList.toggle("fade-end", max > 1 && !atEnd);
-      }
-      t.scrollLeft = t.scrollWidth;
-      edges();
-      t.addEventListener("scroll", edges, { passive: true });
-      // a rotated tablet or a wider window keeps the newest week in view if it was in view
-      window.addEventListener("resize", function () {
-        if (atEnd) t.scrollLeft = t.scrollWidth;
-        edges();
-      });
-    });
-  }
-
   /* --- Phone tab bar: tucks in while scrolling down, back on the way up ------ */
 
   function initTabbar() {
@@ -1398,7 +1374,7 @@
   // element per page may carry the name, so it is set at the moment of the click.
   function initTitleMorph() {
     if (!window.CSS || !CSS.supports("view-transition-name: a")) return;
-    const TITLE = ".post-row-title, .feed-title, .series-step-topic, .posts-list .post-title, .related-post-title, " +
+    const TITLE = ".post-row-title, .feed-title, .posts-list .post-title, .related-post-title, " +
       ".post-nav-title, .archive-title, .tag-post-title, .search-result-title, .cal-preview-title";
     document.addEventListener("click", function (e) {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -1429,7 +1405,6 @@
     initSearchPalette();
     initNavLens();
     initTabbar();
-    initSeriesTrack();
     initReadProgress();
     initResume();
     initInsights();
