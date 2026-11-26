@@ -8,7 +8,7 @@ tags:
   - 데이터
 mathjax: false
 author: Geunyeong Cho
-published: false
+published: true
 date: 2026-11-17 23:23:38 +0900
 redirect_from:
 ---
@@ -70,9 +70,12 @@ BDAI 패스트트랙은 기업의 채용 수요와 BDAI 인재풀을 연결하�
 
 ![](assets/img/Pasted%20image%2020261125191837.png)
 
+메인화면에 대문짝만하게 있어서 쉽게 찾을 수 있다다
 
 ![](assets/img/Pasted%20image%2020261125191912.png)
 
+현재는 공고가 마감이 되었는데 내가 관심있는 직무도 쉽게 찾을 수 있었다
+대부분 스타트업이었고, 이름을 들어본곳도 있었다
 
 👑 BDAI 추천채용만의 특별한 혜택  
 1. BDAI 인재풀 별도 분류  
@@ -81,6 +84,7 @@ BDAI 패스트트랙은 기업의 채용 수요와 BDAI 인재풀을 연결하�
   
 ※ 구체적인 지원 방식과 혜택은 기업별로 상이하며, 최종 선발은 각 기업의 채용 기준과 절차에 따라 진행됩니다.
 
+AI / 데이터분석가로서 첫걸음을 BDAI 패스트트랙을 활용해보는것은 어떨까~?
 
 #BDAI
 #데이터분석
