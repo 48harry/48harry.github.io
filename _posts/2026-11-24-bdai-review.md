@@ -1,7 +1,7 @@
 ---
 layout: post
 title: BDAI 데이터 분석 실전반 추천 시스템 구현 9주차 Review (13기)
-subtitle: API 연결
+subtitle: API / UI
 tags:
   - bdai
   - 추천 시스템
@@ -16,6 +16,7 @@ redirect_from:
 
 # 1. 이번 주 배운것
 
+### Streamlit
 
 
 # 2. 블챌
