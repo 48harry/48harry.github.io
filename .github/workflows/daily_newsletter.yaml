@@ -2,8 +2,14 @@ name: Daily Tech Blog Auto Post
 
 on:
   schedule:
-    # 매일 KST 09:00 (UTC 00:00). GitHub가 늦게 시작해도 글 시각은 스크립트가 09:00으로 고정함.
-    - cron: '0 0 * * *'
+    # GitHub 예약 실행은 정각(특히 UTC 00:00)에 몇 시간씩 밀리거나 빠지기도 해서, 정각을 피한 여러 시각에 건다.
+    # 오늘 글이 이미 있으면 스크립트가 바로 건너뛰고, concurrency가 실행을 한 줄로 세워 중복 생성도 없음.
+    # 글 시각은 스크립트가 09:00으로 고정함. (KST 09:07 / 10:37 / 12:07 / 14:37 / 18:07)
+    - cron: '7 0 * * *'
+    - cron: '37 1 * * *'
+    - cron: '7 3 * * *'
+    - cron: '37 5 * * *'
+    - cron: '7 9 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
